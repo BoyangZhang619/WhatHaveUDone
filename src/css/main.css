@@ -182,7 +182,6 @@
 .create-card-right {
   display: flex;
   gap: 8px;
-  flex-wrap: wrap;
   justify-content: flex-end;
 }
 
@@ -243,7 +242,7 @@ select {
   gap: 8px;
   align-items: center;
   margin-top: 14px;
-  flex-wrap: wrap;
+  flex-wrap: wrap
 }
 
 .page {
@@ -268,7 +267,6 @@ select {
   align-items: center;
   gap: 10px;
   margin-left: auto;
-  flex-wrap: wrap;
 }
 
 .jump {
@@ -989,13 +987,11 @@ html {
   justify-content:space-between;
   gap:10px;
   margin-bottom:12px;
-  flex-wrap:wrap;
 }
 .list-tools{
   display:flex;
   gap:10px;
   align-items:center;
-  flex-wrap:wrap;
   margin-left:auto;
 }
 
@@ -1005,7 +1001,6 @@ html {
 }
 
 .overlay-top{
-  flex-wrap:wrap;
   align-items:flex-start;
   padding-top:calc(14px + env(safe-area-inset-top));
   padding-left:calc(16px + env(safe-area-inset-left));
@@ -1013,7 +1008,6 @@ html {
 }
 
 .overlay-actions{
-  flex-wrap:wrap;
   justify-content:flex-end;
 }
 
@@ -1303,4 +1297,35 @@ input[type=range]::-webkit-slider-runnable-track{
     padding: 8px 10px;
     border-radius: 10px;
   }
+}
+/* 1) 让 flex 子项可以收缩/换行：解决 post-meta 被截断 */
+.post-meta{
+  min-width: 0;
+  width: 100%;
+}
+
+.post-meta > span{
+  min-width: 0;                 /* 关键：允许 flex item 收缩 */
+  max-width: 100%;
+  overflow-wrap: anywhere;      /* 长串字符也能断行 */
+  word-break: break-word;
+}
+
+/* 2) 长数字/无空格文本：强制断行，避免被裁掉 */
+.post-preview,
+.post-block-content,
+.todo-text{
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* 3) tag 太长时别把容器顶爆（可选但建议） */
+.tag-row{
+  min-width: 0;
+}
+.tag-row .tag{
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
