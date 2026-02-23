@@ -5,7 +5,7 @@ import Main from './components/main.vue'
 
 // 全局用户状态
 // null 表示未登录，存储对象（如 { email: '...' }）表示已登录
-const user = ref(1) // 这里先模拟一个已登录状态，实际开发中应初始化为 null
+const user = ref(null) // 这里先模拟一个已登录状态，实际开发中应初始化为 null
 
 /**
  * 处理登录成功
@@ -24,6 +24,9 @@ const handleLoginSuccess = (userData) => {
 const handleLogout = () => {
   user.value = null
 }
+setInterval(() => {
+  console.log("当前用户状态：", user.value);
+}, 5000);
 </script>
 
 <template>
