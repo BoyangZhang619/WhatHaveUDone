@@ -854,6 +854,7 @@ async function createPost() {
     });
 
     setCreateStatus(`已保存 id=${data?.id ?? "?"}`, "success");
+    console.log("创建成功", data);
     resetDraft(false);
     await resetAndList();
     closeComposer();
@@ -868,6 +869,7 @@ async function createPost() {
           body: JSON.stringify({ title, content }),
         });
         setCreateStatus(`已保存 id=${data2?.id ?? "?"}（后端暂不支持扩展字段，已自动兼容）`, "success");
+        console.log("创建成功", data2);
         resetDraft(false);
         await resetAndList();
         closeComposer();
