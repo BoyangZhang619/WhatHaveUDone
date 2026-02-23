@@ -151,7 +151,7 @@ const handleLogin = async () => {
         });
         setStatus(`欢迎回来，${form.email}`, "success");
         // 如果需要通知父组件登录成功，传递后端返回的用户对象（如果存在）
-        if (data?.user) emit('login-success', data.user);
+        if (data?.user) emit('login-success', data);
     } catch (e) {
         setStatus("登录失败，请检查账号密码", "error");
     }
