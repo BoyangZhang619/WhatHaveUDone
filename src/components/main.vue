@@ -413,6 +413,14 @@ const API_BASE = "https://login.boyangzhang246.workers.dev";
 
 const emit = defineEmits(["log-out"]);
 
+const safeJSON = (v, fallback = []) => {
+    if (Array.isArray(v)) return v
+    if (!v || typeof v !== "string") return fallback
+    try { return JSON.parse(v) } catch { return fallback }
+}
+
+const tagList = (p) => safeJSON(p.tags, [])
+const todoList = (p) => safeJSON(p.todos, [])
 async function api(path, options = {}) {
     const headers = options.headers ? { ...options.headers } : {};
     if (options.body && !headers["Content-Type"]) headers["Content-Type"] = "application/json";
