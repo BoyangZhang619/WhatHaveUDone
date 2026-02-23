@@ -752,9 +752,7 @@ html {
   display: none;
 }
 :root {
-  --bg: #f2f2f2;
-  --card: #a6a6aa;
-  --line: #2a2a2e;
+  --line: #a6a6aa;
   --text: #0b0b0c;
   --muted: #111113;
 }
@@ -943,4 +941,197 @@ html {
 /* Common */
 .muted {
   color: var(--muted);
+}
+/* ===============================
+   PATCH: Mobile fix + 冲突修复
+   建议：整段放到 CSS 文件末尾
+   =============================== */
+
+/* 1) 统一主题变量，补全 --card，并把 --muted 改回真正的灰 */
+:root{
+  --line:#e6e6e6;
+  --text:#111;
+  --muted:#8b8b8b;
+  --card:#fff;
+}
+
+/* 2) 修复 .page 冲突：确保根容器用 .page；分页按钮改为 .pager .page 作用域 */
+.page{
+  min-height:100vh;
+  background:#fafafa;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  color:var(--text);
+}
+
+/* iOS/Android 动态地址栏更稳 */
+@supports (height: 100dvh){
+  .page{ min-height:100dvh; }
+  .overlay{ height:100dvh; }
+}
+
+/* 分页按钮：只在 .pager 内生效，避免污染根容器 .page */
+.pager .page{
+  padding:9px 12px;
+  border-radius:12px;
+  background:#fff;
+  border:1px solid #eaeaea;
+}
+.pager .page:hover{ background:#f7f7f7; }
+.pager .page.active{
+  background:#111;
+  color:#fff;
+  border-color:#111;
+}
+
+/* 3) 全站 muted 统一用变量（避免你后面那段把 muted 变深色） */
+.muted{ color:var(--muted); }
+
+/* 4) 列表头在小屏允许换行，避免右侧工具溢出 */
+.list-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:12px;
+  flex-wrap:wrap;
+}
+.list-tools{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  flex-wrap:wrap;
+  margin-left:auto;
+}
+
+/* 5) Overlay 顶部/底部：小屏允许换行 + safe-area，避免按钮横向溢出/贴边 */
+.overlay{
+  height:100vh; /* 配合 @supports 100dvh */
+}
+
+.overlay-top{
+  flex-wrap:wrap;
+  align-items:flex-start;
+  padding-top:calc(14px + env(safe-area-inset-top));
+  padding-left:calc(16px + env(safe-area-inset-left));
+  padding-right:calc(16px + env(safe-area-inset-right));
+}
+
+.overlay-actions{
+  flex-wrap:wrap;
+  justify-content:flex-end;
+}
+
+.overlay-body{
+  -webkit-overflow-scrolling:touch;
+  padding-left:calc(16px + env(safe-area-inset-left));
+  padding-right:calc(16px + env(safe-area-inset-right));
+}
+
+.overlay-bottom{
+  padding-bottom:calc(10px + env(safe-area-inset-bottom));
+  padding-left:calc(16px + env(safe-area-inset-left));
+  padding-right:calc(16px + env(safe-area-inset-right));
+}
+
+/* 可选：topbar 也考虑 safe-area（viewport-fit=cover 时更友好） */
+.topbar{
+  padding-top:calc(14px + env(safe-area-inset-top));
+  padding-left:calc(16px + env(safe-area-inset-left));
+  padding-right:calc(16px + env(safe-area-inset-right));
+}
+
+/* 6) 卡片网格：小屏直接单列，解决 320px 下 minmax(280px) + 双层 padding 导致横向溢出 */
+@media (max-width: 520px){
+  .cards{ grid-template-columns:1fr; }
+
+  /* overlay 顶部按钮在极小屏更紧凑 */
+  .overlay-actions .btn{
+    padding:8px 10px;
+    border-radius:10px;
+  }
+
+  /* 工具区占满一行更稳 */
+  .list-tools{
+    width:100%;
+    justify-content:flex-end;
+  }
+}
+
+/* 7) range：补齐 WebKit track，避免 iOS 上滑块上下偏移/轨道不一致 */
+input[type=range]::-webkit-slider-runnable-track{
+  height:8px;
+  background:#f0f0f0;
+  border:none;
+  border-radius:0;
+}
+
+/* 8) todo-list：编辑区和卡片区拆开，避免后半段 .todo-list 覆盖编辑区 */
+.todo-list{
+  margin:10px 0 0;
+  padding-left:18px;
+  display:grid;
+  gap:8px;
+}
+
+/* 卡片内的 todo-list 独立样式（不影响编辑区） */
+.post-card .todo-list{
+  list-style:none;
+  padding:0;
+  margin:0;
+  display:grid;
+  gap:6px;
+}
+.post-card .todo-item{
+  display:flex;
+  gap:8px;
+  align-items:flex-start;
+}
+.post-card .checkbox{
+  width:14px;
+  height:14px;
+  border-radius:4px;
+  border:1px solid var(--line);
+  margin-top:2px;
+  flex:0 0 auto;
+}
+.post-card .todo-text{
+  font-size:13px;
+  line-height:1.5;
+  color:var(--text);
+  word-break:break-word;
+}
+.post-card .todo-more{ font-size:12px; }
+
+/* 9) tag：用基础 .tag 兼容两处，再对卡片 footer 做覆盖（避免 tagbox/卡片互相抢样式） */
+.tag{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:6px 10px;
+  border-radius:999px;
+  border:1px solid #ececec;
+  background:#fff;
+  font-size:12px;
+  color:#444;
+}
+.post-card .tag-row .tag{
+  padding:4px 8px;
+  border-color:var(--line);
+  background:transparent;
+  color:var(--text);
+}
+
+/* 10) 卡片：保证 background 变量存在且可读性正常 */
+.post-card{
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:14px;
+  background:var(--card);
+  color:var(--text);
+}
+.post-meta{ color:var(--muted); }
+.post-preview{ color:var(--muted); }
+.badge{
+  border:1px solid var(--line);
+  color:var(--muted);
 }
