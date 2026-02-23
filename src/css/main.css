@@ -752,12 +752,11 @@ html {
   display: none;
 }
 :root {
-  --bg: #0b0b0c;
-  --card: #111113;
+  --bg: #f2f2f2;
+  --card: #a6a6aa;
   --line: #2a2a2e;
-  --text: #f2f2f2;
-  --muted: #a6a6aa;
-  --soft: #16161a;
+  --text: #0b0b0c;
+  --muted: #111113;
 }
 
 .cards {

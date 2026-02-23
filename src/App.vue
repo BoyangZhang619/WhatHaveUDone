@@ -13,7 +13,6 @@ const user = ref(1) // 这里先模拟一个已登录状态，实际开发中应
  */
 const handleLoginSuccess = (user_success) => {
   // 可以在这里做一些持久化处理，比如存入 localStorage
-  console.log("登录结果：", user_success);
   user.value = user_success;
 }
 
@@ -24,9 +23,6 @@ const handleLoginSuccess = (user_success) => {
 const handleLogout = () => {
   user.value = null
 }
-setInterval(() => {
-  console.log("当前用户状态：", user.value);
-}, 5000);
 </script>
 
 <template>
