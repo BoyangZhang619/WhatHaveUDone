@@ -32,7 +32,7 @@ const handleLogout = () => {
       <Login 
         v-if="!user" 
         key="login-page"
-        @success="handleLoginSuccess" 
+        @login-success="handleLoginSuccess" 
       />
 
       <Main 
