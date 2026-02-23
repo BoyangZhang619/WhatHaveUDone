@@ -469,7 +469,6 @@ textarea {
 .tagbox {
   display: flex;
   gap: 8px;
-  flex-wrap: wrap;
   align-items: center;
   padding: 10px;
   border-radius: 14px;
@@ -511,7 +510,6 @@ textarea {
 .quick-tags {
   display: flex;
   gap: 8px;
-  flex-wrap: wrap;
 }
 
 /* preview */
@@ -827,7 +825,6 @@ html {
   font-size: 12px;
   color: var(--muted);
   display: flex;
-  flex-wrap: wrap;
   gap: 6px;
 }
 
@@ -921,7 +918,6 @@ html {
 
 .tag-row {
   display: flex;
-  flex-wrap: wrap;
   gap: 6px;
 }
 
@@ -1134,4 +1130,177 @@ input[type=range]::-webkit-slider-runnable-track{
 .badge{
   border:1px solid var(--line);
   color:var(--muted);
+}
+/* ===== 0) 基础：防止奇怪溢出 + 统一盒模型 ===== */
+*,
+*::before,
+*::after{
+  box-sizing: border-box;
+}
+
+html, body{
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden; /* 兜底防横向溢出 */
+}
+
+/* ===== 1) 修复你最致命的类名冲突：.page 既是根容器又是分页按钮 ===== */
+/* 根容器必须保持“页面容器”语义 */
+.page{
+  min-height: 100vh;
+  background: #fafafa;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: #111;
+  overflow-x: hidden; /* 再兜底一次 */
+}
+
+/* 移动端更稳的视口高度 */
+@supports (height: 100dvh){
+  .page{ min-height: 100dvh; }
+  .overlay{ height: 100dvh; }
+}
+
+/* 分页按钮的 .page 必须限定在 .pager 里，避免污染根容器 .page */
+.pager .page{
+  padding: 9px 12px;
+  border-radius: 12px;
+  background: #fff;
+  border: 1px solid #eaeaea;
+}
+.pager .page:hover{ background:#f7f7f7; }
+.pager .page.active{
+  background:#111;
+  color:#fff;
+  border-color:#111;
+}
+
+/* ===== 2) 你的 :root 里把 --muted 写成了深色，导致“灰字变黑” ===== */
+:root{
+  --line: #e6e6e6;
+  --text: #111;
+  --muted: #8b8b8b;
+  --card: #fff; /* 你用过 var(--card) 但没定义 */
+}
+
+/* 全站 muted 用真正的灰 */
+.muted{ color: var(--muted); }
+
+/* ===== 3) 让内容容器在手机真·满宽，不要被 max-width/缩放搞怪 ===== */
+.content{
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 18px 16px 32px;
+}
+
+/* 创建卡片、列表容器强制不溢出 */
+.create-card,
+.list-area{
+  width: 100%;
+  max-width: 100%;
+}
+
+/* ===== 4) Overlay 顶部按钮在小屏容易挤爆：允许换行 + safe-area ===== */
+.overlay-top{
+  align-items: flex-start;
+  padding-top: calc(14px + env(safe-area-inset-top));
+  padding-left: calc(16px + env(safe-area-inset-left));
+  padding-right: calc(16px + env(safe-area-inset-right));
+}
+
+.overlay-actions{
+  justify-content: flex-end;
+}
+
+.overlay-body{
+  -webkit-overflow-scrolling: touch;
+  padding-left: calc(16px + env(safe-area-inset-left));
+  padding-right: calc(16px + env(safe-area-inset-right));
+}
+
+.overlay-bottom{
+  padding-bottom: calc(10px + env(safe-area-inset-bottom));
+  padding-left: calc(16px + env(safe-area-inset-left));
+  padding-right: calc(16px + env(safe-area-inset-right));
+}
+
+/* ===== 5) 列表头工具区：小屏允许换行避免溢出 ===== */
+.list-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:12px;
+}
+.list-tools{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  margin-left:auto;
+}
+
+/* ===== 6) range：补齐 webkit track，避免 iOS 上轨道/滑块不对齐 ===== */
+input[type=range]::-webkit-slider-runnable-track{
+  height: 8px;
+  background: #f0f0f0;
+  border: none;
+  border-radius: 0;
+}
+
+/* ===== 7) todo-list：你重复定义过 .todo-list，导致编辑区样式被卡片区覆盖 ===== */
+/* 编辑区 todo-list（保留缩进） */
+.panel .todo-list{
+  margin: 10px 0 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 8px;
+}
+
+/* 卡片区 todo-list（不带缩进） */
+.post-card .todo-list{
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 6px;
+}
+
+/* ===== 8) 手机断点（你原来有，但如果 viewport 没加它不会触发） ===== */
+@media (max-width: 520px){
+  .topbar{
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .topbar-actions{
+    justify-content: flex-end;
+  }
+
+  .create-card{
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .create-card-right{
+    justify-content: flex-start;
+  }
+
+  .row{
+    grid-template-columns: 1fr;
+  }
+
+  .cards{
+    grid-template-columns: 1fr; /* 强制单列 */
+  }
+
+  .pager-right{
+    width: 100%;
+    margin-left: 0;
+    justify-content: space-between;
+  }
+
+  .overlay-actions .btn{
+    padding: 8px 10px;
+    border-radius: 10px;
+  }
 }
