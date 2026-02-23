@@ -43,7 +43,7 @@ setInterval(() => {
         v-else-if="user"
         key="main-page"
         :user-info="user"
-        @logout="handleLogout"
+        @log-out="handleLogout"
       />
 
     </transition>

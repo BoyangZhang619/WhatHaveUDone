@@ -1,321 +1,368 @@
 <template>
   <div class="page">
-    <!-- 顶栏（块 1：去 settings） -->
+    <!-- Top bar -->
     <header class="topbar">
-      <div class="brand">
-        <div class="logo">📚</div>
-        <div class="title">
-          <div class="name">Study Log</div>
-          <div class="subtitle">跨域 Session · 记录你的学习轨迹</div>
+      <div class="topbar-left">
+        <div class="brand">
+          <div class="brand-dot" />
+          <div class="brand-text">
+            <div class="brand-title">Study Log</div>
+            <div class="brand-sub muted">
+              <span v-if="meLoading">加载用户中…</span>
+              <span v-else-if="meUser">已登录：{{ meUser.email }}</span>
+              <span v-else>未登录 / 会话失效</span>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="top-actions">
-        <div class="user-chip" v-if="me.email">
-          <span class="dot"></span>
-          <span class="email">{{ me.email }}</span>
-        </div>
-
-        <button class="btn ghost" @click="refreshAll" :disabled="busy.refresh">
-          {{ busy.refresh ? '刷新中…' : '刷新' }}
-        </button>
-
-        <button class="btn ghost" @click="goSettings">
-          Settings
-        </button>
-
-        <button class="btn danger" @click="logout" :disabled="busy.logout">
-          {{ busy.logout ? '退出中…' : '退出登录' }}
-        </button>
+      <div class="topbar-actions">
+        <button class="btn ghost" @click="onOpenSettings">设置</button>
+        <button class="btn ghost" @click="onLogout">退出登录</button>
       </div>
     </header>
 
+    <!-- Body -->
     <main class="content">
-      <!-- 左侧：新增记录块（块 2：点击全屏） -->
-      <section class="card create-card" @click="openComposer">
-        <div class="card-head">
-          <h3>新增记录</h3>
-          <span class="hint">点击展开全屏编辑</span>
-        </div>
-        <div class="create-preview">
-          <div class="preview-line">
-            <span class="k">标题</span>
-            <span class="v">{{ draft.title || '（可空）' }}</span>
+      <!-- Create block -->
+      <section class="create-area">
+        <div
+          class="create-card"
+          :class="{ compact: !composerOpen }"
+          role="button"
+          tabindex="0"
+          @click="openComposer"
+          @keydown.enter.prevent="openComposer"
+          @keydown.space.prevent="openComposer"
+        >
+          <div class="create-card-left">
+            <div class="create-badge">+</div>
+            <div>
+              <div class="create-title">新增学习记录</div>
+              <div class="muted create-sub">
+                点击展开全屏编辑（支持草稿自动保存、Ctrl/⌘ + Enter 快速保存）
+              </div>
+            </div>
           </div>
-          <div class="preview-line">
-            <span class="k">时间</span>
-            <span class="v">{{ prettyTime(draft.startedAt) }}</span>
+          <div class="create-card-right">
+            <span class="pill">模板</span>
+            <span class="pill">标签</span>
+            <span class="pill">时间</span>
           </div>
-          <div class="preview-line">
-            <span class="k">时长</span>
-            <span class="v">{{ draft.durationMin }} 分钟</span>
-          </div>
-          <div class="preview-line">
-            <span class="k">标签</span>
-            <span class="v">{{ draft.tags.length ? draft.tags.join(' · ') : '（可空）' }}</span>
-          </div>
-          <div class="preview-line last">
-            <span class="k">详述</span>
-            <span class="v muted">{{ draft.detail ? shrink(draft.detail, 60) : '（点击后输入详述）' }}</span>
-          </div>
-        </div>
-        <div class="create-footer">
-          <button class="btn primary" @click.stop="openComposer">写一条</button>
         </div>
       </section>
 
-      <!-- 右侧：列表块（块 3：输出 + 分页） -->
-      <section class="card list-card">
-        <div class="card-head">
-          <div class="head-left">
-            <h3>全部记录</h3>
-            <span class="hint">limit/offset 分页</span>
-          </div>
+      <!-- List -->
+      <section class="list-area">
+        <div class="list-head">
+          <div class="list-title">全部记录</div>
 
-          <div class="head-right">
-            <div class="search">
-              <input
-                v-model="query.q"
-                class="input"
-                placeholder="搜索标题/内容（前端过滤）"
-                @keydown.enter="applyFilter"
-              />
-              <button class="btn ghost" @click="applyFilter">搜索</button>
+          <div class="list-tools">
+            <div class="select">
+              <span class="muted">每页</span>
+              <select v-model.number="pager.limit" @change="resetAndList">
+                <option :value="10">10</option>
+                <option :value="20">20</option>
+                <option :value="30">30</option>
+              </select>
             </div>
+            <button class="btn secondary" @click="listPosts()">刷新</button>
           </div>
         </div>
 
-        <div class="status" v-if="status.msg" :class="status.kind">
-          {{ status.msg }}
+        <div v-if="listLoading" class="skeleton-wrap">
+          <div class="skeleton" v-for="i in 6" :key="i" />
         </div>
 
-        <div class="list-body">
-          <div v-if="busy.list" class="skeleton">
-            <div class="sk-line" v-for="i in 6" :key="i"></div>
-          </div>
+        <div v-else-if="listError" class="errorbox">
+          加载失败：{{ listError }}
+        </div>
 
-          <template v-else>
-            <div v-if="!items.length" class="empty">
-              <div class="empty-title">暂无记录</div>
-              <div class="empty-sub">点左边“新增记录”开始写第一条。</div>
-            </div>
+        <div v-else-if="!posts.length" class="empty">
+          <div class="empty-title">暂无内容</div>
+          <div class="muted">先写一条学习记录吧。</div>
+          <button class="btn primary" @click="openComposer">立即新增</button>
+        </div>
 
-            <ul v-else class="records">
-              <li
-                v-for="p in items"
-                :key="p.id"
-                class="record"
-                @click="openDetail(p.id)"
-              >
-                <div class="record-main">
-                  <div class="record-title">
-                    <span class="id">#{{ p.id }}</span>
-                    <span class="t">{{ p.title || '（无标题）' }}</span>
-                  </div>
-
-                  <div class="record-meta">
-                    <span class="pill">{{ fmtDateTime(p.created_at) }}</span>
-                    <span class="pill" v-if="p.updated_at">更新 {{ fmtDateTime(p.updated_at) }}</span>
-                    <span class="pill soft" v-if="p.__parsed?.tags?.length">
-                      {{ p.__parsed.tags.slice(0, 3).join(' · ') }}<span v-if="p.__parsed.tags.length > 3">…</span>
-                    </span>
-                    <span class="pill soft" v-if="p.__parsed?.durationMin">
-                      {{ p.__parsed.durationMin }}min
-                    </span>
-                  </div>
-
-                  <div class="record-preview">
-                    {{ p.preview || '（无预览）' }}
-                  </div>
+        <div v-else class="cards">
+          <article class="post-card" v-for="p in posts" :key="p.id">
+            <div class="post-main">
+              <div class="post-title-row">
+                <div class="post-title">
+                  <span class="muted">#{{ p.id }}</span>
+                  <span class="post-title-text">{{ p.title || '(无标题)' }}</span>
                 </div>
 
-                <div class="record-actions">
-                  <button class="btn tiny ghost" @click.stop="openDetail(p.id)">查看</button>
+                <div class="post-actions">
+                  <button class="btn ghost" @click="openDetail(p.id)">查看</button>
                 </div>
-              </li>
-            </ul>
-          </template>
+              </div>
+
+              <div class="post-meta muted">
+                <span v-if="bestDate(p)">{{ formatDate(bestDate(p)) }}</span>
+                <span v-if="bestDate(p)" class="dot">·</span>
+                <span v-if="bestTags(p).length">{{ bestTags(p).slice(0, 3).join(' / ') }}</span>
+                <span v-if="bestTags(p).length && bestTags(p).length > 3" class="muted"> +{{ bestTags(p).length - 3 }}</span>
+              </div>
+
+              <div class="post-preview muted">
+                {{ p.preview || p.contentPreview || '（无预览）' }}
+              </div>
+            </div>
+          </article>
         </div>
 
-        <!-- 分页控件：高级一点的样式/逻辑（无 total 的 offset 分页） -->
-        <div class="pager">
-          <div class="pager-left">
-            <span class="muted">每页</span>
-            <select v-model.number="pager.limit" class="select" @change="goPage(1)">
-              <option :value="10">10</option>
-              <option :value="20">20</option>
-              <option :value="50">50</option>
-            </select>
-            <span class="muted">条</span>
+        <!-- Pagination -->
+        <div class="pager" v-if="showPager">
+          <button class="btn ghost" :disabled="pager.page <= 1 || listLoading" @click="goPage(pager.page - 1)">
+            ‹
+          </button>
 
-            <span class="sep"></span>
+          <button
+            v-for="it in pageItems"
+            :key="String(it.key)"
+            class="btn page"
+            :class="{ active: it.type === 'page' && it.value === pager.page }"
+            :disabled="it.type !== 'page' || listLoading"
+            @click="it.type === 'page' && goPage(it.value)"
+          >
+            <span v-if="it.type === 'page'">{{ it.value }}</span>
+            <span v-else class="muted">…</span>
+          </button>
 
-            <span class="muted">第</span>
-            <input
-              class="jump"
-              v-model="pager.jumpText"
-              placeholder="页码"
-              @keydown.enter="jumpToPage"
-            />
-            <button class="btn ghost" @click="jumpToPage">跳转</button>
-          </div>
+          <button class="btn ghost" :disabled="!pager.hasNext || listLoading" @click="goPage(pager.page + 1)">
+            ›
+          </button>
 
           <div class="pager-right">
-            <button class="btn ghost" @click="goFirst" :disabled="pager.page === 1 || busy.list">«</button>
-            <button class="btn ghost" @click="goPrev" :disabled="pager.page === 1 || busy.list">‹</button>
+            <div class="jump">
+              <span class="muted">跳转</span>
+              <input
+                v-model="jumpInput"
+                inputmode="numeric"
+                pattern="[0-9]*"
+                placeholder="页码"
+                @keydown.enter.prevent="jumpToPage"
+              />
+              <button class="btn secondary" @click="jumpToPage" :disabled="listLoading">Go</button>
+            </div>
 
-            <button
-              v-for="n in pageButtons"
-              :key="n.key"
-              class="btn ghost page"
-              :class="{ active: n.type === 'page' && n.value === pager.page, dots: n.type === 'dots' }"
-              :disabled="n.type !== 'page' || busy.list"
-              @click="n.type === 'page' && goPage(n.value)"
-            >
-              {{ n.label }}
-            </button>
-
-            <button class="btn ghost" @click="goNext" :disabled="!pager.hasNext || busy.list">›</button>
-            <button class="btn ghost" @click="goLastHint" :disabled="!pager.hasNext || busy.list">»</button>
+            <div class="muted pager-note">
+              <span v-if="pager.total != null">共 {{ pager.total }} 条</span>
+              <span v-else>（总数未知）</span>
+            </div>
           </div>
         </div>
       </section>
     </main>
 
-    <!-- 全屏编辑器（覆盖全屏） -->
-    <transition name="fade">
-      <div v-if="composer.open" class="overlay" @keydown.esc="closeComposer" tabindex="-1">
-        <div class="composer">
-          <div class="composer-top">
-            <div class="composer-title">
-              <h2>记录一次学习</h2>
-              <div class="muted">建议：写下主题、过程、收获、下一步</div>
-            </div>
-            <div class="composer-actions">
-              <button class="btn ghost" @click="applyTemplate('review')">复盘模板</button>
-              <button class="btn ghost" @click="applyTemplate('practice')">练习模板</button>
-              <button class="btn ghost" @click="applyTemplate('reading')">阅读模板</button>
-              <button class="btn ghost" @click="closeComposer">关闭</button>
+    <!-- Fullscreen composer -->
+    <transition name="overlay">
+      <div v-if="composerOpen" class="overlay" @keydown.esc.prevent="closeComposer" tabindex="-1" ref="overlayEl">
+        <div class="overlay-top">
+          <div class="overlay-title">
+            <div class="overlay-title-main">新增记录</div>
+            <div class="muted overlay-title-sub">
+              草稿：{{ draftStatus }}
+              <span class="dot">·</span>
+              字数：{{ wordCount }}
             </div>
           </div>
 
-          <div class="composer-body">
-            <div class="grid">
-              <div class="field">
-                <label>标题（可空）</label>
-                <input class="input" v-model="draft.title" placeholder="比如：Vue 组件通信/算法复习/英语精听…" />
-              </div>
+          <div class="overlay-actions">
+            <button class="btn ghost" @click="resetDraft(false)">清空</button>
+            <button class="btn ghost" @click="closeComposer">关闭</button>
+            <button class="btn primary" :disabled="createLoading" @click="createPost">
+              {{ createLoading ? '保存中…' : '保存' }}
+            </button>
+          </div>
+        </div>
 
-              <div class="field">
-                <label>开始时间</label>
-                <input class="input" type="datetime-local" v-model="draft.startedAt" />
-              </div>
+        <div class="overlay-body">
+          <div class="grid">
+            <!-- Left column -->
+            <div class="panel">
+              <div class="panel-head">
+                <div class="panel-title">基础信息</div>
+                <div class="panel-tools">
+                  <select v-model="draft.template" @change="applyTemplate" class="mini-select">
+                    <option value="">模板：无</option>
+                    <option value="reading">阅读</option>
+                    <option value="coding">编码</option>
+                    <option value="lecture">课程/讲座</option>
+                    <option value="review">复盘/总结</option>
+                  </select>
 
-              <div class="field">
-                <label>时长（分钟）</label>
-                <div class="row">
-                  <input class="range" type="range" min="5" max="240" step="5" v-model.number="draft.durationMin" />
-                  <div class="badge">{{ draft.durationMin }} min</div>
+                  <label class="toggle">
+                    <input type="checkbox" v-model="draft.pinToTop" />
+                    <span>置顶</span>
+                  </label>
                 </div>
               </div>
 
               <div class="field">
-                <label>标签（逗号分隔）</label>
-                <input class="input" v-model="draft.tagsText" placeholder="Vue, 后端, 英语, LeetCode…" @blur="syncTags" />
-                <div class="tagline" v-if="draft.tags.length">
-                  <span class="tag" v-for="t in draft.tags" :key="t">{{ t }}</span>
+                <label>标题</label>
+                <input v-model.trim="draft.title" maxlength="120" placeholder="例如：Vue 3 响应式原理整理" />
+                <div class="muted tiny">建议 10–60 字；最多 120 字</div>
+              </div>
+
+              <div class="row">
+                <div class="field">
+                  <label>学习时间</label>
+                  <input v-model="draft.happenedAt" type="datetime-local" />
+                </div>
+                <div class="field">
+                  <label>时长（分钟）</label>
+                  <input v-model.number="draft.durationMin" type="number" min="0" max="1440" placeholder="例如 45" />
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="field">
+                  <label>专注度（1-5）</label>
+                  <input v-model.number="draft.focus" type="range" min="1" max="5" />
+                  <div class="muted tiny">当前：{{ draft.focus }}</div>
+                </div>
+                <div class="field">
+                  <label>难度（1-5）</label>
+                  <input v-model.number="draft.difficulty" type="range" min="1" max="5" />
+                  <div class="muted tiny">当前：{{ draft.difficulty }}</div>
                 </div>
               </div>
 
               <div class="field">
-                <label>心情</label>
-                <select class="select" v-model="draft.mood">
-                  <option value="🙂">🙂 平稳</option>
-                  <option value="😄">😄 开心</option>
-                  <option value="😮">😮 惊喜</option>
-                  <option value="😵">😵 疲惫</option>
-                  <option value="😤">😤 焦虑</option>
-                </select>
-              </div>
+                <label>标签（回车添加）</label>
+                <div class="tagbox">
+                  <span class="tag" v-for="t in draft.tags" :key="t">
+                    {{ t }}
+                    <button class="tag-x" @click="removeTag(t)" aria-label="remove">×</button>
+                  </span>
+                  <input
+                    v-model.trim="tagInput"
+                    placeholder="例如：Vue / 算法 / 英语"
+                    @keydown.enter.prevent="addTag(tagInput)"
+                    @keydown.,.prevent="addTag(tagInput)"
+                  />
+                </div>
 
-              <div class="field">
-                <label>专注度（1-5）</label>
-                <div class="stars">
-                  <button
-                    v-for="i in 5"
-                    :key="i"
-                    class="star"
-                    :class="{ on: i <= draft.focus }"
-                    @click="draft.focus = i"
-                    type="button"
-                  >
-                    ★
-                  </button>
+                <div class="quick-tags">
+                  <button class="btn chip" @click="addTag('reading')">reading</button>
+                  <button class="btn chip" @click="addTag('coding')">coding</button>
+                  <button class="btn chip" @click="addTag('notes')">notes</button>
+                  <button class="btn chip" @click="addTag('review')">review</button>
                 </div>
               </div>
 
-              <div class="field full">
-                <label>详述（建议写：做了什么、遇到什么、怎么解决、收获、下一步）</label>
-                <textarea class="textarea" v-model="draft.detail" placeholder="今天学了什么？为什么？卡点在哪？下一步做什么？"></textarea>
+              <div class="field">
+                <label>目标 / 预期收获</label>
+                <textarea v-model.trim="draft.goal" rows="3" placeholder="这次想解决什么问题？"></textarea>
+              </div>
+            </div>
+
+            <!-- Right column -->
+            <div class="panel">
+              <div class="panel-head">
+                <div class="panel-title">内容</div>
+                <div class="panel-tools">
+                  <label class="toggle">
+                    <input type="checkbox" v-model="ui.previewMode" />
+                    <span>预览</span>
+                  </label>
+                </div>
               </div>
 
-              <div class="field full">
-                <label>下一步（可选）</label>
-                <input class="input" v-model="draft.next" placeholder="下一次继续：…" />
+              <div class="field" v-if="!ui.previewMode">
+                <label>详述</label>
+                <textarea
+                  v-model.trim="draft.content"
+                  rows="14"
+                  placeholder="写下做了什么、学到了什么、哪里卡住、下一步是什么…"
+                  @keydown.ctrl.enter.prevent="createPost"
+                  @keydown.meta.enter.prevent="createPost"
+                ></textarea>
+                <div class="muted tiny">
+                  小提示：用“结论 / 过程 / 反思 / 下一步”四段写，回头复盘更快。
+                </div>
+              </div>
+
+              <div class="field" v-else>
+                <label>预览（纯文本安全预览）</label>
+                <pre class="preview">{{ composedPreview }}</pre>
+              </div>
+
+              <div class="field">
+                <label>下一步行动（可选）</label>
+                <div class="todo">
+                  <input v-model.trim="todoInput" placeholder="输入后回车添加" @keydown.enter.prevent="addTodo(todoInput)" />
+                  <button class="btn secondary" @click="addTodo(todoInput)">添加</button>
+                </div>
+
+                <ul class="todo-list" v-if="draft.todos.length">
+                  <li v-for="(t, i) in draft.todos" :key="i">
+                    <input type="checkbox" v-model="t.done" />
+                    <span :class="{ done: t.done }">{{ t.text }}</span>
+                    <button class="btn ghost tinybtn" @click="removeTodo(i)">移除</button>
+                  </li>
+                </ul>
+              </div>
+
+              <div v-if="createStatus.msg" class="status-msg" :class="createStatus.kind">
+                {{ createStatus.msg }}
               </div>
             </div>
           </div>
+        </div>
 
-          <div class="composer-bottom">
-            <div class="muted">
-              提示：这条记录会以 JSON 存在 content 字段里（不改后端也能保存结构化信息）。
-            </div>
-            <div class="composer-bottom-actions">
-              <button class="btn ghost" @click="resetDraft" :disabled="busy.create">重置</button>
-              <button class="btn primary" @click="createPost" :disabled="busy.create">
-                {{ busy.create ? '保存中…' : '保存记录' }}
-              </button>
-            </div>
-          </div>
+        <div class="overlay-bottom muted">
+          <span>快捷键：Esc 关闭</span>
+          <span class="dot">·</span>
+          <span>Ctrl/⌘ + Enter 保存</span>
+          <span class="dot">·</span>
+          <span>草稿自动保存到本地</span>
         </div>
       </div>
     </transition>
 
-    <!-- 详情抽屉（查看单条） -->
-    <transition name="slide">
-      <div v-if="detail.open" class="drawer">
-        <div class="drawer-top">
-          <div class="drawer-title">
-            <div class="muted">记录 #{{ detail.id }}</div>
-            <div class="drawer-h">{{ detail.data?.title || '（无标题）' }}</div>
+    <!-- Detail modal -->
+    <transition name="overlay">
+      <div v-if="detail.open" class="overlay detail" tabindex="-1">
+        <div class="overlay-top">
+          <div class="overlay-title">
+            <div class="overlay-title-main">内容 #{{ detail.id }}</div>
+            <div class="muted overlay-title-sub">
+              <span v-if="detailLoading">加载中…</span>
+              <span v-else-if="detailError" class="error-inline">{{ detailError }}</span>
+              <span v-else>{{ detailSubtitle }}</span>
+            </div>
           </div>
-          <button class="btn ghost" @click="closeDetail">关闭</button>
+
+          <div class="overlay-actions">
+            <button class="btn ghost" @click="detail.open = false">关闭</button>
+          </div>
         </div>
 
-        <div class="drawer-body" v-if="detail.loading">
-          <div class="sk-line" v-for="i in 8" :key="i"></div>
-        </div>
-
-        <div class="drawer-body" v-else>
-          <div class="kv">
-            <div class="kv-item"><span class="k">时间</span><span class="v">{{ fmtDateTime(detail.parsed?.startedAt || detail.data?.created_at) }}</span></div>
-            <div class="kv-item" v-if="detail.parsed?.durationMin"><span class="k">时长</span><span class="v">{{ detail.parsed.durationMin }} 分钟</span></div>
-            <div class="kv-item" v-if="detail.parsed?.mood"><span class="k">心情</span><span class="v">{{ detail.parsed.mood }}</span></div>
-            <div class="kv-item" v-if="detail.parsed?.focus"><span class="k">专注</span><span class="v">{{ detail.parsed.focus }}/5</span></div>
+        <div class="overlay-body">
+          <div v-if="detailLoading" class="skeleton-wrap">
+            <div class="skeleton" v-for="i in 8" :key="i" />
           </div>
 
-          <div class="tags" v-if="detail.parsed?.tags?.length">
-            <span class="tag" v-for="t in detail.parsed.tags" :key="t">{{ t }}</span>
+          <div v-else-if="detailError" class="errorbox">
+            读取失败：{{ detailError }}
           </div>
 
-          <div class="section">
-            <div class="section-h">详述</div>
-            <pre class="pre">{{ detail.parsed?.detail || detail.data?.content || '' }}</pre>
-          </div>
+          <div v-else class="detail-body">
+            <div class="detail-title">{{ detail.post?.title || '(无标题)' }}</div>
+            <div class="muted detail-meta">
+              <span v-if="detailDate">{{ formatDate(detailDate) }}</span>
+              <span v-if="detailDate" class="dot">·</span>
+              <span v-if="detailTags.length">{{ detailTags.join(' / ') }}</span>
+            </div>
 
-          <div class="section" v-if="detail.parsed?.next">
-            <div class="section-h">下一步</div>
-            <div class="text">{{ detail.parsed.next }}</div>
+            <pre class="detail-content">{{ detail.post?.content || '' }}</pre>
+
+            <div class="muted tiny" v-if="detail.post?.content && detail.post.content.length > 0">
+              提示：后端如果未来支持结构化字段（tags、happenedAt 等），这里可以做更丰富渲染。
+            </div>
           </div>
         </div>
       </div>
@@ -324,11 +371,14 @@
 </template>
 
 <script setup>
-import { reactive, ref, computed, onMounted } from 'vue';
-// import { useRouter } from 'vue-router';
+import { computed, nextTick, onMounted, reactive, ref, watch, defineEmits } from "vue";
 
-// ✅ 跨域 API 域名
+/** =========================
+ *  API
+ *  ========================= */
 const API_BASE = "https://login.boyangzhang246.workers.dev";
+
+const emit = defineEmits(["log-out"]);
 
 async function api(path, options = {}) {
   const headers = options.headers ? { ...options.headers } : {};
@@ -347,7 +397,11 @@ async function api(path, options = {}) {
 
   const text = await res.text();
   let data = null;
-  try { data = text ? JSON.parse(text) : null; } catch { data = { raw: text }; }
+  try {
+    data = text ? JSON.parse(text) : null;
+  } catch {
+    data = { raw: text };
+  }
 
   if (!res.ok) {
     throw { kind: "http", status: res.status, statusText: res.statusText, data };
@@ -355,932 +409,1248 @@ async function api(path, options = {}) {
   return data;
 }
 
-function shrink(s, n) {
-  const t = String(s || '');
-  if (t.length <= n) return t;
-  return t.slice(0, n) + '…';
+/** =========================
+ *  Top bar: me
+ *  ========================= */
+const meUser = ref(null);
+const meLoading = ref(false);
+
+async function refreshMe() {
+  meLoading.value = true;
+  try {
+    const data = await api("/api/me");
+    meUser.value = data?.user || null;
+    return meUser.value;
+  } catch {
+    meUser.value = null;
+    return null;
+  } finally {
+    meLoading.value = false;
+  }
 }
 
-function fmtDateTime(input) {
-  if (!input) return '—';
-  const d = new Date(input);
-  if (Number.isNaN(d.getTime())) return String(input);
-  return d.toLocaleString();
+/**
+ * 用户要求：设置/退出留空函数给你接线
+ * 你可以在这里改成 router.push / emit 等。
+ */
+function onOpenSettings() {
+  // TODO: 由你接入设置页面
+}
+async function onLogout() {
+  // TODO: 由你决定是否要走后端 /api/logout
+  try {
+    await api("/api/logout", { method: "POST" });
+    emit("log-out");
+  } catch {
+    alert("退出登录请求失败（网络或服务器错误），但本地会话已清除。如果你仍然看到登录状态，可能是因为后端会话未成功清除。请尝试刷新页面或检查网络连接。");
+  }
+  await refreshMe();
+  await resetAndList();
 }
 
-function prettyTime(dtLocal) {
-  if (!dtLocal) return '（未选择）';
-  const d = new Date(dtLocal);
-  if (Number.isNaN(d.getTime())) return String(dtLocal);
-  return d.toLocaleString();
-}
+/** =========================
+ *  List + Pagination
+ *  ========================= */
+const posts = ref([]);
+const listLoading = ref(false);
+const listError = ref("");
 
-function safeParseJsonMaybe(s) {
-  if (!s || typeof s !== 'string') return null;
-  const t = s.trim();
-  if (!(t.startsWith('{') && t.endsWith('}'))) return null;
-  try { return JSON.parse(t); } catch { return null; }
-}
-
-// const router = useRouter?.();
-
-// 顶部状态
-const me = reactive({ email: '' });
-const status = reactive({ msg: '', kind: 'muted' }); // kind: muted/success/error
-const busy = reactive({ refresh: false, list: false, create: false, logout: false });
-
-// 查询 & 列表数据
-const query = reactive({ q: '' });
-const rawItems = ref([]); // 原始 results
-const items = computed(() => {
-  const q = query.q.trim().toLowerCase();
-  let list = rawItems.value.map(p => {
-    // 尝试解析 preview 里是否是 JSON（通常 preview 截断，解析意义不大）
-    // 这里优先等 detail 拉单条再解析；但 tags/duration 等想在列表显示，就尝试从 preview/content推断
-    const parsed = safeParseJsonMaybe(p.preview);
-    return { ...p, __parsed: parsed || null };
-  });
-
-  // 前端搜索（不改后端）
-  if (!q) return list;
-  return list.filter(p =>
-    String(p.title || '').toLowerCase().includes(q) ||
-    String(p.preview || '').toLowerCase().includes(q)
-  );
-});
-
-// 分页（offset 体系：无 total）
 const pager = reactive({
   limit: 20,
+  offset: 0,
   page: 1,
-  hasNext: false,   // 由本页是否满额推断
-  jumpText: '',
+  total: null, // 若后端返回 total，就会启用完整页码
+  hasNext: false,
 });
 
-function offsetOf(page) {
-  return (page - 1) * pager.limit;
-}
+const jumpInput = ref("");
 
-// “高级”页码按钮（在没有 total 的情况下：
-// - 永远显示 1
-// - 显示当前页附近窗口（±2）
-// - 如果存在下一页（hasNext），在右侧允许扩展
-const pageButtons = computed(() => {
-  const p = pager.page;
-  const hasNext = pager.hasNext;
-
-  const windowSize = 2;
-  const start = Math.max(1, p - windowSize);
-  const end = hasNext ? (p + windowSize) : p;
-
-  const btns = [];
-
-  // always show first page
-  btns.push({ key: 'p1', type: 'page', value: 1, label: '1' });
-
-  if (start > 2) btns.push({ key: 'dotsL', type: 'dots', label: '…' });
-
-  for (let i = Math.max(2, start); i <= end; i++) {
-    btns.push({ key: `p${i}`, type: 'page', value: i, label: String(i) });
-  }
-
-  // 如果本页满额，意味着“可能还有更多页”，给一个右侧省略号提示
-  if (hasNext) btns.push({ key: 'dotsR', type: 'dots', label: '…' });
-
-  return btns;
-});
-
-function setStatus(msg, kind = 'muted') {
-  status.msg = String(msg || '').slice(0, 500);
-  status.kind = kind;
-}
-
-// 身份与列表
-async function refreshMe() {
-  try {
-    const data = await api('/api/me');
-    me.email = data?.user?.email || '';
-    return true;
-  } catch {
-    me.email = '';
-    return false;
-  }
+function normalizeInt(v, fallback = 0) {
+  const n = Number(v);
+  return Number.isFinite(n) ? n : fallback;
 }
 
 async function listPosts() {
-  busy.list = true;
+  listLoading.value = true;
+  listError.value = "";
+
   try {
-    const limit = pager.limit;
-    const offset = offsetOf(pager.page);
-    const data = await api(`/api/posts?limit=${encodeURIComponent(limit)}&offset=${encodeURIComponent(offset)}`);
+    const data = await api(`/api/posts?limit=${pager.limit}&offset=${pager.offset}`);
 
-    const results = data?.results || [];
-    rawItems.value = results;
+    const items = data?.results || [];
+    posts.value = items;
 
-    // 无 total 情况下：如果本页条数 == limit，认为“可能还有下一页”
-    pager.hasNext = results.length === limit;
+    // 兼容：如果后端提供 total / count / hasNext 等字段，就用；否则用“本页满=可能还有下一页”
+    const total = data?.total ?? data?.count ?? null;
+    pager.total = Number.isFinite(Number(total)) ? Number(total) : null;
 
-    if (!me.email) setStatus('未登录 / 会话失效', 'muted');
-    else setStatus('', 'muted');
+    pager.hasNext = typeof data?.hasNext === "boolean" ? data.hasNext : items.length === pager.limit;
+
+    // page 从 offset 推导，避免状态错乱
+    pager.page = Math.floor(pager.offset / pager.limit) + 1;
   } catch (e) {
-    if (e.kind === 'http' && e.status === 401) {
-      rawItems.value = [];
+    if (e?.kind === "http" && e.status === 401) {
+      listError.value = "未登录，无法加载列表";
+      posts.value = [];
+      pager.total = null;
       pager.hasNext = false;
-      setStatus('未登录，无法加载列表', 'error');
       return;
     }
-    setStatus(`加载失败：${e?.data?.error || e?.message || JSON.stringify(e)}`, 'error');
+    listError.value = safeErr(e);
   } finally {
-    busy.list = false;
+    listLoading.value = false;
   }
 }
 
-async function refreshAll() {
-  busy.refresh = true;
-  try {
-    await refreshMe();
-    await listPosts();
-  } finally {
-    busy.refresh = false;
-  }
+function resetAndList() {
+  pager.offset = 0;
+  pager.page = 1;
+  pager.hasNext = false;
+  return listPosts();
 }
 
-function applyFilter() {
-  // 前端过滤不需要重新请求，但你可以这里也顺便刷新
-  // listPosts();
+function goPage(pageNum) {
+  const p = Math.max(1, normalizeInt(pageNum, 1));
+  pager.page = p;
+  pager.offset = (p - 1) * pager.limit;
+  return listPosts();
 }
 
-// 分页动作
-function goPage(n) {
-  const page = Math.max(1, Number(n) || 1);
-  pager.page = page;
-  pager.jumpText = '';
-  listPosts();
-}
-function goFirst() { if (pager.page !== 1) goPage(1); }
-function goPrev() { if (pager.page > 1) goPage(pager.page - 1); }
-function goNext() { if (pager.hasNext) goPage(pager.page + 1); }
-// 没 total 的“末页”无法准确到达，这里做一个“快速向后翻几页”的高级体验：一次跳 5 页
-function goLastHint() {
-  if (!pager.hasNext) return;
-  goPage(pager.page + 5);
-}
 function jumpToPage() {
-  const n = parseInt(pager.jumpText, 10);
-  if (!Number.isFinite(n) || n <= 0) {
-    setStatus('请输入有效页码', 'error');
-    return;
-  }
-  goPage(n);
+  const p = Math.max(1, normalizeInt(jumpInput.value, pager.page));
+  jumpInput.value = "";
+  return goPage(p);
 }
 
-// Settings 导航
-// function goSettings() {
-//   if (router?.push) router.push({ name: 'setting' }).catch(() => {});
-//   else window.location.href = '/setting';
-// }
-
-// 登出
-async function logout() {
-  busy.logout = true;
-  try {
-    await api('/api/logout', { method: 'POST' });
-  } catch {}
-  await refreshAll();
-  busy.logout = false;
-}
-
-// ===== 全屏新增记录（composer） =====
-const composer = reactive({ open: false });
-
-const draft = reactive({
-  title: '',
-  detail: '',
-  startedAt: toLocalDateTime(new Date()),
-  durationMin: 45,
-  tagsText: '',
-  tags: [],
-  mood: '🙂',
-  focus: 3,
-  next: '',
+const showPager = computed(() => {
+  // 有 total：至少 2 页才显示；无 total：只要有下一页或当前页>1就显示
+  if (pager.total != null) return Math.ceil(pager.total / pager.limit) > 1;
+  return pager.page > 1 || pager.hasNext;
 });
 
-function toLocalDateTime(d) {
-  // yyyy-MM-ddThh:mm
-  const pad = (n) => String(n).padStart(2, '0');
-  const yyyy = d.getFullYear();
-  const MM = pad(d.getMonth() + 1);
-  const dd = pad(d.getDate());
-  const hh = pad(d.getHours());
-  const mm = pad(d.getMinutes());
-  return `${yyyy}-${MM}-${dd}T${hh}:${mm}`;
+function buildPageItems(current, totalPages, hasNext) {
+  // 高级一点：窗口化 + 首尾 + 省略号
+  // totalPages 为空时：不显示尾页，但保留窗口与 next
+  const items = [];
+  const key = (t, v) => `${t}:${v}`;
+
+  const pushPage = (v) => items.push({ type: "page", value: v, key: key("p", v) });
+  const pushEllipsis = (id) => items.push({ type: "ellipsis", key: key("e", id) });
+
+  const windowSize = 2; // current ±2
+  const start = Math.max(1, current - windowSize);
+  const end = totalPages ? Math.min(totalPages, current + windowSize) : current + windowSize;
+
+  // 首页
+  if (start > 1) {
+    pushPage(1);
+    if (start > 2) pushEllipsis("l");
+  }
+
+  // 中间窗口
+  for (let i = start; i <= end; i++) pushPage(i);
+
+  // 尾页（仅 totalPages 已知时）
+  if (totalPages) {
+    if (end < totalPages - 1) pushEllipsis("r");
+    if (end < totalPages) pushPage(totalPages);
+  } else {
+    // total 未知：如果还有下一页，给一个“假尾部省略”，视觉更高级
+    if (hasNext) pushEllipsis("r");
+  }
+
+  return items;
 }
 
-function syncTags() {
-  const raw = String(draft.tagsText || '');
-  const arr = raw
-    .split(',')
-    .map(s => s.trim())
-    .filter(Boolean)
-    .slice(0, 12);
-  draft.tags = Array.from(new Set(arr));
-  draft.tagsText = draft.tags.join(', ');
+const totalPages = computed(() => {
+  if (pager.total == null) return null;
+  return Math.max(1, Math.ceil(pager.total / pager.limit));
+});
+
+const pageItems = computed(() =>
+  buildPageItems(pager.page, totalPages.value, pager.hasNext)
+);
+
+/** =========================
+ *  Detail viewer
+ *  ========================= */
+const detail = reactive({
+  open: false,
+  id: null,
+  post: null,
+});
+const detailLoading = ref(false);
+const detailError = ref("");
+
+async function openDetail(id) {
+  detail.open = true;
+  detail.id = id;
+  detail.post = null;
+  detailLoading.value = true;
+  detailError.value = "";
+
+  try {
+    const data = await api(`/api/posts/${id}`);
+    // 兼容：data.post / data
+    detail.post = data?.post ?? data;
+  } catch (e) {
+    detailError.value = safeErr(e?.data ?? e);
+  } finally {
+    detailLoading.value = false;
+  }
 }
+
+const detailDate = computed(() => {
+  const p = detail.post || {};
+  return p.happenedAt || p.createdAt || p.created_at || p.created || null;
+});
+const detailTags = computed(() => {
+  const p = detail.post || {};
+  return Array.isArray(p.tags) ? p.tags : [];
+});
+const detailSubtitle = computed(() => {
+  const parts = [];
+  if (detailDate.value) parts.push(formatDate(detailDate.value));
+  if (detailTags.value.length) parts.push(detailTags.value.join(" / "));
+  return parts.join(" · ") || "—";
+});
+
+/** =========================
+ *  Composer (full screen)
+ *  ========================= */
+const composerOpen = ref(false);
+const overlayEl = ref(null);
+
+const ui = reactive({
+  previewMode: false,
+});
+
+const createLoading = ref(false);
+const createStatus = reactive({ msg: "", kind: "muted" });
+
+const DRAFT_KEY = "studylog:draft:v1";
+const draftStatus = ref("未保存");
+
+const draft = reactive({
+  template: "",
+  title: "",
+  content: "",
+  happenedAt: toDatetimeLocal(new Date()),
+  durationMin: 45,
+  focus: 3,
+  difficulty: 3,
+  tags: [],
+  goal: "",
+  todos: [],
+  pinToTop: false,
+});
+
+const tagInput = ref("");
+const todoInput = ref("");
 
 function openComposer() {
-  composer.open = true;
-  // 保证 tags 同步
-  syncTags();
-  // focus 到 overlay，避免滚动穿透
-  setTimeout(() => {
-    const el = document.querySelector('.overlay');
-    el?.focus?.();
-  }, 0);
+  if (composerOpen.value) return;
+  composerOpen.value = true;
+  nextTick(() => {
+    try {
+      overlayEl.value?.focus?.();
+    } catch {}
+  });
 }
 
 function closeComposer() {
-  composer.open = false;
+  composerOpen.value = false;
+  createStatus.msg = "";
 }
 
-function resetDraft() {
-  draft.title = '';
-  draft.detail = '';
-  draft.startedAt = toLocalDateTime(new Date());
+function setCreateStatus(msg, kind = "muted") {
+  createStatus.msg = String(msg).slice(0, 1000);
+  createStatus.kind = kind;
+}
+
+function addTag(raw) {
+  const t = String(raw || "").trim();
+  if (!t) return;
+  const safe = t.slice(0, 24);
+  if (!draft.tags.includes(safe)) draft.tags.push(safe);
+  tagInput.value = "";
+}
+
+function removeTag(t) {
+  draft.tags = draft.tags.filter((x) => x !== t);
+}
+
+function addTodo(raw) {
+  const text = String(raw || "").trim();
+  if (!text) return;
+  draft.todos.push({ text: text.slice(0, 120), done: false });
+  todoInput.value = "";
+}
+
+function removeTodo(i) {
+  draft.todos.splice(i, 1);
+}
+
+function resetDraft(keepTime = true) {
+  const keep = keepTime ? draft.happenedAt : toDatetimeLocal(new Date());
+  draft.template = "";
+  draft.title = "";
+  draft.content = "";
+  draft.happenedAt = keep;
   draft.durationMin = 45;
-  draft.tagsText = '';
-  draft.tags = [];
-  draft.mood = '🙂';
   draft.focus = 3;
-  draft.next = '';
+  draft.difficulty = 3;
+  draft.tags = [];
+  draft.goal = "";
+  draft.todos = [];
+  draft.pinToTop = false;
+  ui.previewMode = false;
+  setCreateStatus("已清空（草稿仍会自动保存）", "muted");
 }
 
-function applyTemplate(type) {
-  if (type === 'review') {
-    draft.detail = [
-      '【学了什么】',
-      '【卡点】',
-      '【怎么解决】',
-      '【收获】',
-      '【下一步】',
-    ].join('\n');
-  } else if (type === 'practice') {
-    draft.detail = [
-      '【目标】',
-      '【练习内容】',
-      '【错误/坑】',
-      '【总结】',
-      '【复习计划】',
-    ].join('\n');
-  } else if (type === 'reading') {
-    draft.detail = [
-      '【书/文章】',
-      '【关键点】',
-      '【疑问】',
-      '【我的理解】',
-      '【可行动点】',
-    ].join('\n');
+function applyTemplate() {
+  // 不覆盖用户已填内容：只在空时给默认
+  const t = draft.template;
+  if (!t) return;
+
+  if (!draft.title) {
+    const map = {
+      reading: "阅读：",
+      coding: "编码：",
+      lecture: "课程：",
+      review: "复盘：",
+    };
+    draft.title = map[t] || "";
+  }
+
+  if (!draft.goal) {
+    const map = {
+      reading: "读完并提炼 3 个关键点 + 1 个可复用结论",
+      coding: "完成一个可运行的最小示例并总结坑点",
+      lecture: "整理讲义要点，写出 1 个可迁移的方法",
+      review: "梳理问题—原因—改进—下一步",
+    };
+    draft.goal = map[t] || "";
+  }
+
+  if (!draft.content) {
+    draft.content =
+      "【结论】\n\n【过程】\n\n【卡点】\n\n【反思】\n\n【下一步】\n";
+  }
+
+  addTag(t);
+}
+
+const composedPreview = computed(() => {
+  const lines = [];
+  if (draft.title) lines.push(draft.title);
+  lines.push("");
+
+  lines.push(`时间：${draft.happenedAt || "-"}`);
+  lines.push(`时长：${draft.durationMin ?? "-"} min`);
+  lines.push(`专注度：${draft.focus}/5  难度：${draft.difficulty}/5`);
+  if (draft.tags.length) lines.push(`标签：${draft.tags.join(", ")}`);
+  if (draft.goal) lines.push(`目标：${draft.goal}`);
+  lines.push("");
+  lines.push(draft.content || "");
+  if (draft.todos.length) {
+    lines.push("");
+    lines.push("下一步：");
+    draft.todos.forEach((t) => lines.push(`- [${t.done ? "x" : " "}] ${t.text}`));
+  }
+  return lines.join("\n");
+});
+
+const wordCount = computed(() => {
+  const s = `${draft.title}\n${draft.goal}\n${draft.content}`.trim();
+  if (!s) return 0;
+  // 粗略：中文按字符，英文按词
+  const cn = (s.match(/[\u4e00-\u9fff]/g) || []).length;
+  const en = (s.match(/[A-Za-z0-9_]+/g) || []).length;
+  return cn + en;
+});
+
+// 草稿自动保存（简单节流）
+let draftTimer = null;
+watch(
+  () => ({ ...draft, tags: [...draft.tags], todos: draft.todos.map((t) => ({ ...t })) }),
+  () => {
+    draftStatus.value = "未保存";
+    if (draftTimer) clearTimeout(draftTimer);
+    draftTimer = setTimeout(() => {
+      try {
+        localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+        draftStatus.value = "已保存";
+      } catch {
+        draftStatus.value = "保存失败（localStorage不可用）";
+      }
+    }, 350);
+  },
+  { deep: true }
+);
+
+function loadDraft() {
+  try {
+    const raw = localStorage.getItem(DRAFT_KEY);
+    if (!raw) return;
+    const obj = JSON.parse(raw);
+
+    // 只做白名单合并
+    draft.template = obj.template || "";
+    draft.title = obj.title || "";
+    draft.content = obj.content || "";
+    draft.happenedAt = obj.happenedAt || toDatetimeLocal(new Date());
+    draft.durationMin = clampInt(obj.durationMin, 0, 1440, 45);
+    draft.focus = clampInt(obj.focus, 1, 5, 3);
+    draft.difficulty = clampInt(obj.difficulty, 1, 5, 3);
+    draft.tags = Array.isArray(obj.tags) ? obj.tags.slice(0, 20).map((x) => String(x).slice(0, 24)) : [];
+    draft.goal = obj.goal || "";
+    draft.todos = Array.isArray(obj.todos)
+      ? obj.todos.slice(0, 30).map((t) => ({ text: String(t.text || "").slice(0, 120), done: !!t.done }))
+      : [];
+    draft.pinToTop = !!obj.pinToTop;
+
+    draftStatus.value = "已加载";
+  } catch {
+    // ignore
   }
 }
 
 async function createPost() {
-  if (!me.email) {
-    setStatus('请先登录再保存', 'error');
+  if (createLoading.value) return;
+
+  // 基本校验
+  const title = String(draft.title || "").trim().slice(0, 120);
+  const content = String(draft.content || "").trim().slice(0, 20000);
+
+  if (!title && !content) {
+    setCreateStatus("标题和内容不能同时为空", "error");
     return;
   }
-  busy.create = true;
+
+  createLoading.value = true;
+  setCreateStatus("保存中…", "muted");
+
+  // 兼容后端：优先发送结构化字段；若后端拒绝（400/422），回退到 {title, content}
+  const payloadRich = {
+    title,
+    content,
+    happenedAt: draft.happenedAt || null,
+    durationMin: draft.durationMin ?? null,
+    focus: draft.focus ?? null,
+    difficulty: draft.difficulty ?? null,
+    tags: draft.tags,
+    goal: draft.goal || null,
+    todos: draft.todos,
+    pinToTop: draft.pinToTop,
+  };
+
   try {
-    syncTags();
-
-    // 将结构化数据放在 content 里，后端不改 schema 也能保存
-    const payload = {
-      type: 'study_log_v1',
-      title: draft.title || '',
-      detail: draft.detail || '',
-      startedAt: draft.startedAt || null,
-      durationMin: draft.durationMin || null,
-      tags: draft.tags || [],
-      mood: draft.mood || null,
-      focus: draft.focus || null,
-      next: draft.next || '',
-      createdAtClient: new Date().toISOString(),
-    };
-
-    const res = await api('/api/posts', {
-      method: 'POST',
-      body: JSON.stringify({
-        title: payload.title,
-        content: JSON.stringify(payload),
-      }),
+    const data = await api("/api/posts", {
+      method: "POST",
+      body: JSON.stringify(payloadRich),
     });
 
-    setStatus(`已保存：#${res?.id ?? ''}`, 'success');
+    setCreateStatus(`已保存 id=${data?.id ?? "?"}`, "success");
+    resetDraft(false);
+    await resetAndList();
     closeComposer();
-    resetDraft();
-    // 保存后回到第一页看最新
-    pager.page = 1;
-    await listPosts();
   } catch (e) {
-    setStatus(`保存失败：${e?.data?.error || e?.data?.message || e?.message || JSON.stringify(e)}`, 'error');
+    const status = e?.status;
+
+    // fallback
+    if (e?.kind === "http" && (status === 400 || status === 409 || status === 422)) {
+      try {
+        const data2 = await api("/api/posts", {
+          method: "POST",
+          body: JSON.stringify({ title, content }),
+        });
+        setCreateStatus(`已保存 id=${data2?.id ?? "?"}（后端暂不支持扩展字段，已自动兼容）`, "success");
+        resetDraft(false);
+        await resetAndList();
+        closeComposer();
+      } catch (e2) {
+        setCreateStatus("保存失败：" + safeErr(e2?.data ?? e2), "error");
+      }
+    } else {
+      setCreateStatus("保存失败：" + safeErr(e?.data ?? e), "error");
+    }
   } finally {
-    busy.create = false;
+    createLoading.value = false;
   }
 }
 
-// ===== 详情查看（drawer） =====
-const detail = reactive({
-  open: false,
-  loading: false,
-  id: null,
-  data: null,
-  parsed: null,
-});
-
-async function openDetail(id) {
-  detail.open = true;
-  detail.loading = true;
-  detail.id = id;
-  detail.data = null;
-  detail.parsed = null;
-
+/** =========================
+ *  Helpers: list rendering
+ *  ========================= */
+function bestDate(p) {
+  return p?.happenedAt || p?.createdAt || p?.created_at || p?.created || null;
+}
+function bestTags(p) {
+  return Array.isArray(p?.tags) ? p.tags : [];
+}
+function formatDate(v) {
   try {
-    const data = await api(`/api/posts/${id}`);
-    const post = data?.post || null;
-    detail.data = post;
-
-    // content 可能是 JSON（study_log_v1），也可能是纯文本
-    const parsed = safeParseJsonMaybe(post?.content);
-    detail.parsed = parsed || null;
-  } catch (e) {
-    setStatus(`读取失败：${e?.data?.error || e?.message || JSON.stringify(e)}`, 'error');
-  } finally {
-    detail.loading = false;
+    const d = new Date(v);
+    if (Number.isNaN(d.getTime())) return String(v);
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, "0");
+    const dd = String(d.getDate()).padStart(2, "0");
+    const hh = String(d.getHours()).padStart(2, "0");
+    const mi = String(d.getMinutes()).padStart(2, "0");
+    return `${yyyy}-${mm}-${dd} ${hh}:${mi}`;
+  } catch {
+    return String(v);
   }
 }
-
-function closeDetail() {
-  detail.open = false;
-  detail.id = null;
-  detail.data = null;
-  detail.parsed = null;
+function toDatetimeLocal(date) {
+  const d = new Date(date);
+  const pad = (n) => String(n).padStart(2, "0");
+  const yyyy = d.getFullYear();
+  const mm = pad(d.getMonth() + 1);
+  const dd = pad(d.getDate());
+  const hh = pad(d.getHours());
+  const mi = pad(d.getMinutes());
+  return `${yyyy}-${mm}-${dd}T${hh}:${mi}`;
+}
+function clampInt(v, min, max, fallback) {
+  const n = Number(v);
+  if (!Number.isFinite(n)) return fallback;
+  return Math.min(max, Math.max(min, Math.round(n)));
+}
+function safeErr(e) {
+  try {
+    if (typeof e === "string") return e;
+    if (e?.message) return e.message;
+    return JSON.stringify(e);
+  } catch {
+    return "unknown error";
+  }
 }
 
 onMounted(async () => {
-  await refreshAll();
+  loadDraft();
+  await refreshMe();
+  await listPosts();
 });
 </script>
 
 <style scoped>
+/* ====== Base ====== */
 .page {
   min-height: 100vh;
-  background: #f7f7f8;
-  color: #111;
+  background: #fafafa;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: #111;
 }
 
+.muted {
+  color: #8b8b8b;
+}
+
+.dot {
+  margin: 0 6px;
+  color: #c7c7c7;
+}
+
+.tiny {
+  font-size: 12px;
+}
+
+.btn {
+  border: none;
+  cursor: pointer;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-weight: 500;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  user-select: none;
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.primary {
+  background: #1a1a1a;
+  color: #fff;
+}
+
+.primary:hover {
+  background: #000;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+}
+
+.secondary {
+  background: #fff;
+  color: #1a1a1a;
+  border: 1px solid #e6e6e6;
+}
+
+.secondary:hover {
+  background: #f5f5f5;
+  border-color: #cfcfcf;
+}
+
+.ghost {
+  background: transparent;
+  color: #444;
+}
+
+.ghost:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.chip {
+  background: #fff;
+  border: 1px solid #e6e6e6;
+  padding: 7px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+}
+
+.chip:hover {
+  background: #f6f6f6;
+}
+
+/* ====== Topbar ====== */
 .topbar {
   position: sticky;
   top: 0;
-  z-index: 10;
-  background: rgba(247, 247, 248, 0.8);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(0,0,0,0.06);
-  padding: 14px 18px;
+  z-index: 20;
   display: flex;
+  gap: 12px;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  padding: 14px 16px;
+  background: rgba(250, 250, 250, 0.86);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .brand {
   display: flex;
-  align-items: center;
   gap: 12px;
+  align-items: center;
 }
-.logo {
-  width: 36px;
-  height: 36px;
-  border-radius: 12px;
-  background: #fff;
-  display: grid;
-  place-items: center;
-  border: 1px solid rgba(0,0,0,0.06);
+
+.brand-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 6px;
+  background: #111;
 }
-.title .name {
-  font-weight: 700;
+
+.brand-title {
+  font-weight: 650;
   font-size: 16px;
 }
-.title .subtitle {
+
+.brand-sub {
   font-size: 12px;
-  color: #777;
-  margin-top: 2px;
 }
 
-.top-actions {
+.topbar-actions {
   display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.user-chip {
-  display: inline-flex;
-  align-items: center;
   gap: 8px;
-  padding: 8px 10px;
-  background: #fff;
-  border: 1px solid rgba(0,0,0,0.06);
-  border-radius: 999px;
-}
-.user-chip .dot {
-  width: 8px;
-  height: 8px;
-  background: #19c37d;
-  border-radius: 50%;
-}
-.user-chip .email {
-  font-size: 12px;
-  color: #333;
 }
 
+/* ====== Layout ====== */
 .content {
-  padding: 18px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 18px 16px 32px;
   display: grid;
-  gap: 14px;
-  grid-template-columns: 380px 1fr;
-  align-items: start;
+  gap: 16px;
 }
 
-@media (max-width: 980px) {
-  .content {
-    grid-template-columns: 1fr;
-  }
-}
-
-.card {
-  background: #fff;
-  border: 1px solid rgba(0,0,0,0.06);
-  border-radius: 16px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.04);
-  overflow: hidden;
-}
-
-.card-head {
-  padding: 14px 16px;
-  border-bottom: 1px solid rgba(0,0,0,0.06);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.card-head h3 {
-  margin: 0;
-  font-size: 14px;
-  font-weight: 700;
-}
-
-.hint {
-  font-size: 12px;
-  color: #888;
+.create-area {
+  margin-top: 4px;
 }
 
 .create-card {
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  border-radius: 18px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
+  padding: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
   cursor: pointer;
 }
-.create-preview {
-  padding: 14px 16px;
-}
-.preview-line {
-  display: grid;
-  grid-template-columns: 52px 1fr;
-  gap: 10px;
-  padding: 8px 0;
-  border-bottom: 1px dashed rgba(0,0,0,0.06);
-}
-.preview-line.last {
-  border-bottom: none;
-}
-.preview-line .k {
-  font-size: 12px;
-  color: #888;
-}
-.preview-line .v {
-  font-size: 13px;
-  color: #222;
-}
-.muted {
-  color: #888;
+
+.create-card:hover {
+  transform: translateY(-1px);
+  transition: transform 0.12s ease;
 }
 
-.create-footer {
-  padding: 14px 16px;
-  border-top: 1px solid rgba(0,0,0,0.06);
+.create-card-left {
   display: flex;
+  gap: 14px;
+  align-items: center;
+  min-width: 0;
+}
+
+.create-badge {
+  width: 44px;
+  height: 44px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  background: #111;
+  color: #fff;
+  font-size: 22px;
+  flex: 0 0 auto;
+}
+
+.create-title {
+  font-weight: 650;
+}
+
+.create-sub {
+  font-size: 12px;
+  margin-top: 3px;
+}
+
+.create-card-right {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
   justify-content: flex-end;
 }
 
-.list-card .head-left {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
+.pill {
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid #ececec;
+  background: #fff;
+  color: #666;
 }
-.search {
+
+/* ====== List ====== */
+.list-area {
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.04);
+}
+
+.list-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.list-title {
+  font-weight: 650;
+}
+
+.list-tools {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.select {
   display: flex;
   gap: 8px;
   align-items: center;
+  font-size: 12px;
 }
-.input, .select, .textarea {
-  width: 100%;
-  border: 1px solid rgba(0,0,0,0.12);
-  border-radius: 10px;
-  padding: 10px 12px;
-  outline: none;
+
+select {
+  border: 1px solid #e6e6e6;
+  border-radius: 12px;
+  padding: 8px 10px;
   background: #fff;
-  font-size: 13px;
-}
-.input:focus, .textarea:focus, .select:focus {
-  border-color: rgba(0,0,0,0.4);
-  box-shadow: 0 0 0 4px rgba(0,0,0,0.04);
+  outline: none;
 }
 
-.textarea {
-  min-height: 220px;
-  resize: vertical;
-  line-height: 1.5;
+.cards {
+  display: grid;
+  gap: 10px;
 }
 
-.status {
-  padding: 10px 16px;
-  border-bottom: 1px solid rgba(0,0,0,0.06);
-  font-size: 13px;
-}
-.status.success { color: #0b6; background: #f0fff7; }
-.status.error { color: #b00020; background: #fff5f5; }
-.status.muted { color: #666; background: #fafafa; }
-
-.list-body {
-  padding: 12px 12px 6px;
+.post-card {
+  border: 1px solid #efefef;
+  border-radius: 16px;
+  padding: 14px;
+  background: #fff;
 }
 
-.records {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.record {
-  border: 1px solid rgba(0,0,0,0.06);
-  border-radius: 14px;
-  padding: 12px 12px;
-  margin: 10px 4px;
+.post-title-row {
   display: flex;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
-  cursor: pointer;
-  transition: transform 0.12s ease, box-shadow 0.12s ease;
 }
-.record:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.06);
-}
-.record-title {
+
+.post-title {
   display: flex;
   gap: 8px;
   align-items: baseline;
-  font-weight: 700;
-  font-size: 14px;
-}
-.record-title .id {
-  color: #666;
-  font-weight: 600;
-}
-.record-title .t {
-  color: #111;
-}
-.record-meta {
-  margin-top: 6px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-.pill {
-  font-size: 11px;
-  padding: 5px 8px;
-  border-radius: 999px;
-  background: #f3f3f4;
-  color: #444;
-}
-.pill.soft {
-  background: #f7f7f8;
-  color: #666;
-}
-.record-preview {
-  margin-top: 8px;
-  font-size: 12px;
-  color: #444;
-  line-height: 1.4;
-  max-width: 720px;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  min-width: 0;
 }
 
-.record-actions {
+.post-title-text {
+  font-weight: 650;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 70ch;
+}
+
+.post-actions {
+  flex: 0 0 auto;
+}
+
+.post-meta {
+  font-size: 12px;
+  margin-top: 6px;
+}
+
+.post-preview {
+  margin-top: 10px;
+  font-size: 13px;
+  line-height: 1.55;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ====== Pager ====== */
+.pager {
   display: flex;
-  align-items: flex-start;
+  gap: 8px;
+  align-items: center;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+
+.page {
+  padding: 9px 12px;
+  border-radius: 12px;
+  background: #fff;
+  border: 1px solid #eaeaea;
+}
+
+.page:hover {
+  background: #f7f7f7;
+}
+
+.page.active {
+  background: #111;
+  color: #fff;
+  border-color: #111;
+}
+
+.pager-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+  flex-wrap: wrap;
+}
+
+.jump {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.jump input {
+  width: 88px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid #e6e6e6;
+  outline: none;
+}
+
+.pager-note {
+  font-size: 12px;
+}
+
+/* ====== Skeleton / empty / error ====== */
+.skeleton-wrap {
+  display: grid;
+  gap: 10px;
+  padding: 8px 0;
+}
+.skeleton {
+  height: 62px;
+  border-radius: 16px;
+  background: linear-gradient(90deg, #f2f2f2, #fafafa, #f2f2f2);
+  background-size: 200% 100%;
+  animation: shimmer 1.1s infinite linear;
+}
+@keyframes shimmer {
+  0% { background-position: 0% 0%; }
+  100% { background-position: 200% 0%; }
 }
 
 .empty {
-  padding: 18px;
+  padding: 26px 10px;
   text-align: center;
+  display: grid;
+  gap: 10px;
+  justify-items: center;
 }
 .empty-title {
-  font-weight: 800;
-  margin-bottom: 6px;
+  font-weight: 650;
 }
-.empty-sub {
-  color: #777;
+
+.errorbox {
+  border: 1px solid #fee2e2;
+  background: #fff5f5;
+  color: #c53030;
+  border-radius: 14px;
+  padding: 12px;
   font-size: 13px;
 }
 
-.skeleton {
-  padding: 10px;
-}
-.sk-line {
-  height: 12px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, #f0f0f0, #fafafa, #f0f0f0);
-  background-size: 200% 100%;
-  animation: shimmer 1.4s infinite;
-  margin: 12px 6px;
-}
-@keyframes shimmer {
-  0% { background-position: 0% 0; }
-  100% { background-position: 200% 0; }
-}
-
-/* buttons */
-.btn {
-  border: 1px solid rgba(0,0,0,0.12);
-  background: #fff;
-  padding: 10px 12px;
-  border-radius: 12px;
-  cursor: pointer;
-  font-size: 13px;
-  transition: transform 0.12s ease, box-shadow 0.12s ease;
-}
-.btn:hover { transform: translateY(-1px); box-shadow: 0 10px 20px rgba(0,0,0,0.06); }
-.btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
-
-.btn.primary {
-  background: #111;
-  color: #fff;
-  border-color: #111;
-}
-.btn.ghost {
-  background: #fff;
-}
-.btn.danger {
-  background: #fff;
-  color: #b00020;
-  border-color: rgba(176,0,32,0.35);
-}
-.btn.tiny {
-  padding: 7px 10px;
-  font-size: 12px;
-}
-.btn.page.active {
-  background: #111;
-  color: #fff;
-  border-color: #111;
-}
-.btn.page.dots {
-  cursor: default;
-  opacity: 0.8;
-}
-.btn.page.dots:hover {
-  transform: none;
-  box-shadow: none;
-}
-
-/* pager */
-.pager {
-  border-top: 1px solid rgba(0,0,0,0.06);
-  padding: 12px 14px;
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-.pager-left, .pager-right {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.sep {
-  width: 1px;
-  height: 18px;
-  background: rgba(0,0,0,0.08);
-  margin: 0 6px;
-}
-.jump {
-  width: 80px;
-  border: 1px solid rgba(0,0,0,0.12);
-  border-radius: 10px;
-  padding: 8px 10px;
-  outline: none;
-  font-size: 13px;
-}
-
-/* overlay composer */
+/* ====== Overlay (composer & detail) ====== */
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.35);
+  z-index: 60;
+  background: rgba(250, 250, 250, 0.92);
+  backdrop-filter: blur(12px);
   display: grid;
-  place-items: center;
-  z-index: 50;
-  padding: 18px;
+  grid-template-rows: auto 1fr auto;
   outline: none;
 }
-.composer {
-  width: min(980px, 100%);
-  height: min(92vh, 820px);
-  background: #fff;
-  border-radius: 18px;
-  border: 1px solid rgba(0,0,0,0.08);
-  box-shadow: 0 30px 80px rgba(0,0,0,0.25);
+
+.overlay-top {
   display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-.composer-top {
-  padding: 16px 18px;
-  border-bottom: 1px solid rgba(0,0,0,0.06);
-  display: flex;
+  align-items: center;
   justify-content: space-between;
   gap: 12px;
-  align-items: flex-start;
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
-.composer-top h2 {
-  margin: 0 0 4px;
-  font-size: 18px;
+
+.overlay-title-main {
+  font-weight: 700;
 }
-.composer-actions {
+
+.overlay-title-sub {
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+.overlay-actions {
   display: flex;
   gap: 8px;
+  align-items: center;
   flex-wrap: wrap;
-  justify-content: flex-end;
 }
-.composer-body {
-  padding: 16px 18px;
+
+.overlay-body {
   overflow: auto;
+  padding: 16px;
 }
+
+.overlay-bottom {
+  padding: 10px 16px;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  font-size: 12px;
+}
+
+/* ====== Panels ====== */
 .grid {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 1fr 1fr;
+}
+
+.panel {
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  border-radius: 18px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.04);
+  padding: 14px;
+}
+
+.panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.panel-title {
+  font-weight: 650;
+}
+
+.panel-tools {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.mini-select {
+  font-size: 12px;
+  padding: 7px 10px;
+  border-radius: 12px;
+}
+
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #666;
+  user-select: none;
+}
+
+.field {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+label {
+  font-size: 12px;
+  color: #444;
+  margin-left: 4px;
+}
+
+input,
+textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #e6e6e6;
+  border-radius: 14px;
+  outline: none;
+  font-size: 14px;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+input:focus,
+textarea:focus {
+  border-color: #111;
+  box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.04);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 90px;
+}
+
+.row {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
 }
-.field.full {
-  grid-column: 1 / -1;
-}
-.field label {
-  display: block;
-  font-size: 12px;
-  color: #666;
-  margin: 0 0 6px 4px;
-}
-.row {
+
+/* tags */
+.tagbox {
   display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.range {
-  flex: 1;
-}
-.badge {
-  padding: 7px 10px;
-  border-radius: 999px;
-  background: #f3f3f4;
-  font-size: 12px;
-  color: #333;
-}
-.tagline {
-  margin-top: 8px;
-  display: flex;
-  gap: 6px;
+  gap: 8px;
   flex-wrap: wrap;
-}
-.tag {
-  font-size: 11px;
-  padding: 5px 8px;
-  border-radius: 999px;
-  background: #f7f7f8;
-  border: 1px solid rgba(0,0,0,0.08);
-  color: #444;
-}
-.stars {
-  display: flex;
-  gap: 6px;
-}
-.star {
-  border: 1px solid rgba(0,0,0,0.12);
-  background: #fff;
-  border-radius: 10px;
-  padding: 8px 10px;
-  cursor: pointer;
-}
-.star.on {
-  background: #111;
-  color: #fff;
-  border-color: #111;
-}
-.composer-bottom {
-  padding: 14px 18px;
-  border-top: 1px solid rgba(0,0,0,0.06);
-  display: flex;
-  justify-content: space-between;
   align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-.composer-bottom-actions {
-  display: flex;
-  gap: 10px;
+  padding: 10px;
+  border-radius: 14px;
+  border: 1px solid #e6e6e6;
 }
 
-/* drawer */
-.drawer {
-  position: fixed;
-  top: 0;
-  right: 0;
-  width: min(480px, 92vw);
-  height: 100vh;
+.tagbox input {
+  border: none;
+  padding: 8px 6px;
+  min-width: 160px;
+  flex: 1 1 180px;
+}
+
+.tagbox input:focus {
+  box-shadow: none;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid #ececec;
   background: #fff;
-  border-left: 1px solid rgba(0,0,0,0.08);
-  box-shadow: -30px 0 80px rgba(0,0,0,0.18);
-  z-index: 60;
-  display: flex;
-  flex-direction: column;
+  font-size: 12px;
+  color: #444;
 }
-.drawer-top {
-  padding: 14px 16px;
-  border-bottom: 1px solid rgba(0,0,0,0.06);
+
+.tag-x {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: #999;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.quick-tags {
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* preview */
+.preview {
+  border-radius: 14px;
+  border: 1px solid #e6e6e6;
+  padding: 12px;
+  background: #fcfcfc;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  min-height: 260px;
+}
+
+/* todo */
+.todo {
+  display: flex;
   gap: 10px;
+  align-items: center;
 }
-.drawer-h {
-  font-weight: 800;
-  font-size: 16px;
-  margin-top: 4px;
-}
-.drawer-body {
-  padding: 14px 16px;
-  overflow: auto;
-}
-.kv {
+
+.todo-list {
+  margin: 10px 0 0;
+  padding-left: 18px;
   display: grid;
-  gap: 10px;
-  margin-bottom: 12px;
+  gap: 8px;
 }
-.kv-item {
+
+.todo-list li {
   display: flex;
-  justify-content: space-between;
   gap: 10px;
-  font-size: 13px;
+  align-items: center;
 }
-.kv-item .k {
+
+.todo-list .done {
+  text-decoration: line-through;
+  color: #9a9a9a;
+}
+
+.tinybtn {
+  padding: 6px 10px;
+  border-radius: 10px;
+  font-size: 12px;
+}
+
+.status-msg {
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 14px;
+  font-size: 13px;
+  text-align: center;
+}
+
+.status-msg.muted {
+  background: #f5f5f5;
   color: #666;
 }
-.kv-item .v {
-  color: #111;
-  font-weight: 600;
+
+.status-msg.success {
+  background: #f0f9f0;
+  color: #2d7a2d;
+  border: 1px solid #e0eee0;
 }
-.section {
+
+.status-msg.error {
+  background: #fff5f5;
+  color: #c53030;
+  border: 1px solid #fee2e2;
+}
+
+/* detail */
+.overlay.detail .detail-body {
+  max-width: 980px;
+  margin: 0 auto;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  border-radius: 18px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.04);
+  padding: 16px;
+}
+
+.detail-title {
+  font-weight: 750;
+  font-size: 18px;
+}
+
+.detail-meta {
+  margin-top: 6px;
+  font-size: 12px;
+}
+
+.detail-content {
   margin-top: 14px;
-}
-.section-h {
-  font-weight: 800;
-  margin-bottom: 8px;
-}
-.pre {
-  white-space: pre-wrap;
-  background: #fafafa;
-  border: 1px solid rgba(0,0,0,0.06);
-  border-radius: 12px;
+  border-radius: 14px;
+  border: 1px solid #e6e6e6;
   padding: 12px;
-  line-height: 1.45;
-}
-.text {
-  font-size: 13px;
-  color: #333;
+  background: #fcfcfc;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
 /* transitions */
-.fade-enter-active, .fade-leave-active { transition: opacity .18s ease; }
-.fade-enter-from, .fade-leave-to { opacity: 0; }
+.overlay-enter-active,
+.overlay-leave-active {
+  transition: opacity 0.22s ease, transform 0.22s ease;
+}
+.overlay-enter-from,
+.overlay-leave-to {
+  opacity: 0;
+  transform: translateY(8px);
+}
 
-.slide-enter-active, .slide-leave-active { transition: transform .22s ease; }
-.slide-enter-from, .slide-leave-to { transform: translateX(100%); }
+/* ====== Mobile ====== */
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  .post-title-text {
+    max-width: 46ch;
+  }
+}
+
+@media (max-width: 520px) {
+  .topbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .topbar-actions {
+    justify-content: flex-end;
+  }
+  .create-card {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .create-card-right {
+    justify-content: flex-start;
+  }
+  .row {
+    grid-template-columns: 1fr;
+  }
+  .pager-right {
+    width: 100%;
+    margin-left: 0;
+    justify-content: space-between;
+  }
+  .jump input {
+    width: 72px;
+  }
+}
 </style>
