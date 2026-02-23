@@ -5,7 +5,7 @@ import Main from './components/main.vue'
 
 // 全局用户状态
 // null 表示未登录，存储对象（如 { email: '...' }）表示已登录
-const user = ref(null)
+const user = ref(1) // 这里先模拟一个已登录状态，实际开发中应初始化为 null
 
 /**
  * 处理登录成功
@@ -13,6 +13,7 @@ const user = ref(null)
  */
 const handleLoginSuccess = (userData) => {
   // 可以在这里做一些持久化处理，比如存入 localStorage
+  console.log("登录成功，用户信息：", userData);
   user.value = userData
 }
 
@@ -36,7 +37,7 @@ const handleLogout = () => {
       />
 
       <Main 
-        v-else 
+        v-else-if="user"
         key="main-page"
         :user-info="user"
         @logout="handleLogout"
