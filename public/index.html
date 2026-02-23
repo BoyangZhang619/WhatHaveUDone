@@ -189,6 +189,10 @@
           ).join("") +
           "</ul>";
       } catch (e) {
+        if (e.kind === "http" && e.status === 401) {
+          $("list").innerHTML = "<p class='muted'>未登录，无法加载列表</p>";
+          return;
+        }
         $("list").innerHTML = `<p class="error">加载失败：${escapeHtml(JSON.stringify(e))}</p>`;
       }
     }
