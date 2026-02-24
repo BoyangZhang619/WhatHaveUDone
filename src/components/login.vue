@@ -4,28 +4,29 @@
             <div class="login-header">
                 <h2>账户登录</h2>
                 <p class="muted">tip: u need to connect to the global Internet</p>
+                <p class="muted">if中国大陆:科学上网 in need</p>
             </div>
 
             <div class="form-body">
                 <div class="input-item">
-                    <label for="email">Email</label>
+                    <label for="email">Email | 邮箱</label>
                     <input id="email" v-model="form.email" type="email" placeholder="test@test.com" />
                 </div>
 
                 <div class="input-item">
-                    <label for="password">Password</label>
+                    <label for="password">Password | 密码</label>
                     <input id="password" v-model="form.password" type="password" placeholder="123456" />
                 </div>
 
                 <div class="actions">
-                    <button id="btnLogin" class="btn primary" @click="handleLogin">
-                        登录
+                    <button id="btnLogin" class="btn primary-login" @click="handleLogin">
+                        &nbsp;&nbsp;Reg | 登录
                     </button>
-                    <button id="btnRegister" class="btn secondary" @click="handleRegister">
-                        注册账户
+                    <button id="btnRegister" class="btn secondary-login" @click="handleRegister">
+                        Login | 注册
                     </button>
                     <button id="btnLogout" class="btn text-only" @click="handleLogout">
-                        退出登录
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Logout | 退出登录
                     </button>
                 </div>
 

@@ -10,7 +10,7 @@
                     <div class="brand-title">Study Log</div>
                     <div class="brand-sub muted">
                         <span v-if="meLoading">加载用户中…</span>
-                        <span v-else-if="meUser">已登录：{{ meUser.email }}</span>
+                        <span v-else-if="meUser">{{ meUser.email }}</span>
                         <span v-else>未登录 / 会话失效</span>
                     </div>
                 </div>
@@ -78,7 +78,7 @@
                     <button class="btn primary" @click="openComposer">立即新增</button>
                 </div>
 
-                <div v-else class="cards">
+                <!-- <div v-else class="cards">
                     <article class="post-card" :class="{ 'is-pinned': !!p.pinToTop }" v-for="p in posts" :key="p.id">
                         <header class="post-head">
                             <div class="post-title">
@@ -88,7 +88,7 @@
                             </div>
 
                             <div class="post-actions">
-                                <button class="btn ghost" @click="openDetail(p.id)">查看</button>
+                                <button class="btn ghost" @click="openDetail(p.id)">Detail</button>
                             </div>
                         </header>
 
@@ -147,11 +147,263 @@
                             </div>
 
                             <div class="post-time muted">
-                                <span v-if="p.created_at">创建 {{ formatDate(p.created_at) }}</span>
+                                <span v-if="p.created_at">创建于 {{ formatDate(p.created_at) }}</span>
                             </div>
                         </footer>
                     </article>
+                </div> -->
+
+                <div class="cards">
+                    <article class="post-card">
+                        <header class="post-head">
+                            <div class="post-title"><span class="post-id muted">#21</span><span
+                                    class="post-title-text">aaa</span><!----></div>
+                            <div class="post-actions"><button class="btn ghost">Detail</button></div>
+                        </header>
+                        <div class="post-meta"><span>2026-02-24 02:22</span><span class="sep">·</span><span>45
+                                min</span><span class="sep">·</span><span>Focus 3.0</span><span
+                                class="sep">·</span><span>Diff 3.0</span></div>
+                        <section class="post-body">
+                            <p class="post-preview">cdcdcdcdcd</p><!----><!---->
+                        </section>
+                        <footer class="post-foot"><!---->
+                            <div class="post-time muted"><span>创建于 2026-02-24 05:18</span></div>
+                        </footer>
+                    </article>
+                    <article class="post-card">
+                        <header class="post-head">
+                            <div class="post-title"><span class="post-id muted">#19</span><span
+                                    class="post-title-text">1111111111111111111122222222222221111111222221111111111112222222111111111111111111111111111111111111111111111111</span><!---->
+                            </div>
+                            <div class="post-actions"><button class="btn ghost">Detail</button></div>
+                        </header>
+                        <div class="post-meta"><span>2026-02-24 02:03</span><span class="sep">·</span><span>45
+                                min</span><span class="sep">·</span><span>Focus 4.4</span><span
+                                class="sep">·</span><span>Diff 3.8</span></div>
+                        <section class="post-body">
+                            <p class="post-preview">
+                                11111111111111111111222222222222211111112222211111111111122222221111111111111111111111111111111111111111111111111111111111111111111122222222222221111111222221111111111112222222111111111111111111111111
+                            </p>
+                            <div class="post-block">
+                                <div class="post-block-title muted">Goal</div>
+                                <div class="post-block-content">
+                                    111111111111111111112222222222222111111122222111111111111222222211111111111111111111111111111111111111111111111111111111111111111111222222222222211111112222211111111111122222221111111111111111111111111111111111111111111111111111111111111111111122222222222221111111222221111111111112222222111111111111111111111111111111111111111111111111
+                                </div>
+                            </div>
+                            <div class="post-block">
+                                <div class="post-block-title muted"> Todos <span class="muted">(2)</span></div>
+                                <ul class="todo-list">
+                                    <li class="todo-item"><span class="checkbox" aria-hidden="true"></span><span
+                                            class="todo-text">1111111111111111111122222222222221111111222221111111111112222222111111111111111111111111111111111111111111111111</span>
+                                    </li>
+                                    <li class="todo-item"><span class="checkbox" aria-hidden="true"></span><span
+                                            class="todo-text">1111111111111111111122222222222221111111222221111111111112222222111111111111111111111111111111111111111111111111</span>
+                                    </li><!---->
+                                </ul>
+                            </div>
+                        </section>
+                        <footer class="post-foot">
+                            <div class="tag-row"><span class="tag">reading</span><span class="tag">coding</span><span
+                                    class="tag">notes</span><span class="tag">review</span><!----></div>
+                            <div class="post-time muted"><span>创建于 2026-02-23 18:22</span></div>
+                        </footer>
+                    </article>
+                    <article class="post-card">
+                        <header class="post-head">
+                            <div class="post-title"><span class="post-id muted">#18</span><span
+                                    class="post-title-text">1232144124</span><!----></div>
+                            <div class="post-actions"><button class="btn ghost">Detail</button></div>
+                        </header>
+                        <div class="post-meta"><span>2026-02-24 02:03</span><span class="sep">·</span><span>45
+                                min</span><span class="sep">·</span><span>Focus 3.0</span><span
+                                class="sep">·</span><span>Diff 3.0</span></div>
+                        <section class="post-body">
+                            <p class="post-preview">crccrcrcccc</p><!----><!---->
+                        </section>
+                        <footer class="post-foot"><!---->
+                            <div class="post-time muted"><span>创建于 2026-02-23 18:03</span></div>
+                        </footer>
+                    </article>
+                    <article class="post-card">
+                        <header class="post-head">
+                            <div class="post-title"><span class="post-id muted">#17</span><span
+                                    class="post-title-text">312312</span><!----></div>
+                            <div class="post-actions"><button class="btn ghost">Detail</button></div>
+                        </header>
+                        <div class="post-meta"><span>2026-02-24 02:03</span><span class="sep">·</span><span>45
+                                min</span><span class="sep">·</span><span>Focus 3.0</span><span
+                                class="sep">·</span><span>Diff 3.0</span></div>
+                        <section class="post-body">
+                            <p class="post-preview">312c</p><!----><!---->
+                        </section>
+                        <footer class="post-foot"><!---->
+                            <div class="post-time muted"><span>创建于 2026-02-23 18:03</span></div>
+                        </footer>
+                    </article>
+                    <article class="post-card">
+                        <header class="post-head">
+                            <div class="post-title"><span class="post-id muted">#16</span><span
+                                    class="post-title-text">123</span><!----></div>
+                            <div class="post-actions"><button class="btn ghost">Detail</button></div>
+                        </header>
+                        <div class="post-meta"><span>2026-02-24 02:03</span><span class="sep">·</span><span>45
+                                min</span><span class="sep">·</span><span>Focus 3.0</span><span
+                                class="sep">·</span><span>Diff 3.0</span></div>
+                        <section class="post-body">
+                            <p class="post-preview">312</p><!----><!---->
+                        </section>
+                        <footer class="post-foot"><!---->
+                            <div class="post-time muted"><span>创建于 2026-02-23 18:03</span></div>
+                        </footer>
+                    </article>
+                    <article class="post-card">
+                        <header class="post-head">
+                            <div class="post-title"><span class="post-id muted">#15</span><span
+                                    class="post-title-text">23</span><!----></div>
+                            <div class="post-actions"><button class="btn ghost">Detail</button></div>
+                        </header>
+                        <div class="post-meta"><span>2026-02-24 02:03</span><span class="sep">·</span><span>45
+                                min</span><span class="sep">·</span><span>Focus 3.0</span><span
+                                class="sep">·</span><span>Diff 3.0</span></div>
+                        <section class="post-body">
+                            <p class="post-preview">32</p><!----><!---->
+                        </section>
+                        <footer class="post-foot"><!---->
+                            <div class="post-time muted"><span>创建于 2026-02-23 18:03</span></div>
+                        </footer>
+                    </article>
+                    <article class="post-card">
+                        <header class="post-head">
+                            <div class="post-title"><span class="post-id muted">#14</span><span
+                                    class="post-title-text">21</span><!----></div>
+                            <div class="post-actions"><button class="btn ghost">Detail</button></div>
+                        </header>
+                        <div class="post-meta"><span>2026-02-24 02:03</span><span class="sep">·</span><span>45
+                                min</span><span class="sep">·</span><span>Focus 3.0</span><span
+                                class="sep">·</span><span>Diff 3.0</span></div>
+                        <section class="post-body">
+                            <p class="post-preview">12</p><!----><!---->
+                        </section>
+                        <footer class="post-foot"><!---->
+                            <div class="post-time muted"><span>创建于 2026-02-23 18:03</span></div>
+                        </footer>
+                    </article>
+                    <article class="post-card">
+                        <header class="post-head">
+                            <div class="post-title"><span class="post-id muted">#13</span><span
+                                    class="post-title-text">1</span><!----></div>
+                            <div class="post-actions"><button class="btn ghost">Detail</button></div>
+                        </header>
+                        <div class="post-meta"><span>2026-02-24 02:03</span><span class="sep">·</span><span>45
+                                min</span><span class="sep">·</span><span>Focus 3.0</span><span
+                                class="sep">·</span><span>Diff 3.0</span></div>
+                        <section class="post-body">
+                            <p class="post-preview">2</p><!----><!---->
+                        </section>
+                        <footer class="post-foot"><!---->
+                            <div class="post-time muted"><span>创建于 2026-02-23 18:03</span></div>
+                        </footer>
+                    </article>
+                    <article class="post-card">
+                        <header class="post-head">
+                            <div class="post-title"><span class="post-id muted">#12</span><span
+                                    class="post-title-text">1</span><!----></div>
+                            <div class="post-actions"><button class="btn ghost">Detail</button></div>
+                        </header>
+                        <div class="post-meta"><span>2026-02-24 02:03</span><span class="sep">·</span><span>45
+                                min</span><span class="sep">·</span><span>Focus 3.0</span><span
+                                class="sep">·</span><span>Diff 3.0</span></div>
+                        <section class="post-body">
+                            <p class="post-preview">2</p><!----><!---->
+                        </section>
+                        <footer class="post-foot"><!---->
+                            <div class="post-time muted"><span>创建于 2026-02-23 18:03</span></div>
+                        </footer>
+                    </article>
+                    <article class="post-card">
+                        <header class="post-head">
+                            <div class="post-title"><span class="post-id muted">#11</span><span
+                                    class="post-title-text">1</span><!----></div>
+                            <div class="post-actions"><button class="btn ghost">Detail</button></div>
+                        </header>
+                        <div class="post-meta"><span>2026-02-24 02:03</span><span class="sep">·</span><span>45
+                                min</span><span class="sep">·</span><span>Focus 3.0</span><span
+                                class="sep">·</span><span>Diff 3.0</span></div>
+                        <section class="post-body">
+                            <p class="post-preview">2</p><!----><!---->
+                        </section>
+                        <footer class="post-foot"><!---->
+                            <div class="post-time muted"><span>创建于 2026-02-23 18:03</span></div>
+                        </footer>
+                    </article>
+                    <article class="post-card">
+                        <header class="post-head">
+                            <div class="post-title"><span class="post-id muted">#10</span><span
+                                    class="post-title-text">1</span><!----></div>
+                            <div class="post-actions"><button class="btn ghost">Detail</button></div>
+                        </header>
+                        <div class="post-meta"><span>2026-02-24 01:55</span><span class="sep">·</span><span>45
+                                min</span><span class="sep">·</span><span>Focus 3.0</span><span
+                                class="sep">·</span><span>Diff 3.0</span></div>
+                        <section class="post-body">
+                            <p class="post-preview">2</p>
+                            <div class="post-block">
+                                <div class="post-block-title muted">Goal</div>
+                                <div class="post-block-content">2</div>
+                            </div><!---->
+                        </section>
+                        <footer class="post-foot"><!---->
+                            <div class="post-time muted"><span>创建于 2026-02-23 18:03</span></div>
+                        </footer>
+                    </article>
+                    <article class="post-card is-pinned">
+                        <header class="post-head">
+                            <div class="post-title"><span class="post-id muted">#9</span><span
+                                    class="post-title-text">play minecraft</span><span class="badge">置顶</span></div>
+                            <div class="post-actions"><button class="btn ghost">Detail</button></div>
+                        </header>
+                        <div class="post-meta"><span>2026-02-01 01:20</span><span class="sep">·</span><span>451
+                                min</span><span class="sep">·</span><span>Focus 2.3</span><span
+                                class="sep">·</span><span>Diff 3.7</span></div>
+                        <section class="post-body">
+                            <p class="post-preview">
+                                我好好的玩了下游戏1，然后我好好的玩了下游戏1，然后我好好的玩了下游戏1，然后我好好的玩了下游戏1，然后我好好的玩了下游戏1，然后我好好的玩了下游戏1，然后我好好的玩了下游戏1，然后我好好的玩了下游戏1，然后我好好的玩了下游戏1，然后我好好的玩了下游戏1，然后我好好的玩了下游戏1，然后我好好的玩了下游戏1，然后我好好的玩了下游戏1，然后我好好的玩了下游戏1，然后我好好的玩了下游戏1，然后我好好的玩
+                            </p>
+                            <div class="post-block">
+                                <div class="post-block-title muted">Goal</div>
+                                <div class="post-block-content">下次我要成为最木大神</div>
+                            </div>
+                            <div class="post-block">
+                                <div class="post-block-title muted"> Todos <span class="muted">(1)</span></div>
+                                <ul class="todo-list">
+                                    <li class="todo-item"><span class="checkbox" aria-hidden="true"></span><span
+                                            class="todo-text">玩miniworld</span></li><!---->
+                                </ul>
+                            </div>
+                        </section>
+                        <footer class="post-foot">
+                            <div class="tag-row"><span class="tag">coding</span><!----></div>
+                            <div class="post-time muted"><span>创建于 2026-02-23 17:55</span></div>
+                        </footer>
+                    </article>
+                    <article class="post-card">
+                        <header class="post-head">
+                            <div class="post-title"><span class="post-id muted">#8</span><span
+                                    class="post-title-text">1</span><!----></div>
+                            <div class="post-actions"><button class="btn ghost">Detail</button></div>
+                        </header>
+                        <div class="post-meta"><span>2026-02-24 01:09</span><span class="sep">·</span><span>45
+                                min</span><span class="sep">·</span><span>Focus 3.0</span><span
+                                class="sep">·</span><span>Diff 3.0</span></div>
+                        <section class="post-body">
+                            <p class="post-preview">2</p><!----><!---->
+                        </section>
+                        <footer class="post-foot"><!---->
+                            <div class="post-time muted"><span>创建于 2026-02-23 17:20</span></div>
+                        </footer>
+                    </article>
                 </div>
+
                 <!-- Pagination -->
                 <div class="pager" v-if="showPager">
                     <button class="btn ghost" :disabled="pager.page <= 1 || listLoading"
@@ -350,47 +602,175 @@
         </transition>
 
         <!-- Detail modal -->
-        <transition name="overlay">
-            <div v-if="detail.open" class="overlay detail" tabindex="-1">
-                <div class="overlay-top">
-                    <div class="overlay-title">
-                        <div class="overlay-title-main">内容 #{{ detail.id }}</div>
-                        <div class="muted overlay-title-sub">
-                            <span v-if="detailLoading">加载中…</span>
-                            <span v-else-if="detailError" class="error-inline">{{ detailError }}</span>
-                            <span v-else>{{ detailSubtitle }}</span>
-                        </div>
-                    </div>
+        <transition name="ux-overlay">
+            <div v-if="detail.open" class="uxOverlay" role="dialog" aria-modal="true" tabindex="-1"
+                @click.self="detail.open = false">
+                <section class="uxPanel" @click.stop>
+                    <!-- Header -->
+                    <header class="uxPanel__hd">
+                        <div class="uxHd__left">
+                            <div class="uxHd__kicker">内容 #{{ detail.id }}</div>
+                            <div class="uxHd__title">
+                                {{ detail.post?.title || "(无标题)" }}
+                                <span v-if="detail.post?.pinToTop" class="uxBadge">置顶</span>
+                            </div>
 
-                    <div class="overlay-actions">
-                        <button class="btn ghost" @click="detail.open = false">关闭</button>
-                    </div>
-                </div>
-
-                <div class="overlay-body">
-                    <div v-if="detailLoading" class="skeleton-wrap">
-                        <div class="skeleton" v-for="i in 8" :key="i" />
-                    </div>
-
-                    <div v-else-if="detailError" class="errorbox">
-                        读取失败：{{ detailError }}
-                    </div>
-
-                    <div v-else class="detail-body">
-                        <div class="detail-title">{{ detail.post?.title || '(无标题)' }}</div>
-                        <div class="muted detail-meta">
-                            <span v-if="detailDate">{{ formatDate(detailDate) }}</span>
-                            <span v-if="detailDate" class="dot">·</span>
-                            <span v-if="detailTags.length">{{ detailTags.join(' / ') }}</span>
+                            <div class="uxHd__sub">
+                                <span v-if="detailLoading">加载中…</span>
+                                <span v-else-if="detailError" class="uxInlineErr">{{ detailError }}</span>
+                                <span v-else class="uxMuted">{{ detailSubtitle }}</span>
+                            </div>
                         </div>
 
-                        <pre class="detail-content">{{ detail.post?.content || '' }}</pre>
-
-                        <div class="muted tiny" v-if="detail.post?.content && detail.post.content.length > 0">
-                            提示：后端如果未来支持结构化字段（tags、happenedAt 等），这里可以做更丰富渲染。
+                        <div class="uxHd__right">
+                            <button class="uxBtn uxBtn--ghost" type="button" @click="detail.open = false">
+                                关闭
+                            </button>
                         </div>
-                    </div>
-                </div>
+                    </header>
+
+                    <!-- Body -->
+                    <main class="uxPanel__bd">
+                        <!-- Loading -->
+                        <div v-if="detailLoading" class="uxSkel">
+                            <div class="uxSkel__bar" v-for="i in 10" :key="i" />
+                        </div>
+
+                        <!-- Error -->
+                        <div v-else-if="detailError" class="uxErrBox">
+                            <div class="uxErrBox__title">读取失败</div>
+                            <div class="uxErrBox__msg">{{ detailError }}</div>
+                        </div>
+
+                        <!-- Content -->
+                        <div v-else class="uxPost">
+                            <!-- Meta row -->
+                            <div class="uxMetaRow">
+                                <div class="uxMetaRow__left">
+                                    <span v-if="detail.post?.happenedAt || detailDate" class="uxMeta">
+                                        {{ formatDate(detail.post?.happenedAt || detailDate) }}
+                                    </span>
+
+                                    <span
+                                        v-if="(detail.post?.happenedAt || detailDate) && detail.post?.durationMin != null"
+                                        class="uxDot">·</span>
+                                    <span v-if="detail.post?.durationMin != null" class="uxMeta">
+                                        {{ detail.post.durationMin }} 分钟
+                                    </span>
+
+                                    <span v-if="detail.post?.focus != null" class="uxDot">·</span>
+                                    <span v-if="detail.post?.focus != null" class="uxMeta">
+                                        专注 {{ detail.post.focus }}
+                                    </span>
+
+                                    <span v-if="detail.post?.difficulty != null" class="uxDot">·</span>
+                                    <span v-if="detail.post?.difficulty != null" class="uxMeta">
+                                        难度 {{ detail.post.difficulty }}
+                                    </span>
+                                </div>
+
+                                <div class="uxMetaRow__right">
+                                    <span class="uxTiny uxMuted" v-if="detail.post?.content?.length">
+                                        {{ detail.post.content.length }} 字符
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Tags -->
+                            <div v-if="(detail.post?.tags?.length || detailTags.length)" class="uxChips">
+                                <span v-for="(t, idx) in (detail.post?.tags?.length ? detail.post.tags : detailTags)"
+                                    :key="String(t) + '_' + idx" class="uxChip">
+                                    {{ t }}
+                                </span>
+                            </div>
+
+                            <!-- Info grid -->
+                            <div class="uxGrid">
+                                <section class="uxCard">
+                                    <div class="uxCard__hd">
+                                        <div class="uxCard__title">目标</div>
+                                    </div>
+                                    <div class="uxCard__bd">
+                                        <div class="uxValue">
+                                            {{ detail.post?.goal || "—" }}
+                                        </div>
+                                    </div>
+                                </section>
+
+                                <section class="uxCard">
+                                    <div class="uxCard__hd">
+                                        <div class="uxCard__title">字段</div>
+                                    </div>
+                                    <div class="uxCard__bd">
+                                        <ul class="uxKV">
+                                            <li class="uxKV__item">
+                                                <span class="uxKV__k">happenedAt</span>
+                                                <span class="uxKV__v">
+                                                    {{ detail.post?.happenedAt ? formatDate(detail.post.happenedAt) :
+                                                    "—" }}
+                                                </span>
+                                            </li>
+                                            <li class="uxKV__item">
+                                                <span class="uxKV__k">durationMin</span>
+                                                <span class="uxKV__v">
+                                                    {{ detail.post?.durationMin ?? "—" }}
+                                                </span>
+                                            </li>
+                                            <li class="uxKV__item">
+                                                <span class="uxKV__k">focus</span>
+                                                <span class="uxKV__v">
+                                                    {{ detail.post?.focus ?? "—" }}
+                                                </span>
+                                            </li>
+                                            <li class="uxKV__item">
+                                                <span class="uxKV__k">difficulty</span>
+                                                <span class="uxKV__v">
+                                                    {{ detail.post?.difficulty ?? "—" }}
+                                                </span>
+                                            </li>
+                                            <li class="uxKV__item">
+                                                <span class="uxKV__k">pinToTop</span>
+                                                <span class="uxKV__v">
+                                                    {{ detail.post?.pinToTop ? "true" : "false" }}
+                                                </span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </section>
+                            </div>
+
+                            <!-- Content -->
+                            <section class="uxSection">
+                                <div class="uxSection__hd">
+                                    <div class="uxSection__title">内容</div>
+                                </div>
+                                <pre class="uxContent">{{ detail.post?.content || "" }}</pre>
+                            </section>
+
+                            <!-- Todos -->
+                            <section v-if="(detail.post?.todos?.length || 0) > 0" class="uxSection">
+                                <div class="uxSection__hd uxSection__hd--row">
+                                    <div class="uxSection__title">Todos</div>
+                                    <div class="uxPill">{{ detail.post.todos.length }}</div>
+                                </div>
+
+                                <ul class="uxTodos">
+                                    <li v-for="(todo, i) in detail.post.todos" :key="i" class="uxTodo"
+                                        :class="{ 'isDone': !!todo?.done }">
+                                        <span class="uxTodo__mark" aria-hidden="true"></span>
+                                        <div class="uxTodo__txt">
+                                            {{ todo?.text ?? todo }}
+                                        </div>
+                                    </li>
+                                </ul>
+                            </section>
+
+                            <div class="uxHint" v-if="detail.post?.content && detail.post.content.length > 0">
+                                提示：后端如果未来支持结构化字段（tags、happenedAt 等），这里可以做更丰富渲染。
+                            </div>
+                        </div>
+                    </main>
+                </section>
             </div>
         </transition>
     </div>
