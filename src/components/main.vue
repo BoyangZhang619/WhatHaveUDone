@@ -638,6 +638,7 @@ async function refreshMe() {
  */
 function onOpenSettings() {
     // TODO: 由你接入设置页面
+    alert("还没写这个页面，你要是想要可以催我(boyangzhang246@gmail.com),不过我99.999%的概率会忽略QwQ");
 }
 async function onLogout() {
     // TODO: 由你决定是否要走后端 /api/logout
