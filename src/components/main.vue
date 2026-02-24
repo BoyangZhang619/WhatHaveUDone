@@ -351,180 +351,251 @@
         </transition>
 
         <!-- Detail modal -->
-        <transition name="ux-overlay">
-            <div v-if="detail.open" class="uxOverlay" role="dialog" aria-modal="true" tabindex="-1"
+        <transition name="neo-pop">
+            <div v-if="detail.open" class="neoOverlay" role="dialog" aria-modal="true" tabindex="-1"
                 @click.self="detail.open = false">
-                <section class="uxPanel" @click.stop>
-                    <!-- Header -->
-                    <header class="uxPanel__hd">
-                        <div class="uxHd__left">
-                            <div class="uxHd__kicker">内容 #{{ detail.id }}</div>
-
-                            <div class="uxHd__title">
-                                {{ detail.post?.title || "(无标题)" }}
-                                <span v-if="detail.post?.pinToTop" class="uxBadge">置顶</span>
+                <section class="neoPanel" @click.stop>
+                    <!-- Topbar -->
+                    <header class="neoTop">
+                        <div class="neoTop__left">
+                            <div class="neoKicker">
+                                <span class="neoKicker__id">内容 #{{ detail.id }}</span>
+                                <span class="neoKicker__dot">•</span>
+                                <span v-if="detailLoading" class="neoKicker__muted">加载中…</span>
+                                <span v-else-if="detailError" class="neoKicker__err">{{ detailError }}</span>
+                                <span v-else class="neoKicker__muted">{{ detailSubtitle }}</span>
                             </div>
 
-                            <div class="uxHd__sub">
-                                <span v-if="detailLoading">加载中…</span>
-                                <span v-else-if="detailError" class="uxInlineErr">{{ detailError }}</span>
-                                <span v-else class="uxMuted">{{ detailSubtitle }}</span>
+                            <div class="neoTitleRow">
+                                <div class="neoTitle">
+                                    {{ detail.post?.title || "(无标题)" }}
+                                </div>
+
+                                <div class="neoBadges">
+                                    <span v-if="detail.post?.pinToTop" class="neoBadge neoBadge--pin">PIN</span>
+                                    <span v-if="detail.post?.goal" class="neoBadge">GOAL</span>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="uxHd__right">
-                            <button class="uxBtn uxBtn--ghost" type="button" @click="detail.open = false">
-                                关闭
-                            </button>
+                        <div class="neoTop__right">
+                            <button class="neoBtn neoBtn--ghost" type="button" @click="detail.open = false">关闭</button>
                         </div>
                     </header>
 
                     <!-- Body -->
-                    <main class="uxPanel__bd">
-                        <div v-if="detailLoading" class="uxSkel">
-                            <div class="uxSkel__bar" v-for="i in 10" :key="i" />
+                    <main class="neoBody">
+                        <!-- Loading -->
+                        <div v-if="detailLoading" class="neoLoad">
+                            <div class="neoLoad__bar" v-for="i in 11" :key="i" />
                         </div>
 
-                        <div v-else-if="detailError" class="uxErrBox">
-                            <div class="uxErrBox__title">读取失败</div>
-                            <div class="uxErrBox__msg">{{ detailError }}</div>
+                        <!-- Error -->
+                        <div v-else-if="detailError" class="neoError">
+                            <div class="neoError__title">读取失败</div>
+                            <div class="neoError__msg">{{ detailError }}</div>
                         </div>
 
-                        <div v-else class="uxPost">
-                            <!-- Top meta -->
-                            <div class="uxMetaBar">
-                                <div class="uxMetaBar__left">
-                                    <span v-if="detail.post?.happenedAt || detailDate" class="uxMeta">
-                                        {{ formatDate(detail.post?.happenedAt || detailDate) }}
-                                    </span>
-                                    <span class="uxDot"
-                                        v-if="(detail.post?.happenedAt || detailDate) && (detail.post?.tags?.length || detailTags.length)">·</span>
-                                    <span class="uxMeta uxMuted" v-if="detail.post?.tags?.length || detailTags.length">
-                                        {{ (detail.post?.tags?.length ? detail.post.tags : detailTags).join(" / ") }}
-                                    </span>
+                        <!-- Content -->
+                        <div v-else class="neoWrap">
+                            <!-- Hero strip -->
+                            <section class="neoHero">
+                                <div class="neoHero__left">
+                                    <div class="neoMetaLine">
+                                        <span class="neoMeta" v-if="detail.post?.happenedAt || detailDate">
+                                            {{ formatDate(detail.post?.happenedAt || detailDate) }}
+                                        </span>
+                                        <span class="neoSep"
+                                            v-if="(detail.post?.happenedAt || detailDate) && (detail.post?.durationMin != null)">/</span>
+                                        <span class="neoMeta" v-if="detail.post?.durationMin != null">
+                                            {{ detail.post.durationMin }} min
+                                        </span>
+                                    </div>
+
+                                    <div class="neoTags" v-if="(detail.post?.tags?.length || detailTags.length)">
+                                        <span
+                                            v-for="(t, idx) in (detail.post?.tags?.length ? detail.post.tags : detailTags)"
+                                            :key="String(t) + '_' + idx" class="neoTag">
+                                            {{ t }}
+                                        </span>
+                                    </div>
                                 </div>
 
-                                <div class="uxMetaBar__right">
-                                    <span class="uxTiny uxMuted" v-if="detail.post?.content?.length">
-                                        {{ detail.post.content.length }} chars
-                                    </span>
-                                </div>
-                            </div>
-
-                            <!-- Visual Stats -->
-                            <section class="uxStats">
-                                <!-- duration -->
-                                <div class="uxStat">
-                                    <div class="uxStat__top">
-                                        <div class="uxStat__label">duration</div>
-                                        <div class="uxStat__value">
-                                            {{ detail.post?.durationMin != null ? (detail.post.durationMin + " min") :
-                                            "—" }}
+                                <div class="neoHero__right">
+                                    <div class="neoSwitch" :class="{ 'isOn': !!detail.post?.pinToTop }"
+                                        aria-hidden="true">
+                                        <div class="neoSwitch__dot"></div>
+                                        <div class="neoSwitch__txt">{{ detail.post?.pinToTop ? "Pinned" : "Normal" }}
                                         </div>
                                     </div>
-                                    <div class="uxMeter" aria-hidden="true">
-                                        <div class="uxMeter__fill" :style="{
-                                            width:
-                                                detail.post?.durationMin != null
-                                                    ? Math.min(100, Math.max(0, (Number(detail.post.durationMin) / 180) * 100)) + '%'
-                                                    : '0%'
-                                        }" />
-                                    </div>
-                                    <div class="uxStat__hint uxMuted">From 0 to 180</div>
-                                </div>
-
-                                <!-- focus -->
-                                <div class="uxStat">
-                                    <div class="uxStat__top">
-                                        <div class="uxStat__label">focus</div>
-                                        <div class="uxStat__value">{{ detail.post?.focus ?? "—" }}</div>
-                                    </div>
-                                    <div class="uxMeter" aria-hidden="true">
-                                        <div class="uxMeter__fill" :style="{
-                                            width:
-                                                detail.post?.focus != null
-                                                    ? Math.min(100, Math.max(0, (Number(detail.post.focus) / 5) * 100)) + '%'
-                                                    : '0%'
-                                        }" />
-                                    </div>
-                                    <div class="uxStat__hint uxMuted">From 0 to 5</div>
-                                </div>
-
-                                <!-- difficulty -->
-                                <div class="uxStat">
-                                    <div class="uxStat__top">
-                                        <div class="uxStat__label">difficulty</div>
-                                        <div class="uxStat__value">{{ detail.post?.difficulty ?? "—" }}</div>
-                                    </div>
-                                    <div class="uxMeter" aria-hidden="true">
-                                        <div class="uxMeter__fill" :style="{
-                                            width:
-                                                detail.post?.difficulty != null
-                                                    ? Math.min(100, Math.max(0, (Number(detail.post.difficulty) / 5) * 100)) + '%'
-                                                    : '0%'
-                                        }" />
-                                    </div>
-                                    <div class="uxStat__hint uxMuted">From 0 to 5</div>
-                                </div>
-
-                                <!-- pin -->
-                                <div class="uxStat">
-                                    <div class="uxStat__top">
-                                        <div class="uxStat__label">pinToTop</div>
-                                        <div class="uxStat__value">
-                                            <span class="uxFlag" :class="{ 'isOn': !!detail.post?.pinToTop }">
-                                                {{ detail.post?.pinToTop ? "ON" : "OFF" }}
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div class="uxMeter uxMeter--binary" aria-hidden="true">
-                                        <div class="uxMeter__fill"
-                                            :style="{ width: detail.post?.pinToTop ? '100%' : '0%' }" />
-                                    </div>
-                                    <div class="uxStat__hint uxMuted">二值显示</div>
                                 </div>
                             </section>
 
-                            <!-- Content -->
-                            <section class="uxSection">
-                                <div class="uxSection__hd">
-                                    <div class="uxSection__title">内容</div>
-                                </div>
-                                <pre class="uxContent">{{ detail.post?.content || "" }}</pre>
-                            </section>
-
-                            <!-- Todos (with completion bar) -->
-                            <section v-if="(detail.post?.todos?.length || 0) > 0" class="uxSection">
-                                <div class="uxSection__hd uxSection__hd--row">
-                                    <div class="uxSection__title">Todos</div>
-                                    <div class="uxPill">{{ detail.post.todos.length }}</div>
-                                </div>
-
-                                <div class="uxTodoProg" aria-hidden="true">
-                                    <div class="uxTodoProg__fill" :style="{
-                                        width:
-                                            (() => {
-                                                const list = detail.post?.todos || [];
-                                                const done = list.filter(t => (typeof t === 'object' ? !!t?.done : false)).length;
-                                                return list.length ? Math.round((done / list.length) * 100) + '%' : '0%';
-                                            })()
-                                    }" />
-                                </div>
-
-                                <ul class="uxTodos">
-                                    <li v-for="(todo, i) in detail.post.todos" :key="i" class="uxTodo"
-                                        :class="{ isDone: typeof todo === 'object' ? !!todo?.done : false }">
-                                        <span class="uxTodo__mark" aria-hidden="true"></span>
-                                        <div class="uxTodo__txt">
-                                            {{ typeof todo === "object" ? (todo?.text ?? "") : todo }}
+                            <!-- Layout: desktop 2 cols, mobile 1 col -->
+                            <section class="neoGrid">
+                                <!-- Left: main -->
+                                <div class="neoMain">
+                                    <!-- Content card -->
+                                    <section class="neoCard">
+                                        <div class="neoCard__hd">
+                                            <div class="neoCard__title">内容</div>
+                                            <div class="neoCard__side neoMuted" v-if="detail.post?.content?.length">
+                                                {{ detail.post.content.length }} chars
+                                            </div>
                                         </div>
-                                    </li>
-                                </ul>
+
+                                        <pre class="neoContent">{{ detail.post?.content || "" }}</pre>
+                                    </section>
+
+                                    <!-- Todos -->
+                                    <section v-if="(detail.post?.todos?.length || 0) > 0" class="neoCard">
+                                        <div class="neoCard__hd">
+                                            <div class="neoCard__title">Todos</div>
+                                            <div class="neoCard__side">
+                                                <span class="neoPill">{{ detail.post.todos.length }}</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="neoTodoHead">
+                                            <div class="neoRing neoRing--todo" :style="{
+                                                '--p': (() => {
+                                                    const list = detail.post?.todos || [];
+                                                    const done = list.filter(t => (typeof t === 'object' ? !!t?.done : false)).length;
+                                                    return list.length ? Math.round((done / list.length) * 100) : 0;
+                                                })()
+                                            }" aria-hidden="true">
+                                                <div class="neoRing__in">
+                                                    <div class="neoRing__num">
+                                                        {{
+                                                            (() => {
+                                                                const list = detail.post?.todos || [];
+                                                                const done = list.filter(t => (typeof t === 'object' ? !!t?.done
+                                                                    : false)).length;
+                                                                return list.length ? Math.round((done / list.length) * 100) : 0;
+                                                            })()
+                                                        }}%
+                                                    </div>
+                                                    <div class="neoRing__cap neoMuted">done</div>
+                                                </div>
+                                            </div>
+
+                                            <div class="neoTodoScale" aria-hidden="true">
+                                                <div class="neoTodoScale__track"></div>
+                                                <div class="neoTodoScale__fill" :style="{
+                                                    width: (() => {
+                                                        const list = detail.post?.todos || [];
+                                                        const done = list.filter(t => (typeof t === 'object' ? !!t?.done : false)).length;
+                                                        return list.length ? Math.round((done / list.length) * 100) + '%' : '0%';
+                                                    })()
+                                                }" />
+                                            </div>
+                                        </div>
+
+                                        <ul class="neoTodos">
+                                            <li v-for="(todo, i) in detail.post.todos" :key="i" class="neoTodo"
+                                                :class="{ isDone: typeof todo === 'object' ? !!todo?.done : false }">
+                                                <span class="neoTodo__box" aria-hidden="true"></span>
+                                                <div class="neoTodo__txt">
+                                                    {{ typeof todo === "object" ? (todo?.text ?? "") : todo }}
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </section>
+                                </div>
+
+                                <!-- Right: sidebar -->
+                                <aside class="neoSide">
+                                    <!-- Gauges -->
+                                    <section class="neoCard neoCard--sticky">
+                                        <div class="neoCard__hd">
+                                            <div class="neoCard__title">指标</div>
+                                            <div class="neoCard__side neoMuted">可视化</div>
+                                        </div>
+
+                                        <div class="neoGauges">
+                                            <div class="neoGauge" :style="{
+                                                '--p': detail.post?.focus != null ? Math.min(100, Math.max(0, (Number(detail.post.focus) / 10) * 100)) : 0
+                                            }">
+                                                <div class="neoGauge__ring" aria-hidden="true"></div>
+                                                <div class="neoGauge__txt">
+                                                    <div class="neoGauge__num">{{ detail.post?.focus ?? "—" }}</div>
+                                                    <div class="neoGauge__cap neoMuted">focus</div>
+                                                </div>
+                                            </div>
+
+                                            <div class="neoGauge" :style="{
+                                                '--p': detail.post?.difficulty != null ? Math.min(100, Math.max(0, (Number(detail.post.difficulty) / 10) * 100)) : 0
+                                            }">
+                                                <div class="neoGauge__ring" aria-hidden="true"></div>
+                                                <div class="neoGauge__txt">
+                                                    <div class="neoGauge__num">{{ detail.post?.difficulty ?? "—" }}
+                                                    </div>
+                                                    <div class="neoGauge__cap neoMuted">difficulty</div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="neoTape">
+                                            <div class="neoTape__top">
+                                                <div class="neoTape__label neoMuted">duration</div>
+                                                <div class="neoTape__value">{{ detail.post?.durationMin != null ?
+                                                    (detail.post.durationMin + " min") : "—" }}</div>
+                                            </div>
+
+                                            <div class="neoTape__track" aria-hidden="true">
+                                                <div class="neoTape__fill" :style="{
+                                                    width:
+                                                        detail.post?.durationMin != null
+                                                            ? Math.min(100, Math.max(0, (Number(detail.post.durationMin) / 180) * 100)) + '%'
+                                                            : '0%'
+                                                }" />
+                                            </div>
+                                            <div class="neoTape__hint neoMuted">封顶 180min（可按你真实范围改）</div>
+                                        </div>
+                                    </section>
+
+                                    <!-- Goal + Raw fields -->
+                                    <section class="neoCard">
+                                        <div class="neoCard__hd">
+                                            <div class="neoCard__title">目标</div>
+                                        </div>
+                                        <div class="neoText">
+                                            {{ detail.post?.goal || "—" }}
+                                        </div>
+
+                                        <div class="neoDivider"></div>
+
+                                        <ul class="neoKV">
+                                            <li class="neoKV__row">
+                                                <span class="neoKV__k">happenedAt</span>
+                                                <span class="neoKV__v">{{ detail.post?.happenedAt ?
+                                                    formatDate(detail.post.happenedAt) : "—" }}</span>
+                                            </li>
+                                            <li class="neoKV__row">
+                                                <span class="neoKV__k">durationMin</span>
+                                                <span class="neoKV__v">{{ detail.post?.durationMin ?? "—" }}</span>
+                                            </li>
+                                            <li class="neoKV__row">
+                                                <span class="neoKV__k">focus</span>
+                                                <span class="neoKV__v">{{ detail.post?.focus ?? "—" }}</span>
+                                            </li>
+                                            <li class="neoKV__row">
+                                                <span class="neoKV__k">difficulty</span>
+                                                <span class="neoKV__v">{{ detail.post?.difficulty ?? "—" }}</span>
+                                            </li>
+                                            <li class="neoKV__row">
+                                                <span class="neoKV__k">pinToTop</span>
+                                                <span class="neoKV__v">{{ detail.post?.pinToTop ? "true" : "false"
+                                                }}</span>
+                                            </li>
+                                        </ul>
+                                    </section>
+                                </aside>
                             </section>
 
-                            <!-- <div class="uxHint" v-if="detail.post?.content && detail.post.content.length > 0">
+                            <div class="neoNote" v-if="detail.post?.content && detail.post.content.length > 0">
                                 提示：后端如果未来支持结构化字段（tags、happenedAt 等），这里可以做更丰富渲染。
-                            </div> -->
+                            </div>
                         </div>
                     </main>
                 </section>
