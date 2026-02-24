@@ -456,41 +456,6 @@
                                             </div>
                                         </div>
 
-                                        <div class="neoTodoHead">
-                                            <div class="neoRing neoRing--todo" :style="{
-                                                '--p': (() => {
-                                                    const list = detail.post?.todos || [];
-                                                    const done = list.filter(t => (typeof t === 'object' ? !!t?.done : false)).length;
-                                                    return list.length ? Math.round((done / list.length) * 100) : 0;
-                                                })()
-                                            }" aria-hidden="true">
-                                                <div class="neoRing__in">
-                                                    <div class="neoRing__num">
-                                                        {{
-                                                            (() => {
-                                                                const list = detail.post?.todos || [];
-                                                                const done = list.filter(t => (typeof t === 'object' ? !!t?.done
-                                                                    : false)).length;
-                                                                return list.length ? Math.round((done / list.length) * 100) : 0;
-                                                            })()
-                                                        }}%
-                                                    </div>
-                                                    <div class="neoRing__cap neoMuted">done</div>
-                                                </div>
-                                            </div>
-
-                                            <div class="neoTodoScale" aria-hidden="true">
-                                                <div class="neoTodoScale__track"></div>
-                                                <div class="neoTodoScale__fill" :style="{
-                                                    width: (() => {
-                                                        const list = detail.post?.todos || [];
-                                                        const done = list.filter(t => (typeof t === 'object' ? !!t?.done : false)).length;
-                                                        return list.length ? Math.round((done / list.length) * 100) + '%' : '0%';
-                                                    })()
-                                                }" />
-                                            </div>
-                                        </div>
-
                                         <ul class="neoTodos">
                                             <li v-for="(todo, i) in detail.post.todos" :key="i" class="neoTodo"
                                                 :class="{ isDone: typeof todo === 'object' ? !!todo?.done : false }">
@@ -506,7 +471,7 @@
                                 <!-- Right: sidebar -->
                                 <aside class="neoSide">
                                     <!-- Gauges -->
-                                    <section class="neoCard neoCard--sticky">
+                                    <section class="neoCard">
                                         <div class="neoCard__hd">
                                             <div class="neoCard__title">指标</div>
                                             <div class="neoCard__side neoMuted">可视化</div>
@@ -514,7 +479,7 @@
 
                                         <div class="neoGauges">
                                             <div class="neoGauge" :style="{
-                                                '--p': detail.post?.focus != null ? Math.min(100, Math.max(0, (Number(detail.post.focus) / 10) * 100)) : 0
+                                                '--p': detail.post?.focus != null ? Math.min(100, Math.max(0, (Number(detail.post.focus) / 5) * 100)) : 0
                                             }">
                                                 <div class="neoGauge__ring" aria-hidden="true"></div>
                                                 <div class="neoGauge__txt">
@@ -524,7 +489,7 @@
                                             </div>
 
                                             <div class="neoGauge" :style="{
-                                                '--p': detail.post?.difficulty != null ? Math.min(100, Math.max(0, (Number(detail.post.difficulty) / 10) * 100)) : 0
+                                                '--p': detail.post?.difficulty != null ? Math.min(100, Math.max(0, (Number(detail.post.difficulty) / 5) * 100)) : 0
                                             }">
                                                 <div class="neoGauge__ring" aria-hidden="true"></div>
                                                 <div class="neoGauge__txt">
@@ -550,7 +515,7 @@
                                                             : '0%'
                                                 }" />
                                             </div>
-                                            <div class="neoTape__hint neoMuted">封顶 180min（可按你真实范围改）</div>
+                                            <div class="neoTape__hint neoMuted">{{ detail.post?.durationMin != null ? (detail.post.durationMin + " / 180 min") : "no data" }}</div>
                                         </div>
                                     </section>
 
@@ -592,10 +557,6 @@
                                     </section>
                                 </aside>
                             </section>
-
-                            <div class="neoNote" v-if="detail.post?.content && detail.post.content.length > 0">
-                                提示：后端如果未来支持结构化字段（tags、happenedAt 等），这里可以做更丰富渲染。
-                            </div>
                         </div>
                     </main>
                 </section>
