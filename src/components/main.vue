@@ -2,26 +2,24 @@
     <div class="page">
         <!-- Top bar -->
         <header class="topbar">
-            <div class="topbar-left">
-                <div class="brand">
-                    <div class="brand-dot">
-                        <span role="img" aria-label="book">📚</span>
-                    </div>
-                    <div class="brand-text">
-                        <div class="brand-title">Study Log</div>
-                        <div class="brand-sub muted">
-                            <span v-if="meLoading">加载用户中…</span>
-                            <span v-else-if="meUser">已登录：{{ meUser.email }}</span>
-                            <span v-else>未登录 / 会话失效</span>
-                        </div>
+            <div class="brand">
+                <div class="brand-dot">
+                    <span role="img" aria-label="book">📚</span>
+                </div>
+                <div class="brand-text">
+                    <div class="brand-title">Study Log</div>
+                    <div class="brand-sub muted">
+                        <span v-if="meLoading">加载用户中…</span>
+                        <span v-else-if="meUser">已登录：{{ meUser.email }}</span>
+                        <span v-else>未登录 / 会话失效</span>
                     </div>
                 </div>
             </div>
-
             <div class="topbar-actions">
                 <button class="btn ghost" @click="onOpenSettings">设置</button>
                 <button class="btn ghost" @click="onLogout">退登</button>
             </div>
+
         </header>
 
         <!-- Body -->
@@ -43,6 +41,7 @@
                         <span class="pill">模板</span>
                         <span class="pill">标签</span>
                         <span class="pill">时间</span>
+                        <span class="pill">原神</span>
                     </div>
                 </div>
             </section>
@@ -81,7 +80,6 @@
 
                 <div v-else class="cards">
                     <article class="post-card" :class="{ 'is-pinned': !!p.pinToTop }" v-for="p in posts" :key="p.id">
-                        <!-- Header -->
                         <header class="post-head">
                             <div class="post-title">
                                 <span class="post-id muted">#{{ p.id }}</span>
@@ -94,7 +92,6 @@
                             </div>
                         </header>
 
-                        <!-- Meta -->
                         <div class="post-meta">
                             <span v-if="p.happenedAt">{{ formatDate(p.happenedAt) }}</span>
                             <span v-else-if="p.created_at">{{ formatDate(p.created_at) }}</span>
@@ -109,10 +106,9 @@
                             <span v-if="p.difficulty != null">Diff {{ p.difficulty }}</span>
 
                             <span v-if="p.updated_at" class="sep">·</span>
-                            <span v-if="p.updated_at" class="muted">更新 {{ formatDate(p.updated_at) }}</span>
+                            <span v-if="p.updated_at">更新 {{ formatDate(p.updated_at) }}</span>
                         </div>
 
-                        <!-- Content -->
                         <section class="post-body">
                             <p class="post-preview">
                                 {{ p.preview || p.contentPreview || p.content || "（无内容）" }}
@@ -140,8 +136,6 @@
                                 </ul>
                             </div>
                         </section>
-
-                        <!-- Footer -->
                         <footer class="post-foot">
                             <div class="tag-row" v-if="tagList(p).length">
                                 <span class="tag" v-for="(t, i) in tagList(p).slice(0, 6)" :key="i">
@@ -158,7 +152,6 @@
                         </footer>
                     </article>
                 </div>
-
                 <!-- Pagination -->
                 <div class="pager" v-if="showPager">
                     <button class="btn ghost" :disabled="pager.page <= 1 || listLoading"
@@ -259,12 +252,12 @@
                             <div class="row">
                                 <div class="field">
                                     <label>专注度（1-5）</label>
-                                    <input v-model.number="draft.focus" type="range" min="1" max="5" step="0.1" />
+                                    <input v-model.number="draft.focus" type="range" min="1" max="5" step="0.05" />
                                     <div class="muted tiny">当前：{{ draft.focus }}</div>
                                 </div>
                                 <div class="field">
                                     <label>难度（1-5）</label>
-                                    <input v-model.number="draft.difficulty" type="range" min="1" max="5" step="0.1" />
+                                    <input v-model.number="draft.difficulty" type="range" min="1" max="5" step="0.05" />
                                     <div class="muted tiny">当前：{{ draft.difficulty }}</div>
                                 </div>
                             </div>

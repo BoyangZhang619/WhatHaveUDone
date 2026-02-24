@@ -27,6 +27,7 @@
   font-weight: 500;
   transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
   user-select: none;
+  width: fit-content !important;
 }
 
 .btn:disabled {
@@ -97,6 +98,7 @@
   display: flex;
   gap: 12px;
   align-items: center;
+  justify-content: space-around;
 }
 
 .brand-dot {
@@ -122,9 +124,6 @@
 
 /* ====== Layout ====== */
 .content {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 18px 16px 32px;
   display: grid;
   gap: 16px;
 }
@@ -436,7 +435,7 @@ label {
 
 input,
 textarea {
-  width: 100%;
+  /* width: 100%; */
   padding: 12px 14px;
   border: 1px solid #e6e6e6;
   border-radius: 14px;
@@ -662,8 +661,10 @@ input[type=range] {
   /* 重置原生样式 */
   -webkit-appearance: none;
   appearance: none;
+  position: relative;
+  top: -8px;
   width: 100%;
-  height: 8px; /* 轨道高度（矩形核心） */
+  height: 24px; /* 轨道高度（矩形核心） */
   background: #f0f0f0; /* 浅灰色轨道底色 */
   border: none;
   border-radius: 0; /* 取消圆角，实现纯矩形 */
@@ -675,8 +676,10 @@ input[type=range] {
 input[type=range]::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
+  position: relative;
+  top: -8px;
   width: 20px; /* 滑块宽度（矩形） */
-  height: 20px; /* 滑块高度（矩形） */
+  height: 24px; /* 滑块高度（矩形） */
   background: #333; /* 黑色滑块 */
   border: none;
   border-radius: 0; /* 取消圆角，纯矩形 */
@@ -691,7 +694,7 @@ input[type=range]::-webkit-slider-thumb:hover {
 /* Firefox浏览器兼容 */
 input[type=range]::-moz-range-track {
   width: 100%;
-  height: 8px;
+  height: 20px;
   background: #f0f0f0;
   border: none;
   border-radius: 0;
@@ -761,11 +764,13 @@ html {
 
 /* Card */
 .post-card {
-  border: 1px solid var(--line);
+  box-shadow: 2px 2px 10px #ccc;
   border-radius: 16px;
   padding: 14px;
   background: var(--card);
   color: var(--text);
+  width: 100%;
+  max-width: calc(100dvw - 84px);
 }
 
 .post-card.is-pinned {
@@ -778,6 +783,7 @@ html {
   align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
+  max-width: calc(100dvw - 145px);
 }
 
 .post-title {
@@ -1092,39 +1098,7 @@ input[type=range]::-webkit-slider-runnable-track{
 }
 .post-card .todo-more{ font-size:12px; }
 
-/* 9) tag：用基础 .tag 兼容两处，再对卡片 footer 做覆盖（避免 tagbox/卡片互相抢样式） */
-.tag{
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  padding:6px 10px;
-  border-radius:999px;
-  border:1px solid #ececec;
-  background:#fff;
-  font-size:12px;
-  color:#444;
-}
-.post-card .tag-row .tag{
-  padding:4px 8px;
-  border-color:var(--line);
-  background:transparent;
-  color:var(--text);
-}
 
-/* 10) 卡片：保证 background 变量存在且可读性正常 */
-.post-card{
-  border:1px solid var(--line);
-  border-radius:16px;
-  padding:14px;
-  background:var(--card);
-  color:var(--text);
-}
-.post-meta{ color:var(--muted); }
-.post-preview{ color:var(--muted); }
-.badge{
-  border:1px solid var(--line);
-  color:var(--muted);
-}
 /* ===== 0) 基础：防止奇怪溢出 + 统一盒模型 ===== */
 *,
 *::before,
@@ -1183,7 +1157,7 @@ html, body{
 /* ===== 3) 让内容容器在手机真·满宽，不要被 max-width/缩放搞怪 ===== */
 .content{
   width: 100%;
-  max-width: 1100px;
+  max-width: calc(100dvw - 26px);
   margin: 0 auto;
   padding: 18px 16px 32px;
 }
@@ -1192,7 +1166,7 @@ html, body{
 .create-card,
 .list-area{
   width: 100%;
-  max-width: 100%;
+  max-width: calc(100dvw - 84px);
 }
 
 /* ===== 4) Overlay 顶部按钮在小屏容易挤爆：允许换行 + safe-area ===== */
@@ -1263,7 +1237,7 @@ input[type=range]::-webkit-slider-runnable-track{
 /* ===== 8) 手机断点（你原来有，但如果 viewport 没加它不会触发） ===== */
 @media (max-width: 520px){
   .topbar{
-    flex-direction: column;
+    flex-direction: row;
     align-items: stretch;
     gap: 10px;
   }

@@ -3,7 +3,7 @@
         <div class="login-card">
             <div class="login-header">
                 <h2>账户登录</h2>
-                <p class="muted">跨域 Session 认证系统</p>
+                <p class="muted">tip: u need to connect to the global Internet</p>
             </div>
 
             <div class="form-body">
