@@ -430,7 +430,7 @@
                                                     : '0%'
                                         }" />
                                     </div>
-                                    <div class="uxStat__hint uxMuted">以 180min 封顶可视化</div>
+                                    <div class="uxStat__hint uxMuted">From 0 to 180</div>
                                 </div>
 
                                 <!-- focus -->
@@ -443,11 +443,11 @@
                                         <div class="uxMeter__fill" :style="{
                                             width:
                                                 detail.post?.focus != null
-                                                    ? Math.min(100, Math.max(0, (Number(detail.post.focus) / 10) * 100)) + '%'
+                                                    ? Math.min(100, Math.max(0, (Number(detail.post.focus) / 5) * 100)) + '%'
                                                     : '0%'
                                         }" />
                                     </div>
-                                    <div class="uxStat__hint uxMuted">按 0–10 映射</div>
+                                    <div class="uxStat__hint uxMuted">From 0 to 5</div>
                                 </div>
 
                                 <!-- difficulty -->
@@ -460,11 +460,11 @@
                                         <div class="uxMeter__fill" :style="{
                                             width:
                                                 detail.post?.difficulty != null
-                                                    ? Math.min(100, Math.max(0, (Number(detail.post.difficulty) / 10) * 100)) + '%'
+                                                    ? Math.min(100, Math.max(0, (Number(detail.post.difficulty) / 5) * 100)) + '%'
                                                     : '0%'
                                         }" />
                                     </div>
-                                    <div class="uxStat__hint uxMuted">按 0–10 映射</div>
+                                    <div class="uxStat__hint uxMuted">From 0 to 5</div>
                                 </div>
 
                                 <!-- pin -->
