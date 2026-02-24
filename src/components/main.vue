@@ -359,6 +359,7 @@
                     <header class="uxPanel__hd">
                         <div class="uxHd__left">
                             <div class="uxHd__kicker">内容 #{{ detail.id }}</div>
+
                             <div class="uxHd__title">
                                 {{ detail.post?.title || "(无标题)" }}
                                 <span v-if="detail.post?.pinToTop" class="uxBadge">置顶</span>
@@ -380,113 +381,109 @@
 
                     <!-- Body -->
                     <main class="uxPanel__bd">
-                        <!-- Loading -->
                         <div v-if="detailLoading" class="uxSkel">
                             <div class="uxSkel__bar" v-for="i in 10" :key="i" />
                         </div>
 
-                        <!-- Error -->
                         <div v-else-if="detailError" class="uxErrBox">
                             <div class="uxErrBox__title">读取失败</div>
                             <div class="uxErrBox__msg">{{ detailError }}</div>
                         </div>
 
-                        <!-- Content -->
                         <div v-else class="uxPost">
-                            <!-- Meta row -->
-                            <div class="uxMetaRow">
-                                <div class="uxMetaRow__left">
+                            <!-- Top meta -->
+                            <div class="uxMetaBar">
+                                <div class="uxMetaBar__left">
                                     <span v-if="detail.post?.happenedAt || detailDate" class="uxMeta">
                                         {{ formatDate(detail.post?.happenedAt || detailDate) }}
                                     </span>
-
-                                    <span
-                                        v-if="(detail.post?.happenedAt || detailDate) && detail.post?.durationMin != null"
-                                        class="uxDot">·</span>
-                                    <span v-if="detail.post?.durationMin != null" class="uxMeta">
-                                        {{ detail.post.durationMin }} 分钟
-                                    </span>
-
-                                    <span v-if="detail.post?.focus != null" class="uxDot">·</span>
-                                    <span v-if="detail.post?.focus != null" class="uxMeta">
-                                        专注 {{ detail.post.focus }}
-                                    </span>
-
-                                    <span v-if="detail.post?.difficulty != null" class="uxDot">·</span>
-                                    <span v-if="detail.post?.difficulty != null" class="uxMeta">
-                                        难度 {{ detail.post.difficulty }}
+                                    <span class="uxDot"
+                                        v-if="(detail.post?.happenedAt || detailDate) && (detail.post?.tags?.length || detailTags.length)">·</span>
+                                    <span class="uxMeta uxMuted" v-if="detail.post?.tags?.length || detailTags.length">
+                                        {{ (detail.post?.tags?.length ? detail.post.tags : detailTags).join(" / ") }}
                                     </span>
                                 </div>
 
-                                <div class="uxMetaRow__right">
+                                <div class="uxMetaBar__right">
                                     <span class="uxTiny uxMuted" v-if="detail.post?.content?.length">
-                                        {{ detail.post.content.length }} 字符
+                                        {{ detail.post.content.length }} chars
                                     </span>
                                 </div>
                             </div>
 
-                            <!-- Tags -->
-                            <div v-if="(detail.post?.tags?.length || detailTags.length)" class="uxChips">
-                                <span v-for="(t, idx) in (detail.post?.tags?.length ? detail.post.tags : detailTags)"
-                                    :key="String(t) + '_' + idx" class="uxChip">
-                                    {{ t }}
-                                </span>
-                            </div>
-
-                            <!-- Info grid -->
-                            <div class="uxGrid">
-                                <section class="uxCard">
-                                    <div class="uxCard__hd">
-                                        <div class="uxCard__title">目标</div>
-                                    </div>
-                                    <div class="uxCard__bd">
-                                        <div class="uxValue">
-                                            {{ detail.post?.goal || "—" }}
+                            <!-- Visual Stats -->
+                            <section class="uxStats">
+                                <!-- duration -->
+                                <div class="uxStat">
+                                    <div class="uxStat__top">
+                                        <div class="uxStat__label">duration</div>
+                                        <div class="uxStat__value">
+                                            {{ detail.post?.durationMin != null ? (detail.post.durationMin + " min") :
+                                            "—" }}
                                         </div>
                                     </div>
-                                </section>
+                                    <div class="uxMeter" aria-hidden="true">
+                                        <div class="uxMeter__fill" :style="{
+                                            width:
+                                                detail.post?.durationMin != null
+                                                    ? Math.min(100, Math.max(0, (Number(detail.post.durationMin) / 180) * 100)) + '%'
+                                                    : '0%'
+                                        }" />
+                                    </div>
+                                    <div class="uxStat__hint uxMuted">以 180min 封顶可视化</div>
+                                </div>
 
-                                <section class="uxCard">
-                                    <div class="uxCard__hd">
-                                        <div class="uxCard__title">字段</div>
+                                <!-- focus -->
+                                <div class="uxStat">
+                                    <div class="uxStat__top">
+                                        <div class="uxStat__label">focus</div>
+                                        <div class="uxStat__value">{{ detail.post?.focus ?? "—" }}</div>
                                     </div>
-                                    <div class="uxCard__bd">
-                                        <ul class="uxKV">
-                                            <li class="uxKV__item">
-                                                <span class="uxKV__k">happenedAt</span>
-                                                <span class="uxKV__v">
-                                                    {{ detail.post?.happenedAt ? formatDate(detail.post.happenedAt) :
-                                                    "—" }}
-                                                </span>
-                                            </li>
-                                            <li class="uxKV__item">
-                                                <span class="uxKV__k">durationMin</span>
-                                                <span class="uxKV__v">
-                                                    {{ detail.post?.durationMin ?? "—" }}
-                                                </span>
-                                            </li>
-                                            <li class="uxKV__item">
-                                                <span class="uxKV__k">focus</span>
-                                                <span class="uxKV__v">
-                                                    {{ detail.post?.focus ?? "—" }}
-                                                </span>
-                                            </li>
-                                            <li class="uxKV__item">
-                                                <span class="uxKV__k">difficulty</span>
-                                                <span class="uxKV__v">
-                                                    {{ detail.post?.difficulty ?? "—" }}
-                                                </span>
-                                            </li>
-                                            <li class="uxKV__item">
-                                                <span class="uxKV__k">pinToTop</span>
-                                                <span class="uxKV__v">
-                                                    {{ detail.post?.pinToTop ? "true" : "false" }}
-                                                </span>
-                                            </li>
-                                        </ul>
+                                    <div class="uxMeter" aria-hidden="true">
+                                        <div class="uxMeter__fill" :style="{
+                                            width:
+                                                detail.post?.focus != null
+                                                    ? Math.min(100, Math.max(0, (Number(detail.post.focus) / 10) * 100)) + '%'
+                                                    : '0%'
+                                        }" />
                                     </div>
-                                </section>
-                            </div>
+                                    <div class="uxStat__hint uxMuted">按 0–10 映射</div>
+                                </div>
+
+                                <!-- difficulty -->
+                                <div class="uxStat">
+                                    <div class="uxStat__top">
+                                        <div class="uxStat__label">difficulty</div>
+                                        <div class="uxStat__value">{{ detail.post?.difficulty ?? "—" }}</div>
+                                    </div>
+                                    <div class="uxMeter" aria-hidden="true">
+                                        <div class="uxMeter__fill" :style="{
+                                            width:
+                                                detail.post?.difficulty != null
+                                                    ? Math.min(100, Math.max(0, (Number(detail.post.difficulty) / 10) * 100)) + '%'
+                                                    : '0%'
+                                        }" />
+                                    </div>
+                                    <div class="uxStat__hint uxMuted">按 0–10 映射</div>
+                                </div>
+
+                                <!-- pin -->
+                                <div class="uxStat">
+                                    <div class="uxStat__top">
+                                        <div class="uxStat__label">pinToTop</div>
+                                        <div class="uxStat__value">
+                                            <span class="uxFlag" :class="{ 'isOn': !!detail.post?.pinToTop }">
+                                                {{ detail.post?.pinToTop ? "ON" : "OFF" }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="uxMeter uxMeter--binary" aria-hidden="true">
+                                        <div class="uxMeter__fill"
+                                            :style="{ width: detail.post?.pinToTop ? '100%' : '0%' }" />
+                                    </div>
+                                    <div class="uxStat__hint uxMuted">二值显示</div>
+                                </div>
+                            </section>
 
                             <!-- Content -->
                             <section class="uxSection">
@@ -496,27 +493,38 @@
                                 <pre class="uxContent">{{ detail.post?.content || "" }}</pre>
                             </section>
 
-                            <!-- Todos -->
+                            <!-- Todos (with completion bar) -->
                             <section v-if="(detail.post?.todos?.length || 0) > 0" class="uxSection">
                                 <div class="uxSection__hd uxSection__hd--row">
                                     <div class="uxSection__title">Todos</div>
                                     <div class="uxPill">{{ detail.post.todos.length }}</div>
                                 </div>
 
+                                <div class="uxTodoProg" aria-hidden="true">
+                                    <div class="uxTodoProg__fill" :style="{
+                                        width:
+                                            (() => {
+                                                const list = detail.post?.todos || [];
+                                                const done = list.filter(t => (typeof t === 'object' ? !!t?.done : false)).length;
+                                                return list.length ? Math.round((done / list.length) * 100) + '%' : '0%';
+                                            })()
+                                    }" />
+                                </div>
+
                                 <ul class="uxTodos">
                                     <li v-for="(todo, i) in detail.post.todos" :key="i" class="uxTodo"
-                                        :class="{ 'isDone': !!todo?.done }">
+                                        :class="{ isDone: typeof todo === 'object' ? !!todo?.done : false }">
                                         <span class="uxTodo__mark" aria-hidden="true"></span>
                                         <div class="uxTodo__txt">
-                                            {{ todo?.text ?? todo }}
+                                            {{ typeof todo === "object" ? (todo?.text ?? "") : todo }}
                                         </div>
                                     </li>
                                 </ul>
                             </section>
 
-                            <div class="uxHint" v-if="detail.post?.content && detail.post.content.length > 0">
+                            <!-- <div class="uxHint" v-if="detail.post?.content && detail.post.content.length > 0">
                                 提示：后端如果未来支持结构化字段（tags、happenedAt 等），这里可以做更丰富渲染。
-                            </div>
+                            </div> -->
                         </div>
                     </main>
                 </section>
