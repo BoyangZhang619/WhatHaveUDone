@@ -574,7 +574,7 @@ import { computed, nextTick, onMounted, reactive, ref, watch, defineEmits } from
 /** =========================
  *  API
  *  ========================= */
-const API_BASE = "https://login.boyangzhang246.workers.dev";
+const API_BASE = "https://done.login.page.zbyblq.xin";
 
 const emit = defineEmits(["log-out"]);
 

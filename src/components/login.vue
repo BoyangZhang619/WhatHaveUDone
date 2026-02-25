@@ -45,7 +45,7 @@ import { reactive, defineEmits } from 'vue';
 
 const emit = defineEmits(['login-success']);
 // --- 配置与核心 API ---
-const API_BASE = "https://login.boyangzhang246.workers.dev";
+const API_BASE = "https://done.login.page.zbyblq.xin";
 
 const form = reactive({
     email: '',
