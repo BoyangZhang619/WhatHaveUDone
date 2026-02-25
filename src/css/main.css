@@ -978,15 +978,6 @@ html {
   gap: 6px;
 }
 
-.tag {
-  font-size: 12px;
-  padding: 4px 8px;
-  border-radius: 999px;
-  border: 1px solid var(--line);
-  color: var(--text);
-  background: transparent;
-}
-
 .post-time {
   font-size: 12px;
 }
@@ -1395,7 +1386,7 @@ input[type=range]::-webkit-slider-runnable-track {
   min-width: 0;
 }
 
-.tag-row .tag {
+.tag-row{
   max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -2196,10 +2187,11 @@ input[type=range]::-webkit-slider-runnable-track {
 }
 
 .neoFooter_button {
-  width: 100%;
   border: 1px #ff61a0 solid;
   background: #fbc0d1;
   color: #cd2b2b;
+  width: calc(100% - 20px);
+  margin: 10px;
 }
 .neoFooter_button:hover {
   background: #ff61a0;

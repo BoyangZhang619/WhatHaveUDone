@@ -403,10 +403,7 @@
                                 <div class="neoHero__left">
                                     <div class="neoMetaLine">
                                         <span class="neoMeta" v-if="detail.post?.happenedAt || detailDate">
-                                            {{ formatDate(detail.post?.happenedAt || detailDate) }}
-                                        </span>
-                                        <span>
-                                            started at:
+                                            Start at:{{ formatDate(detail.post?.happenedAt || detailDate) }}
                                         </span>
                                         <span class="neoSep"
                                             v-if="(detail.post?.happenedAt || detailDate) && (detail.post?.durationMin != null)">/</span>
@@ -563,7 +560,7 @@
                         </div>
                     </main>
                     <footer class="neoFooter">
-                        <button @click="deletePost" class="neoFooter__button">删除该记录</button>
+                        <button @click="deletePost" class="neoFooter_button">删除该记录</button>
                     </footer>
                 </section>
             </div>
@@ -654,8 +651,8 @@ async function onLogout() {
     } catch {
         alert("退出登录请求失败（网络或服务器错误），但本地会话已清除。如果你仍然看到登录状态，可能是因为后端会话未成功清除。请尝试刷新页面或检查网络连接。");
     }
-    await refreshMe();
-    await resetAndList();
+    // await refreshMe();
+    // await resetAndList();
 }
 
 /** =========================
