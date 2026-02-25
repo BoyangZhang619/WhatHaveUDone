@@ -3,7 +3,7 @@
         <div class="login-card">
             <div class="login-header">
                 <h2>账户登录</h2>
-                <p class="muted">您的IP: <br/>{{ userIp }}</p>
+                <p class="muted">您的IP: <br />{{ userIp }}</p>
             </div>
 
             <div class="form-body">
@@ -39,25 +39,25 @@
     </div>
 </template>
 
-<script setup>
-import { reactive, defineEmits, ref, onMounted } from 'vue';
+<script setup lang="ts">
+import { reactive, ref, onMounted } from 'vue';
 
 const userIp = ref('正在获取...');
 
 const getMyIp = async () => {
-  try {
-    // 路径对应 functions 文件夹下的目录结构
-    const response = await fetch('/api/get-ip');
-    const data = await response.json();
-    userIp.value = data.ip;
-  } catch (error) {
-    console.error('获取 IP 失败:', error);
-    userIp.value = '获取失败';
-  }
+    try {
+        // 路径对应 functions 文件夹下的目录结构
+        const response = await fetch('/api/get-ip');
+        const data = await response.json();
+        userIp.value = data.ip;
+    } catch (error) {
+        console.error('获取 IP 失败:', error);
+        userIp.value = '获取失败';
+    }
 };
 
 onMounted(() => {
-  getMyIp();
+    getMyIp();
 });
 
 const emit = defineEmits(['login-success']);
@@ -78,7 +78,7 @@ const status = reactive({
 const MAX_EMAIL_LENGTH = 254;
 const MAX_PASSWORD_LENGTH = 128;
 
-function validateEmail(email) {
+function validateEmail(email: string): { ok: boolean; reason?: string } {
     if (!email || typeof email !== 'string') return { ok: false, reason: '邮箱不能为空' };
     if (email.length > MAX_EMAIL_LENGTH) return { ok: false, reason: '邮箱过长' };
     // 简洁且严格的邮箱校验：本地部分限制长度，避免过度复杂的正则
@@ -86,7 +86,7 @@ function validateEmail(email) {
     return re.test(email) ? { ok: true } : { ok: false, reason: '邮箱格式不正确' };
 }
 
-function validatePassword(pw) {
+function validatePassword(pw: string): { ok: boolean; reason?: string } {
     if (pw == null) return { ok: false, reason: '密码不能为空' };
     if (typeof pw !== 'string') return { ok: false, reason: '密码格式不正确' };
     if (pw.length < 6) return { ok: false, reason: '密码太短，至少6位' };
@@ -99,7 +99,7 @@ function validatePassword(pw) {
 }
 
 // 通用 API 请求函数
-async function api(path, options = {}) {
+async function api(path: string, options: { method: 'GET' | 'POST' | 'PUT' | 'DELETE'; headers?: any; body?: string; }) {
     const headers = options.headers ? { ...options.headers } : {};
     if (options.body && !headers["Content-Type"]) {
         headers["Content-Type"] = "application/json";
@@ -120,7 +120,7 @@ async function api(path, options = {}) {
             throw { kind: "http", status: res.status, data };
         }
         return data;
-    } catch (err) {
+    } catch (err: any) {
         if (err.kind === "http") throw err;
         throw { kind: "network", message: err?.message || String(err) };
     }
@@ -128,7 +128,7 @@ async function api(path, options = {}) {
 
 // --- 交互逻辑 ---
 
-const setStatus = (msg, kind = 'muted') => {
+const setStatus = (msg: string | undefined, kind: 'muted' | 'error' | 'success' = 'muted') => {
     // 仅允许纯文本状态消息，防止误将 HTML 注入到状态显示（模板插值已转义，但保持防御性）
     status.msg = String(msg).slice(0, 1000); // 限制长度，避免资源浪费
     status.kind = kind;
@@ -149,7 +149,7 @@ const handleRegister = async () => {
             body: JSON.stringify({ email: form.email, password: form.password })
         });
         setStatus("注册成功，现在可以登录了", "success");
-    } catch (e) {
+    } catch (e: any) {
         setStatus("注册失败：" + (e.data?.message || "网络错误"), "error");
     }
 };
