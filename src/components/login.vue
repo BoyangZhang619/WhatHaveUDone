@@ -3,8 +3,7 @@
         <div class="login-card">
             <div class="login-header">
                 <h2>账户登录</h2>
-                <p class="muted">if location == "中国大陆":</p>
-                <p class="muted">&nbsp;&nbsp;&nbsp;&nbsp;need_VPN = True</p>
+                <p class="muted">您的IP: <br/>{{ userIp }}</p>
             </div>
 
             <div class="form-body">
@@ -41,7 +40,25 @@
 </template>
 
 <script setup>
-import { reactive, defineEmits } from 'vue';
+import { reactive, defineEmits, ref, onMounted } from 'vue';
+
+const userIp = ref('正在获取...');
+
+const getMyIp = async () => {
+  try {
+    // 路径对应 functions 文件夹下的目录结构
+    const response = await fetch('/api/get-ip');
+    const data = await response.json();
+    userIp.value = data.ip;
+  } catch (error) {
+    console.error('获取 IP 失败:', error);
+    userIp.value = '获取失败';
+  }
+};
+
+onMounted(() => {
+  getMyIp();
+});
 
 const emit = defineEmits(['login-success']);
 // --- 配置与核心 API ---
