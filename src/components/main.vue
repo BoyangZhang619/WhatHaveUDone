@@ -38,10 +38,10 @@
                         </div>
                     </div>
                     <div class="create-card-right">
-                        <span class="pill">模板</span>
-                        <span class="pill">标签</span>
-                        <span class="pill">时间</span>
-                        <span class="pill">原神</span>
+                        <span class="pill">Reading</span>
+                        <span class="pill">Coding</span>
+                        <span class="pill">Project</span>
+                        <span class="pill">Reciting</span>
                     </div>
                 </div>
             </section>
@@ -56,8 +56,9 @@
                             <span class="muted">每页</span>
                             <select v-model.number="pager.limit" @change="resetAndList">
                                 <option :value="10">10</option>
+                                <option :value="15">15</option>
                                 <option :value="20">20</option>
-                                <option :value="30">30</option>
+                                <option :value="25">25</option>
                             </select>
                         </div>
                         <button class="btn secondary" @click="listPosts()">刷新</button>
@@ -94,7 +95,6 @@
 
                         <div class="post-meta">
                             <span v-if="p.happenedAt">{{ formatDate(p.happenedAt) }}</span>
-                            <span v-else-if="p.created_at">{{ formatDate(p.created_at) }}</span>
 
                             <span v-if="p.durationMin" class="sep">·</span>
                             <span v-if="p.durationMin">{{ p.durationMin }} min</span>
@@ -124,7 +124,7 @@
                                     Todos <span class="muted">({{ todoList(p).length }})</span>
                                 </div>
 
-                                <ul class="todo-list">
+                                <ul class="todo-list" style="justify-content: left !important;">
                                     <li v-for="(t, i) in todoList(p).slice(0, 3)" :key="i" class="todo-item">
                                         <span class="checkbox" aria-hidden="true"></span>
                                         <span class="todo-text">{{ t?.text ?? t }}</span>
@@ -405,6 +405,9 @@
                                         <span class="neoMeta" v-if="detail.post?.happenedAt || detailDate">
                                             {{ formatDate(detail.post?.happenedAt || detailDate) }}
                                         </span>
+                                        <span>
+                                            started at:
+                                        </span>
                                         <span class="neoSep"
                                             v-if="(detail.post?.happenedAt || detailDate) && (detail.post?.durationMin != null)">/</span>
                                         <span class="neoMeta" v-if="detail.post?.durationMin != null">
@@ -559,6 +562,9 @@
                             </section>
                         </div>
                     </main>
+                    <footer class="neoFooter">
+                        <button @click="deletePost" class="neoFooter__button">删除该记录</button>
+                    </footer>
                 </section>
             </div>
         </transition>
@@ -806,14 +812,14 @@ async function openDetail(id) {
 
 const detailDate = computed(() => {
     const p = detail.post || {};
-    return p.happenedAt || p.createdAt || p.created_at || p.created || null;
+    return p.createdAt || p.created_at || p.created || p.happenedAt || null;
 });
 const detailTags = computed(() => {
     const p = detail.post || {};
     return Array.isArray(p.tags) ? p.tags : [];
 });
 const detailSubtitle = computed(() => {
-    const parts = [];
+    const parts = ['Uploaded at:'];
     if (detailDate.value) parts.push(formatDate(detailDate.value));
     if (detailTags.value.length) parts.push(detailTags.value.join(" / "));
     return parts.join(" · ") || "—";
@@ -1083,7 +1089,19 @@ async function createPost() {
         createLoading.value = false;
     }
 }
+async function deletePost() {
+    if (!detail.post?.id) return;
+    if (!confirm("确定要删除这条记录吗？这个操作无法撤销")) return;
 
+    try {
+        await api(`/api/posts/${detail.post.id}`, { method: "DELETE" });
+        setCreateStatus(`已删除 id=${detail.post.id}`, "success");
+        detail.open = false;
+        await resetAndList();
+    } catch (e) {
+        alert("删除失败：" + safeErr(e?.data ?? e));
+    }
+}
 /** =========================
  *  Helpers: list rendering
  *  ========================= */
