@@ -1411,7 +1411,6 @@ input[type=range]::-webkit-slider-runnable-track {
   --neo-shadow: 0 28px 90px rgba(0, 0, 0, 0.18);
   --neo-radius: 18px;
 
-  color-scheme: light;
 
   width: 100dvw;
   height: 100dvh;
