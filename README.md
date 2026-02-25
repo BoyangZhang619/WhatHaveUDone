@@ -1,5 +1,46 @@
-# Vue 3 + TypeScript + Vite
+# 📚 Study Log — whatIveDone
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+一个简洁的在线学习记录工具，帮你随时记录每天学了什么、学了多久、专注如何，方便日后回顾与复盘。
 
-Learn more about the recommended Project Setup and IDE Support in the [Vue Docs TypeScript Guide](https://vuejs.org/guide/typescript/overview.html#project-setup).
+## 功能一览
+
+### 🔐 登录与注册
+
+- 打开网站后首先进入登录页面，页面会自动显示你的 IP 地址。
+- 输入邮箱和密码即可**注册**新账户或**登录**已有账户。
+- 登录成功后自动跳转到主界面；点击「退出登录」可安全登出。
+
+### 📝 新增学习记录
+
+- 在主界面点击顶部的「**新增学习记录**」卡片，会打开全屏编辑器。
+- 可填写以下信息：
+  - **标题** — 简要描述本次学习内容
+  - **学习时间** — 记录具体的开始时间
+  - **时长** — 本次学习花了多少分钟
+  - **专注度 / 难度** — 通过滑块打分（1–5）
+  - **标签** — 按回车添加自定义标签，也可点击快捷标签（reading / coding / notes / review）
+  - **目标** — 这次学习想解决什么问题
+  - **详述** — 记录做了什么、学到了什么、卡在哪里、下一步计划（支持预览模式）
+  - **下一步行动（Todos）** — 添加待办事项，可勾选完成状态
+- 支持**草稿自动保存**到本地，刷新页面不会丢失。
+- 数据会存至cf的D1(SQLite)中,99.9999%安全(除非cf炸了o.O)
+- 快捷键：`Ctrl / ⌘ + Enter` 快速保存，`Esc` 关闭编辑器。
+- 提供模板快速填充：阅读、编码、课程/讲座、复盘/总结。
+
+### 📋 浏览与管理记录
+
+- 主界面以卡片形式展示所有学习记录，置顶记录会高亮显示。
+- 每张卡片显示标题、时间、时长、专注度、难度、标签、内容预览和待办事项。
+- 点击「**Detail**」按钮可查看完整的记录详情。
+- 支持**分页浏览**，可调整每页显示数量（10 / 15 / 20 / 25）和跳转到指定页码。
+- 点击「**刷新**」可重新加载最新数据。
+
+### ⚙️ 其他
+
+- 顶栏显示当前登录用户的邮箱。
+- 点击「**设置**」可进入设置页面。
+- 响应式布局，手机和电脑均可舒适使用。
+
+---
+
+作者：[BoyangZhang619](https://github.com/BoyangZhang619) 邮箱：boyangzhang246@gmail.com
