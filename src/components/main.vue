@@ -515,7 +515,8 @@
                                                             : '0%'
                                                 }" />
                                             </div>
-                                            <div class="neoTape__hint neoMuted">{{ detail.post?.durationMin != null ? (detail.post.durationMin + " / 180 min") : "no data" }}</div>
+                                            <div class="neoTape__hint neoMuted">{{ detail.post?.durationMin != null ?
+                                                (detail.post.durationMin + " / 180 min") : "no data" }}</div>
                                         </div>
                                     </section>
 
@@ -551,7 +552,7 @@
                                             <li class="neoKV__row">
                                                 <span class="neoKV__k">pinToTop</span>
                                                 <span class="neoKV__v">{{ detail.post?.pinToTop ? "true" : "false"
-                                                }}</span>
+                                                    }}</span>
                                             </li>
                                         </ul>
                                     </section>
@@ -568,8 +569,8 @@
     </div>
 </template>
 
-<script setup>
-import { computed, nextTick, onMounted, reactive, ref, watch, defineEmits } from "vue";
+<script setup lang="ts">
+import { computed, nextTick, onMounted, reactive, ref, watch } from "vue";
 
 /** =========================
  *  API
@@ -578,15 +579,15 @@ const API_BASE = "https://done.login.page.zbyblq.xin";
 
 const emit = defineEmits(["log-out"]);
 
-const safeJSON = (v, fallback = []) => {
+const safeJSON = (v: Array<any>, fallback = []) => {
     if (Array.isArray(v)) return v
     if (!v || typeof v !== "string") return fallback
     try { return JSON.parse(v) } catch { return fallback }
 }
 
-const tagList = (p) => safeJSON(p.tags, [])
-const todoList = (p) => safeJSON(p.todos, [])
-async function api(path, options = {}) {
+const tagList = (p: any) => safeJSON(p.tags, []);
+const todoList = (p: any) => safeJSON(p.todos, []);
+async function api(path: string, options: { method: 'GET' | 'POST' | 'PUT' | 'DELETE'; headers?: any; body?: string; } = { method: "GET" }) {
     const headers = options.headers ? { ...options.headers } : {};
     if (options.body && !headers["Content-Type"]) headers["Content-Type"] = "application/json";
 
@@ -597,7 +598,7 @@ async function api(path, options = {}) {
             headers,
             credentials: "include",
         });
-    } catch (err) {
+    } catch (err: any) {
         throw { kind: "network", message: err?.message || String(err), err };
     }
 
@@ -672,9 +673,10 @@ const pager = reactive({
 
 const jumpInput = ref("");
 
-function normalizeInt(v, fallback = 0) {
+function normalizeInt(v: string | number | null | undefined, fallback = 0) {
     const n = Number(v);
-    return Number.isFinite(n) ? n : fallback;
+    if (!Number.isFinite(n) || [NaN, null, undefined].includes(n)) return fallback;
+    return n;
 }
 
 async function listPosts() {
@@ -695,7 +697,7 @@ async function listPosts() {
 
         // page 从 offset 推导，避免状态错乱
         pager.page = Math.floor(pager.offset / pager.limit) + 1;
-    } catch (e) {
+    } catch (e: any) {
         if (e?.kind === "http" && e.status === 401) {
             listError.value = "未登录，无法加载列表";
             posts.value = [];
@@ -716,7 +718,7 @@ function resetAndList() {
     return listPosts();
 }
 
-function goPage(pageNum) {
+function goPage(pageNum: number) {
     const p = Math.max(1, normalizeInt(pageNum, 1));
     pager.page = p;
     pager.offset = (p - 1) * pager.limit;
@@ -735,14 +737,14 @@ const showPager = computed(() => {
     return pager.page > 1 || pager.hasNext;
 });
 
-function buildPageItems(current, totalPages, hasNext) {
+function buildPageItems(current: number, totalPages: number | null, hasNext: boolean) {
     // 高级一点：窗口化 + 首尾 + 省略号
     // totalPages 为空时：不显示尾页，但保留窗口与 next
-    const items = [];
-    const key = (t, v) => `${t}:${v}`;
+    const items: Array<{ type: "page" | "ellipsis"; value?: number; key: string }> = [];
+    const key = (t: string, v: any) => `${t}:${v}`;
 
-    const pushPage = (v) => items.push({ type: "page", value: v, key: key("p", v) });
-    const pushEllipsis = (id) => items.push({ type: "ellipsis", key: key("e", id) });
+    const pushPage = (v: number) => items.push({ type: "page", value: v, key: key("p", v) });
+    const pushEllipsis = (id: string) => items.push({ type: "ellipsis", key: key("e", id) });
 
     const windowSize = 2; // current ±2
     const start = Math.max(1, current - windowSize);
@@ -800,7 +802,7 @@ async function openDetail(id) {
         const data = await api(`/api/posts/${id}`);
         // 兼容：data.post / data
         detail.post = data?.post ?? data;
-    } catch (e) {
+    } catch (e: any) {
         detailError.value = safeErr(e?.data ?? e);
     } finally {
         detailLoading.value = false;
@@ -1062,7 +1064,7 @@ async function createPost() {
         resetDraft(false);
         await resetAndList();
         closeComposer();
-    } catch (e) {
+    } catch (e: any) {
         const status = e?.status;
 
         // fallback
@@ -1076,7 +1078,7 @@ async function createPost() {
                 resetDraft(false);
                 await resetAndList();
                 closeComposer();
-            } catch (e2) {
+            } catch (e2:any) {
                 setCreateStatus("保存失败：" + safeErr(e2?.data ?? e2), "error");
             }
         } else {
@@ -1095,7 +1097,7 @@ async function deletePost() {
         setCreateStatus(`已删除 id=${detail.post.id}`, "success");
         detail.open = false;
         await resetAndList();
-    } catch (e) {
+    } catch (e: any) {
         alert("删除失败：" + safeErr(e?.data ?? e));
     }
 }
