@@ -570,7 +570,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onMounted, reactive, ref, watch } from "vue";
+import { computed, nextTick, onMounted, reactive, ref, watch, Ref } from "vue";
 
 /** =========================
  *  API
@@ -619,7 +619,12 @@ async function api(path: string, options: { method: 'GET' | 'POST' | 'PUT' | 'DE
 /** =========================
  *  Top bar: me
  *  ========================= */
-const meUser = ref(null);
+interface User {
+    value: number | null;
+    email?: string | null;
+    // 其他用户相关字段
+}
+const meUser = reactive<User>({ value: null, email: null });
 const meLoading = ref(false);
 
 async function refreshMe() {
@@ -627,7 +632,8 @@ async function refreshMe() {
     try {
         const data = await api("/api/me");
         meUser.value = data?.user || null;
-        return meUser.value;
+        meUser.email = data?.user?.email || null;
+        return meUser;
     } catch {
         meUser.value = null;
         return null;
@@ -659,11 +665,35 @@ async function onLogout() {
 /** =========================
  *  List + Pagination
  *  ========================= */
-const posts = ref([]);
+interface Post {
+    id: number;
+    title: string;
+    content: string;
+    tags?: string; // JSON array
+    todos?: string; // JSON array
+    happenedAt?: string; // ISO datetime
+    durationMin?: number;
+    focus?: number;
+    difficulty?: number;
+    pinToTop?: boolean;
+    created_at?: string;
+    updated_at?: string;
+    preview?: string;
+    contentPreview?: string;
+    goal?: string;
+}
+const posts = ref<Post[]>([]);
 const listLoading = ref(false);
 const listError = ref("");
 
-const pager = reactive({
+interface Pager {
+    limit: number;
+    offset: number;
+    page: number;
+    total: number | null;
+    hasNext: boolean;
+}
+const pager = reactive<Pager>({
     limit: 20,
     offset: 0,
     page: 1,
@@ -718,7 +748,8 @@ function resetAndList() {
     return listPosts();
 }
 
-function goPage(pageNum: number) {
+function goPage(pageNum: number | null | undefined) {
+    if (pageNum === null || pageNum === undefined) return;
     const p = Math.max(1, normalizeInt(pageNum, 1));
     pager.page = p;
     pager.offset = (p - 1) * pager.limit;
@@ -783,7 +814,12 @@ const pageItems = computed(() =>
 /** =========================
  *  Detail viewer
  *  ========================= */
-const detail = reactive({
+interface DetailState {
+    open: boolean;
+    id: number | null;
+    post: any | null;
+}
+const detail = reactive<DetailState>({
     open: false,
     id: null,
     post: null,
@@ -791,7 +827,7 @@ const detail = reactive({
 const detailLoading = ref(false);
 const detailError = ref("");
 
-async function openDetail(id) {
+async function openDetail(id: number | null) {
     detail.open = true;
     detail.id = id;
     detail.post = null;
@@ -828,19 +864,42 @@ const detailSubtitle = computed(() => {
  *  Composer (full screen)
  *  ========================= */
 const composerOpen = ref(false);
-const overlayEl = ref(null);
+const overlayEl: Ref<HTMLDivElement | null> = ref(null);
 
-const ui = reactive({
+interface UIState {
+    previewMode: boolean;
+}
+const ui = reactive<UIState>({
     previewMode: false,
 });
 
 const createLoading = ref(false);
-const createStatus = reactive({ msg: "", kind: "muted" });
+interface CreateStatus {
+    msg: string;
+    kind: string;
+}
+const createStatus = reactive<CreateStatus>({
+    msg: "",
+    kind: "muted"
+});
 
 const DRAFT_KEY = "studylog:draft:v1";
 const draftStatus = ref("未保存");
 
-const draft = reactive({
+interface Draft {
+    template: string;
+    title: string;
+    content: string;
+    happenedAt: string;
+    durationMin: number | null;
+    focus: number | null;
+    difficulty: number | null;
+    tags: Array<string>;
+    goal: string;
+    todos: Array<{ text: string; done: boolean }>;
+    pinToTop: boolean;
+}
+const draft = reactive<Draft>({
     template: "",
     title: "",
     content: "",
@@ -872,12 +931,12 @@ function closeComposer() {
     createStatus.msg = "";
 }
 
-function setCreateStatus(msg, kind = "muted") {
+function setCreateStatus(msg: string, kind: string = "muted") {
     createStatus.msg = String(msg).slice(0, 1000);
     createStatus.kind = kind;
 }
 
-function addTag(raw) {
+function addTag(raw: string) {
     const t = String(raw || "").trim();
     if (!t) return;
     const safe = t.slice(0, 24);
@@ -885,18 +944,18 @@ function addTag(raw) {
     tagInput.value = "";
 }
 
-function removeTag(t) {
-    draft.tags = draft.tags.filter((x) => x !== t);
+function removeTag(tag: string) {
+    draft.tags = draft.tags.filter((x) => x !== tag);
 }
 
-function addTodo(raw) {
+function addTodo(raw: string) {
     const text = String(raw || "").trim();
     if (!text) return;
     draft.todos.push({ text: text.slice(0, 120), done: false });
     todoInput.value = "";
 }
 
-function removeTodo(i) {
+function removeTodo(i: number) {
     draft.todos.splice(i, 1);
 }
 
@@ -929,7 +988,11 @@ function applyTemplate() {
             lecture: "课程：",
             review: "复盘：",
         };
-        draft.title = map[t] || "";
+        type TemplateType = keyof typeof map;
+        function getTemplateTitle(template: TemplateType): string {
+            return map[template] || "";
+        }
+        draft.title = getTemplateTitle(t as TemplateType);
     }
 
     if (!draft.goal) {
@@ -939,7 +1002,11 @@ function applyTemplate() {
             lecture: "整理讲义要点，写出 1 个可迁移的方法",
             review: "梳理问题—原因—改进—下一步",
         };
-        draft.goal = map[t] || "";
+        type TemplateType = keyof typeof map;
+        function getTemplateGoal(template: TemplateType): string {
+            return map[template] || "";
+        }
+        draft.goal = getTemplateGoal(t as TemplateType);
     }
 
     if (!draft.content) {
@@ -980,7 +1047,7 @@ const wordCount = computed(() => {
 });
 
 // 草稿自动保存（简单节流）
-let draftTimer = null;
+let draftTimer: ReturnType<typeof setTimeout> | null = null;
 watch(
     () => ({ ...draft, tags: [...draft.tags], todos: draft.todos.map((t) => ({ ...t })) }),
     () => {
@@ -1012,10 +1079,10 @@ function loadDraft() {
         draft.durationMin = clampInt(obj.durationMin, 0, 1440, 45);
         draft.focus = clampInt(obj.focus, 1, 5, 3);
         draft.difficulty = clampInt(obj.difficulty, 1, 5, 3);
-        draft.tags = Array.isArray(obj.tags) ? obj.tags.slice(0, 20).map((x) => String(x).slice(0, 24)) : [];
+        draft.tags = Array.isArray(obj.tags) ? obj.tags.slice(0, 20).map((x: any) => String(x).slice(0, 24)) : [];
         draft.goal = obj.goal || "";
         draft.todos = Array.isArray(obj.todos)
-            ? obj.todos.slice(0, 30).map((t) => ({ text: String(t.text || "").slice(0, 120), done: !!t.done }))
+            ? obj.todos.slice(0, 30).map((t: any) => ({ text: String(t.text || "").slice(0, 120), done: !!t.done }))
             : [];
         draft.pinToTop = !!obj.pinToTop;
 
@@ -1104,13 +1171,13 @@ async function deletePost() {
 /** =========================
  *  Helpers: list rendering
  *  ========================= */
-function bestDate(p) {
+function bestDate(p: any) {
     return p?.happenedAt || p?.createdAt || p?.created_at || p?.created || null;
 }
-function bestTags(p) {
+function bestTags(p: any) {
     return Array.isArray(p?.tags) ? p.tags : [];
 }
-function formatDate(v) {
+function formatDate(v: any) {
     try {
         const d = new Date(v);
         if (Number.isNaN(d.getTime())) return String(v);
@@ -1124,9 +1191,9 @@ function formatDate(v) {
         return String(v);
     }
 }
-function toDatetimeLocal(date) {
+function toDatetimeLocal(date: any) {
     const d = new Date(date);
-    const pad = (n) => String(n).padStart(2, "0");
+    const pad = (n: number) => String(n).padStart(2, "0");
     const yyyy = d.getFullYear();
     const mm = pad(d.getMonth() + 1);
     const dd = pad(d.getDate());
@@ -1134,12 +1201,12 @@ function toDatetimeLocal(date) {
     const mi = pad(d.getMinutes());
     return `${yyyy}-${mm}-${dd}T${hh}:${mi}`;
 }
-function clampInt(v, min, max, fallback) {
+function clampInt(v: any, min: number, max: number, fallback: number) {
     const n = Number(v);
     if (!Number.isFinite(n)) return fallback;
     return Math.min(max, Math.max(min, Math.round(n)));
 }
-function safeErr(e) {
+function safeErr(e: any): string {
     try {
         if (typeof e === "string") return e;
         if (e?.message) return e.message;
