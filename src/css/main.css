@@ -477,7 +477,6 @@ textarea {
   padding: 10px;
   border-radius: 14px;
   border: 1px solid #e6e6e6;
-  width: calc(100dvw - 84px);
 }
 .tagbox>div{
   overflow: scroll;
