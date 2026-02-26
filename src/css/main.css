@@ -477,8 +477,15 @@ textarea {
   padding: 10px;
   border-radius: 14px;
   border: 1px solid #e6e6e6;
+  width: calc(100dvw - 84px);
 }
-
+.tagbox>div{
+  overflow: scroll;
+  max-height: 36px;
+}
+.tagbox>div .tag button {
+  padding: 0;
+}
 .tagbox input {
   border: none;
   padding: 8px 6px;
@@ -501,6 +508,7 @@ textarea {
   background: #4a4a4a;
   font-size: 12px;
   color: white;
+  overflow: scroll;
 }
 
 .tag-x {
@@ -1019,23 +1027,6 @@ html {
   }
 }
 
-/* 分页按钮：只在 .pager 内生效，避免污染根容器 .page */
-.pager .page {
-  padding: 9px 12px;
-  border-radius: 12px;
-  background: #fff;
-  border: 1px solid #eaeaea;
-}
-
-.pager .page:hover {
-  background: #f7f7f7;
-}
-
-.pager .page.active {
-  background: #111;
-  color: #fff;
-  border-color: #111;
-}
 
 /* 3) 全站 muted 统一用变量（避免你后面那段把 muted 变深色） */
 .muted {
@@ -1204,20 +1195,26 @@ body {
 }
 
 /* 分页按钮的 .page 必须限定在 .pager 里，避免污染根容器 .page */
-.pager .page {
+.pager {
   padding: 9px 12px;
-  border-radius: 12px;
+  border-radius: 5px !important;
   background: #fff;
   border: 1px solid #eaeaea;
 }
 
-.pager .page:hover {
-  background: #f7f7f7;
+.pager>button {
+  color: #f7f7f7;
+  box-sizing: border-box;
 }
 
-.pager .page.active {
-  background: #111;
-  color: #fff;
+.pager>button:not(:disabled):hover {
+  background: #f7f7f7;
+  color: #111;
+}
+
+.pager .active {
+  background: #f7f7f7;
+  color: #111;
   border-color: #111;
 }
 
@@ -1386,7 +1383,7 @@ input[type=range]::-webkit-slider-runnable-track {
   min-width: 0;
 }
 
-.tag-row{
+.tag-row {
   max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -2192,6 +2189,7 @@ input[type=range]::-webkit-slider-runnable-track {
   width: calc(100% - 20px);
   margin: 10px;
 }
+
 .neoFooter_button:hover {
   background: #ff61a0;
   color: #fff;

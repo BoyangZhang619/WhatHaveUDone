@@ -55,6 +55,7 @@
                         <div class="select">
                             <span class="muted">每页</span>
                             <select v-model.number="pager.limit" @change="resetAndList">
+                                <option :value="5">5</option>
                                 <option :value="10">10</option>
                                 <option :value="15">15</option>
                                 <option :value="20">20</option>
@@ -155,19 +156,20 @@
 
                 <!-- Pagination -->
                 <div class="pager" v-if="showPager">
-                    <button class="btn ghost" :disabled="pager.page <= 1 || listLoading"
-                        @click="goPage(pager.page - 1)">
+                    <button class="btn ghost" :disabled="pager.page <= 1 || listLoading" @click="goPage(pager.page - 1)"
+                        style="color: #333;">
                         ‹
                     </button>
 
-                    <button v-for="it in pageItems" :key="String(it.key)" class="btn page"
+                    <button v-for="it in pageItems" :key="String(it.key)" class="btn"
                         :class="{ active: it.type === 'page' && it.value === pager.page }"
                         :disabled="it.type !== 'page' || listLoading" @click="it.type === 'page' && goPage(it.value)">
                         <span v-if="it.type === 'page'">{{ it.value }}</span>
                         <span v-else class="muted">…</span>
                     </button>
 
-                    <button class="btn ghost" :disabled="!pager.hasNext || listLoading" @click="goPage(pager.page + 1)">
+                    <button class="btn ghost" :disabled="!pager.hasNext || listLoading" @click="goPage(pager.page + 1)"
+                        style="color: #333;">
                         ›
                     </button>
 
@@ -266,10 +268,12 @@
                             <div class="field">
                                 <label>标签（回车添加）</label>
                                 <div class="tagbox">
-                                    <span class="tag" v-for="t in draft.tags" :key="t">
-                                        {{ t }}
-                                        <button class="tag-x" @click="removeTag(t)" aria-label="remove">×</button>
-                                    </span>
+                                    <div>
+                                        <span class="tag" v-for="t in draft.tags" :key="t">
+                                            {{ t }}
+                                            <button class="tag-x" @click="removeTag(t)" aria-label="remove">×</button>
+                                        </span>
+                                    </div>
                                     <input v-model.trim="tagInput" placeholder="例如：Vue / 算法 / 英语"
                                         @keydown.enter.prevent="addTag(tagInput)"
                                         @keydown.,.prevent="addTag(tagInput)" />
@@ -552,7 +556,7 @@
                                             <li class="neoKV__row">
                                                 <span class="neoKV__k">pinToTop</span>
                                                 <span class="neoKV__v">{{ detail.post?.pinToTop ? "true" : "false"
-                                                    }}</span>
+                                                }}</span>
                                             </li>
                                         </ul>
                                     </section>
@@ -575,7 +579,8 @@ import { computed, nextTick, onMounted, reactive, ref, watch, Ref } from "vue";
 /** =========================
  *  API
  *  ========================= */
-const API_BASE = "https://done.login.page.zbyblq.xin";
+// const API_BASE = "https://done.login.page.zbyblq.xin";
+const API_BASE = ""; // 默认同域，部署时请根据实际情况修改
 
 const emit = defineEmits(["log-out"]);
 
@@ -685,7 +690,7 @@ interface Post {
 const posts = ref<Post[]>([]);
 const listLoading = ref(false);
 const listError = ref("");
-
+const userDevice = ref(navigator.userAgent);
 interface Pager {
     limit: number;
     offset: number;
@@ -694,7 +699,7 @@ interface Pager {
     hasNext: boolean;
 }
 const pager = reactive<Pager>({
-    limit: 20,
+    limit: userDevice.value.includes("Mobile") ? 5 : 10, // 移动设备默认每页少一点
     offset: 0,
     page: 1,
     total: null, // 若后端返回 total，就会启用完整页码
@@ -716,12 +721,14 @@ async function listPosts() {
     try {
         const data = await api(`/api/posts?limit=${pager.limit}&offset=${pager.offset}`);
 
-        const items = data?.results || [];
+        let items = data?.results || [];
+        if (items.length) {items = items.sort((a: any, b: any) => {return b.pinToTop - a.pinToTop;});}
+        // console.log("当前用户数据总条数", data?.posts_count);
         posts.value = items;
 
         // 兼容：如果后端提供 total / count / hasNext 等字段，就用；否则用“本页满=可能还有下一页”
-        const total = data?.total ?? data?.count ?? null;
-        pager.total = Number.isFinite(Number(total)) ? Number(total) : null;
+        const total = data?.posts_count;
+        pager.total = total;
 
         pager.hasNext = typeof data?.hasNext === "boolean" ? data.hasNext : items.length === pager.limit;
 
@@ -764,7 +771,8 @@ function jumpToPage() {
 
 const showPager = computed(() => {
     // 有 total：至少 2 页才显示；无 total：只要有下一页或当前页>1就显示
-    if (pager.total != null) return Math.ceil(pager.total / pager.limit) > 1;
+    console.log("showPager?", { total: pager.total, page: pager.page, hasNext: pager.hasNext });
+    if (pager.total != null && pager.total !== 0) return Math.ceil(pager.total / pager.limit) > 1;
     return pager.page > 1 || pager.hasNext;
 });
 
@@ -1145,7 +1153,7 @@ async function createPost() {
                 resetDraft(false);
                 await resetAndList();
                 closeComposer();
-            } catch (e2:any) {
+            } catch (e2: any) {
                 setCreateStatus("保存失败：" + safeErr(e2?.data ?? e2), "error");
             }
         } else {
