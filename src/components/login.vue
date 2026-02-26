@@ -81,8 +81,8 @@ function switchLanguage() {
 
 const emit = defineEmits(['login-success']);
 // --- 配置与核心 API ---
-// const API_BASE = "https://done.login.page.zbyblq.xin";
-const API_BASE = ""; // 生产环境使用相对路径，开发环境通过 Vite 代理转发到后端
+const API_BASE = "https://done.login.page.zbyblq.xin";
+// const API_BASE = ""; // 生产环境使用相对路径，开发环境通过 Vite 代理转发到后端
 // console.log("API_BASE:", API_BASE);
 const form = reactive({
     email: '',

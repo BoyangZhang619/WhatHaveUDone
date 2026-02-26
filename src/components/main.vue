@@ -579,8 +579,8 @@ import { computed, nextTick, onMounted, reactive, ref, watch, Ref } from "vue";
 /** =========================
  *  API
  *  ========================= */
-// const API_BASE = "https://done.login.page.zbyblq.xin";
- const API_BASE = ""; // 默认同域，部署时请根据实际情况修改
+const API_BASE = "https://done.login.page.zbyblq.xin";
+// const API_BASE = ""; // 默认同域，部署时请根据实际情况修改
 
 const emit = defineEmits(["log-out"]);
 
