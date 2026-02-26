@@ -771,7 +771,7 @@ function jumpToPage() {
 
 const showPager = computed(() => {
     // 有 total：至少 2 页才显示；无 total：只要有下一页或当前页>1就显示
-    console.log("showPager?", { total: pager.total, page: pager.page, hasNext: pager.hasNext });
+    // console.log("showPager?", { total: pager.total, page: pager.page, hasNext: pager.hasNext });
     if (pager.total != null && pager.total !== 0) return Math.ceil(pager.total / pager.limit) > 1;
     return pager.page > 1 || pager.hasNext;
 });
