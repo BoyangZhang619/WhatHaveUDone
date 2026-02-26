@@ -1,0 +1,13 @@
+{
+    "login_card": {
+        "title": "Welcome~",
+        "ip": "Your IP:",
+        "ip_trying": "Trying to get...",
+        "ip_fail": "Failed to get IP",
+        "email_label": "Email",
+        "password_label": "Password",
+        "submit_button": "Login",
+        "create_button": "Register",
+        "logout_button": "Logout"
+    }
+}

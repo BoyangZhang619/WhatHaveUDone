@@ -163,3 +163,75 @@ input:focus {
     opacity: 0;
     transform: translateY(10px);
 }
+
+/* 先保留 login-card 的 relative 定位（已加过，无需改） */
+.login-card {
+    width: 400px;
+    max-width: 80dvw;
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.02);
+    position: relative;
+    box-sizing: border-box;
+}
+
+/* 语言按钮 - 左下角（优化版） */
+.language {
+    position: absolute;
+    left: 40px;
+    bottom: 40px;
+    /* 改成轻量级按钮样式 */
+    width: 40px;
+    height: 40px;
+    border-radius: 12px; /* 和输入框/按钮圆角统一风格 */
+    background: #fdfdfd;
+    border: 1px solid #e0e0e0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1rem;
+    cursor: pointer;
+    color: #666;
+    transition: all 0.3s ease; /* 和输入框过渡时长一致 */
+    box-sizing: border-box;
+}
+
+.language:hover {
+    color: #1a1a1a;
+    border-color: #1a1a1a;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04); /* 轻微阴影，和主按钮呼应 */
+    transform: translateY(-1px); /* 轻微上移，和主按钮 hover 效果统一 */
+}
+
+/* 问号按钮 - 右下角（优化版） */
+.question {
+    position: absolute;
+    right: 40px;
+    bottom: 40px;
+    /* 和语言按钮样式完全统一，保证对称 */
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: #fdfdfd;
+    border: 1px solid #e0e0e0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1rem;
+    cursor: pointer;
+    color: #666;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.question:hover {
+    color: #1a1a1a;
+    border-color: #1a1a1a;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    transform: translateY(-1px);
+}
+

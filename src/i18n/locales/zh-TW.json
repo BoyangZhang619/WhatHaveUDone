@@ -1,0 +1,13 @@
+{
+    "login_card": {
+        "title": "歡迎光臨~",
+        "ip": "您的IP:",
+        "ip_trying": "正在獲取...",
+        "ip_fail": "獲取失敗",
+        "email_label": "電子郵件",
+        "password_label": "密碼",
+        "submit_button": "登錄",
+        "create_button": "註冊",
+        "logout_button": "登出"
+    }
+}

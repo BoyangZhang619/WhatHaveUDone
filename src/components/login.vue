@@ -2,30 +2,34 @@
     <div class="login-wrapper">
         <div class="login-card">
             <div class="login-header">
-                <h2>账户登录</h2>
-                <p class="muted">您的IP: <br />{{ userIp }}</p>
+                <h2>{{ t('login_card.title') }}</h2>
+                <p class="muted">{{ t('login_card.ip') }}<br />
+                    <span v-if="userIp === 'trying'">{{ t('login_card.ip_trying') }}</span>
+                    <span v-else-if="userIp === 'fail'">{{ t('login_card.ip_fail') }}</span>
+                    <span v-else>{{ userIp }}</span>
+                </p>
             </div>
 
             <div class="form-body">
                 <div class="input-item">
-                    <label for="email">Email | 邮箱</label>
+                    <label for="email">{{ t('login_card.email_label') }}</label>
                     <input id="email" v-model="form.email" type="email" placeholder="test@test.com" />
                 </div>
 
                 <div class="input-item">
-                    <label for="password">Password | 密码</label>
+                    <label for="password">{{ t('login_card.password_label') }}</label>
                     <input id="password" v-model="form.password" type="password" placeholder="123456" />
                 </div>
 
                 <div class="actions">
                     <button id="btnLogin" class="btn primary-login" @click="handleLogin">
-                        &nbsp;&nbsp;Reg | 登录
+                        {{ t('login_card.submit_button') }}
                     </button>
                     <button id="btnRegister" class="btn secondary-login" @click="handleRegister">
-                        Login | 注册
+                        {{ t('login_card.create_button') }}
                     </button>
                     <button id="btnLogout" class="btn text-only" @click="handleLogout">
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Logout | 退出登录
+                        {{ t('login_card.logout_button') }}
                     </button>
                 </div>
 
@@ -35,14 +39,20 @@
                     </div>
                 </transition>
             </div>
+            <div class="question">🔍</div>
+            <div class="language" @click="switchLanguage">🌐</div>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
+import { setLocale } from '@/i18n';
 import { reactive, ref, onMounted } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-const userIp = ref('正在获取...');
+const { t, locale } = useI18n();
+
+const userIp = ref('trying');
 
 const getMyIp = async () => {
     try {
@@ -52,7 +62,7 @@ const getMyIp = async () => {
         userIp.value = data.ip;
     } catch (error) {
         console.error('获取 IP 失败:', error);
-        userIp.value = '获取失败';
+        userIp.value = 'fail';
     }
 };
 
@@ -60,11 +70,19 @@ onMounted(() => {
     getMyIp();
 });
 
+const languages: string[] = ['zh-CN', 'en-US', 'zh-TW'];
+
+function switchLanguage() {
+  const i = languages.indexOf(locale.value as string)
+  const next = languages[(i + 1) % languages.length]
+  if (next !== 'zh-CN' && next !== 'en-US' && next !== 'zh-TW') return
+  setLocale(next)
+}
+
 const emit = defineEmits(['login-success']);
 // --- 配置与核心 API ---
-const API_BASE = "https://done.login.page.zbyblq.xin";
-// const API_BASE = "http://127.0.0.1:8787";
-// const API_BASE = ""; // 生产环境使用相对路径，开发环境通过 Vite 代理转发到后端
+// const API_BASE = "https://done.login.page.zbyblq.xin";
+const API_BASE = ""; // 生产环境使用相对路径，开发环境通过 Vite 代理转发到后端
 // console.log("API_BASE:", API_BASE);
 const form = reactive({
     email: '',
