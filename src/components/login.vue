@@ -197,7 +197,11 @@ const handleLogin = async () => {
         });
         setStatus(t("login_card.status.login_success", { email: form.email }), "success");
         // 如果需要通知父组件登录成功，传递后端返回的用户对象（如果存在）
-        if (data) emit('login-success', data.success);
+        try {
+            if (data) emit('login-success', data.success);
+        } catch (emitError) {
+            console.error('login_card.emit_error', { error: emitError instanceof Error ? emitError.message : String(emitError) });
+        }
     } catch (e: any) {
         setStatus(t("login_card.status.login_fail") + (e.data?.message || t("login_card.status.internal_error")), "error");
     }

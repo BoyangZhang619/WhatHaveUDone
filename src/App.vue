@@ -11,9 +11,9 @@ const user = ref(null) // 这里先模拟一个已登录状态，实际开发中
  * 处理登录成功
  * @param {Object} user_success 子组件传回的用户信息
  */
-const handleLoginSuccess = (user_success) => {
+const handleLoginSuccess = () => {
   // 可以在这里做一些持久化处理，比如存入 localStorage
-  user.value = user_success;
+  user.value = 1;
 }
 
 /**
