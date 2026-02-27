@@ -1,13 +1,64 @@
 {
-    "login_card": {
-        "title": "歡迎光臨~",
-        "ip": "您的IP:",
-        "ip_trying": "正在獲取...",
-        "ip_fail": "獲取失敗",
-        "email_label": "電子郵件",
-        "password_label": "密碼",
-        "submit_button": "登錄",
-        "create_button": "註冊",
-        "logout_button": "登出"
+  "login_card": {
+    "title": "歡迎光臨~",
+    "ip": "您的IP:",
+    "ip_trying": "正在獲取...",
+    "ip_fail": "獲取失敗",
+    "email_label": "電子郵件",
+    "password_label": "密碼",
+    "submit_button": "登錄",
+    "create_button": "註冊",
+    "logout_button": "登出",
+    "status": {
+      "registering": "註冊中...",
+      "register_success": "註冊成功！請登錄。",
+      "register_fail": "註冊失敗: ",
+      "internal_error": "網絡錯誤或服務器錯誤",
+      "logging_in": "登錄中...",
+      "login_success": "歡迎回來, {{ email }}",
+      "login_fail": "登錄失敗, 請檢查帳號密碼: ",
+      "logout_success": "已安全登出",
+      "logout_fail": "登出失敗: "
     }
+  },
+  "question_alert": "你大可放心你的帳號安全，我自己是看不到任何人的密碼的，如果你不信你找我要worker代碼以及D1存儲庫的數據庫文件",
+  "validation": {
+    "email": {
+      "email_required": "電子郵件不能為空",
+      "email_invalid": "電子郵件格式不正確",
+      "email_min_length": "電子郵件過短",
+      "email_max_length": "電子郵件過長"
+    },
+    "password": {
+      "password_required": "密碼不能為空",
+      "password_min_length": "密碼過短",
+      "password_max_length": "密碼過長",
+      "password_invalid": "密碼格式不正確",
+      "password_no_<>": "密碼不能包含 '<' 或 '>' 字符",
+      "password_no_support_letter": "密碼包含不支持的字符"
+    }
+  },
+  "error": {
+    "ip_fail": "獲取IP失敗: {{ error }}"
+  },
+  "main_page": {
+    "header": {
+      "user_loading": "加載用戶中…",
+      "user_load_fail": "未登錄 / 會話失效",
+      "settings": "設置",
+      "logout": "登出"
+    },
+    "body": {
+      "create_block": {
+        "title": "新增學習記錄",
+        "create_sub": "點擊展開全屏編輯（支持草稿自動保存、Ctrl/⌘ + Enter 快速保存）",
+        "pills": {
+          "a": "閱讀",
+          "b": "代碼",
+          "c": "項目",
+          "d": "背誦"
+        }
+      }
+    }
+  }
 }

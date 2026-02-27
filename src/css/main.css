@@ -242,12 +242,13 @@ select {
   gap: 8px;
   align-items: center;
   margin-top: 14px;
-  flex-wrap: wrap
+  flex-wrap: wrap;  
 }
 
 .page {
   border-radius: 12px;
   background: #fff;
+  color: #111;
 }
 
 .page:hover {
@@ -255,9 +256,9 @@ select {
 }
 
 .page.active {
-  background: #111;
-  color: #fff;
   border-color: #111;
+  border-color: #111;
+  color: #fff;
 }
 
 .pager-right {
@@ -1197,24 +1198,25 @@ body {
 .pager {
   padding: 9px 12px;
   border-radius: 5px !important;
-  background: #fff;
-  border: 1px solid #eaeaea;
 }
 
 .pager>button {
   color: #f7f7f7;
   box-sizing: border-box;
-}
-
-.pager>button:not(:disabled):hover {
-  background: #f7f7f7;
-  color: #111;
-}
-
-.pager .active {
   background: #f7f7f7;
   color: #111;
   border-color: #111;
+}
+
+.pager>button:not(:disabled):hover {
+  background: #2f2f2f;
+  color: #fff;
+}
+
+.pager .active {
+  background: #2f2f2f;
+  color: #fff;
+  border: 1px solid #eaeaea;
 }
 
 /* ===== 2) 你的 :root 里把 --muted 写成了深色，导致“灰字变黑” ===== */

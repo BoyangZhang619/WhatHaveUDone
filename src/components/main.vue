@@ -9,15 +9,15 @@
                 <div class="brand-text">
                     <div class="brand-title">Study Log</div>
                     <div class="brand-sub muted">
-                        <span v-if="meLoading">加载用户中…</span>
+                        <span v-if="meLoading">{{ t("main_page.header.user_loading") }}</span>
                         <span v-else-if="meUser">{{ meUser.email }}</span>
-                        <span v-else>未登录 / 会话失效</span>
+                        <span v-else>{{ t("main_page.header.user_load_fail") }}</span>
                     </div>
                 </div>
             </div>
             <div class="topbar-actions">
-                <button class="btn ghost" @click="onOpenSettings">设置</button>
-                <button class="btn ghost" @click="onLogout">退登</button>
+                <button class="btn ghost" @click="onOpenSettings">{{ t("main_page.header.settings") }}</button>
+                <button class="btn ghost" @click="onLogout">{{ t("main_page.header.logout") }}</button>
             </div>
 
         </header>
@@ -31,17 +31,17 @@
                     <div class="create-card-left">
                         <div class="create-badge">+</div>
                         <div>
-                            <div class="create-title">新增学习记录</div>
+                            <div class="create-title">{{ t("main_page.body.create_block.title") }}</div>
                             <div class="muted create-sub">
-                                点击展开全屏编辑（支持草稿自动保存、Ctrl/⌘ + Enter 快速保存）
+                                {{ t("main_page.body.create_block.create_sub") }}
                             </div>
                         </div>
                     </div>
                     <div class="create-card-right">
-                        <span class="pill">Reading</span>
-                        <span class="pill">Coding</span>
-                        <span class="pill">Project</span>
-                        <span class="pill">Reciting</span>
+                        <span class="pill">{{ t("main_page.body.create_block.pills.a") }}</span>
+                        <span class="pill">{{ t("main_page.body.create_block.pills.b") }}</span>
+                        <span class="pill">{{ t("main_page.body.create_block.pills.c") }}</span>
+                        <span class="pill">{{ t("main_page.body.create_block.pills.d") }}</span>
                     </div>
                 </div>
             </section>
@@ -575,13 +575,14 @@
 
 <script setup lang="ts">
 import { computed, nextTick, onMounted, reactive, ref, watch, Ref } from "vue";
-
+import { useI18n } from "vue-i18n";
 /** =========================
  *  API
  *  ========================= */
 const API_BASE = "https://done.login.page.zbyblq.xin";
 // const API_BASE = ""; // 默认同域，部署时请根据实际情况修改
 
+const { t } = useI18n();
 const emit = defineEmits(["log-out"]);
 
 const safeJSON = (v: Array<any>, fallback = []) => {

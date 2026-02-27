@@ -1,13 +1,64 @@
 {
-    "login_card": {
-        "title": "Welcome~",
-        "ip": "Your IP:",
-        "ip_trying": "Trying to get...",
-        "ip_fail": "Failed to get IP",
-        "email_label": "Email",
-        "password_label": "Password",
-        "submit_button": "Login",
-        "create_button": "Register",
-        "logout_button": "Logout"
+  "login_card": {
+    "title": "Welcome~",
+    "ip": "Your IP:",
+    "ip_trying": "Trying to get...",
+    "ip_fail": "Failed to get IP",
+    "email_label": "Email",
+    "password_label": "Password",
+    "submit_button": "Login",
+    "create_button": "Register",
+    "logout_button": "Logout",
+    "status": {
+      "registering": "Registering...",
+      "register_success": "Registration successful! Please log in.",
+      "register_fail": "Registration failed: ",
+      "internal_error": "Network error or server error",
+      "logging_in": "Logging in...",
+      "login_success": "Welcome back, {{ email }}",
+      "login_fail": "Login failed, please check your credentials: ",
+      "logout_success": "Logged out successfully",
+      "logout_fail": "Logout failed: "
+    },
+    "question_alert": "Rest assured that your account is secure. I cannot see anyone's password. If you don't believe me, you can ask me for the worker code and the database file of the D1 repository.",
+    "validation": {
+      "email": {
+        "email_required": "Email cannot be empty",
+        "email_invalid": "Invalid email format",
+        "email_min_length": "Email is too short",
+        "email_max_length": "Email is too long"
+      },
+      "password": {
+        "password_required": "Password cannot be empty",
+        "password_min_length": "Password is too short",
+        "password_max_length": "Password is too long",
+        "password_invalid": "Invalid password format",
+        "password_no_<>": "Password cannot contain '<' or '>' characters",
+        "password_no_support_letter": "Password contains unsupported characters"
+      }
+    },
+    "error": {
+      "ip_fail": "Failed to get IP: {{ error }}"
     }
+  },
+  "main_page": {
+    "header": {
+      "user_loading": "Loading user...",
+      "user_load_fail": "Not logged in / Session expired",
+      "settings": "Settings",
+      "logout": "Logout"
+    },
+    "body": {
+      "create_block": {
+        "title": "Add Study Log",
+        "create_sub": "Click to expand full-screen editing (supports auto-saving drafts, Ctrl/⌘ + Enter to save quickly)",
+        "pills": {
+          "a": "Reading",
+          "b": "Coding",
+          "c": "Project",
+          "d": "Reciting"
+        }
+      }
+    }
+  }
 }

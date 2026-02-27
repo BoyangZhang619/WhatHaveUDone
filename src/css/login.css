@@ -179,9 +179,9 @@ input:focus {
 
 /* 语言按钮 - 左下角（优化版） */
 .language {
-    position: absolute;
+    /* position: absolute;
     left: 40px;
-    bottom: 40px;
+    bottom: 40px; */
     /* 改成轻量级按钮样式 */
     width: 40px;
     height: 40px;
@@ -208,9 +208,9 @@ input:focus {
 
 /* 问号按钮 - 右下角（优化版） */
 .question {
-    position: absolute;
+    /* position: absolute;
     right: 40px;
-    bottom: 40px;
+    bottom: 40px; */
     /* 和语言按钮样式完全统一，保证对称 */
     width: 40px;
     height: 40px;
@@ -235,3 +235,14 @@ input:focus {
     transform: translateY(-1px);
 }
 
+.corner-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 12px;
+}
+
+
+.corner-buttons>div {
+    margin-left: 10px;
+}

@@ -36,13 +36,13 @@ export const i18n = createI18n<[MessageSchema], SupportedLocale>({
     messages: {
         'zh-CN': zh_CN,
         'en-US': en_US,
-        'zh-TW': zh_TW
+        'zh-TW': zh_TW as unknown as MessageSchema
     }
 });
 
 export function setLocale(locale: SupportedLocale) {
     if (locale in SUPPORTED_LOCALES) {
-        (i18n.global.locale as unknown as Ref<string>).value = locale;
+        (i18n as any).global.locale.value = locale;
         localStorage.setItem(STORAGE_KEY, locale);
     } else {
         console.warn(`Unsupported locale: ${locale}`);

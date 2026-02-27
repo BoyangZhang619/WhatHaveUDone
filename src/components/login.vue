@@ -28,9 +28,15 @@
                     <button id="btnRegister" class="btn secondary-login" @click="handleRegister">
                         {{ t('login_card.create_button') }}
                     </button>
-                    <button id="btnLogout" class="btn text-only" @click="handleLogout">
-                        {{ t('login_card.logout_button') }}
-                    </button>
+
+                    <div class="corner-buttons">
+                        <button id="btnLogout" class="btn text-only" @click="handleLogout">
+                            {{ t('login_card.logout_button') }}
+                        </button>
+                        <div class="question" @click="question">?</div>
+                        <div class="language" @click="switchLanguage">🌐</div>
+                    </div>
+
                 </div>
 
                 <transition name="fade">
@@ -39,8 +45,6 @@
                     </div>
                 </transition>
             </div>
-            <div class="question">🔍</div>
-            <div class="language" @click="switchLanguage">🌐</div>
         </div>
     </div>
 </template>
@@ -61,7 +65,7 @@ const getMyIp = async () => {
         const data = await response.json();
         userIp.value = data.ip;
     } catch (error) {
-        console.error('获取 IP 失败:', error);
+        console.error(t('error.ip_fail', { error: error instanceof Error ? error.message : String(error) }));
         userIp.value = 'fail';
     }
 };
@@ -73,16 +77,18 @@ onMounted(() => {
 const languages: string[] = ['zh-CN', 'en-US', 'zh-TW'];
 
 function switchLanguage() {
-  const i = languages.indexOf(locale.value as string)
-  const next = languages[(i + 1) % languages.length]
-  if (next !== 'zh-CN' && next !== 'en-US' && next !== 'zh-TW') return
-  setLocale(next)
+    const i = languages.indexOf(locale.value as string)
+    const next = languages[(i + 1) % languages.length]
+    if (next !== 'zh-CN' && next !== 'en-US' && next !== 'zh-TW') return
+    setLocale(next)
 }
-
+function question() {
+    alert(t('login_card.question_alert'));
+}
 const emit = defineEmits(['login-success']);
 // --- 配置与核心 API ---
-const API_BASE = "https://done.login.page.zbyblq.xin";
-// const API_BASE = ""; // 生产环境使用相对路径，开发环境通过 Vite 代理转发到后端
+ const API_BASE = "https://done.login.page.zbyblq.xin";
+//const API_BASE = ""; // 生产环境使用相对路径，开发环境通过 Vite 代理转发到后端
 // console.log("API_BASE:", API_BASE);
 const form = reactive({
     email: '',
@@ -95,26 +101,28 @@ const status = reactive({
 });
 
 // --- 严格的输入校验与防护 ---
+const MIN_EMAIL_LENGTH = 5;
 const MAX_EMAIL_LENGTH = 254;
 const MAX_PASSWORD_LENGTH = 128;
 
 function validateEmail(email: string): { ok: boolean; reason?: string } {
-    if (!email || typeof email !== 'string') return { ok: false, reason: '邮箱不能为空' };
-    if (email.length > MAX_EMAIL_LENGTH) return { ok: false, reason: '邮箱过长' };
+    if (!email || typeof email !== 'string') return { ok: false, reason: t('login_card.validation.email.email_required') };
+    if (email.length < MIN_EMAIL_LENGTH) return { ok: false, reason: t('login_card.validation.email.email_min_length') };
+    if (email.length > MAX_EMAIL_LENGTH) return { ok: false, reason: t('login_card.validation.email.email_max_length') };
     // 简洁且严格的邮箱校验：本地部分限制长度，避免过度复杂的正则
     const re = /^[^\s@]{1,64}@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
-    return re.test(email) ? { ok: true } : { ok: false, reason: '邮箱格式不正确' };
+    return re.test(email) ? { ok: true } : { ok: false, reason: t('login_card.validation.email.email_invalid') };
 }
 
 function validatePassword(pw: string): { ok: boolean; reason?: string } {
-    if (pw == null) return { ok: false, reason: '密码不能为空' };
-    if (typeof pw !== 'string') return { ok: false, reason: '密码格式不正确' };
-    if (pw.length < 6) return { ok: false, reason: '密码太短，至少6位' };
-    if (pw.length > MAX_PASSWORD_LENGTH) return { ok: false, reason: '密码过长' };
+    if (pw == null) return { ok: false, reason: t('login_card.validation.password.password_required') };
+    if (typeof pw !== 'string') return { ok: false, reason: t('login_card.validation.password.password_invalid') };
+    if (pw.length < 6) return { ok: false, reason: t('login_card.validation.password.password_min_length') };
+    if (pw.length > MAX_PASSWORD_LENGTH) return { ok: false, reason: t('login_card.validation.password.password_max_length') };
     // 禁止包含角括号以减小 XSS 注入风险（虽然 Vue 模板插值会自动转义，但防患于未然）
-    if (/[<>]/.test(pw)) return { ok: false, reason: '密码不能包含 < 或 > 字符' };
+    if (/[<>]/.test(pw)) return { ok: false, reason: t('login_card.validation.password.password_no_<>') };
     // 仅允许可打印 ASCII，避免控制字符或二进制数据
-    if (!/^[\x20-\x7E]+$/.test(pw)) return { ok: false, reason: '密码包含不支持的字符' };
+    if (!/^[\x20-\x7E]+$/.test(pw)) return { ok: false, reason: t('login_card.validation.password.password_no_support_letter') };
     return { ok: true };
 }
 
@@ -162,15 +170,15 @@ const handleRegister = async () => {
     const p = validatePassword(form.password);
     if (!p.ok) { setStatus(p.reason, 'error'); return; }
 
-    setStatus("正在创建账户...", "muted");
+    setStatus(t("login_card.status.registering"), "muted");
     try {
         await api("/api/register", {
             method: "POST",
             body: JSON.stringify({ email: form.email, password: form.password })
         });
-        setStatus("注册成功，现在可以登录了", "success");
+        setStatus(t("login_card.status.register_success"), "success");
     } catch (e: any) {
-        setStatus("注册失败：" + (e.data?.message || "网络错误"), "error");
+        setStatus(t("login_card.status.register_fail") + (e.data?.message || t("login_card.status.internal_error")), "error");
     }
 };
 
@@ -181,17 +189,17 @@ const handleLogin = async () => {
     const p = validatePassword(form.password);
     if (!p.ok) { setStatus(p.reason, 'error'); return; }
 
-    setStatus("验证中...", "muted");
+    setStatus(t("login_card.status.logging_in"), "muted");
     try {
         const data = await api("/api/login", {
             method: "POST",
             body: JSON.stringify({ email: form.email, password: form.password })
         });
-        setStatus(`欢迎回来，${form.email}`, "success");
+        setStatus(t("login_card.status.login_success", { email: form.email }), "success");
         // 如果需要通知父组件登录成功，传递后端返回的用户对象（如果存在）
         if (data) emit('login-success', data.success);
-    } catch (e) {
-        setStatus("登录失败，请检查账号密码", "error");
+    } catch (e: any) {
+        setStatus(t("login_card.status.login_fail") + (e.data?.message || t("login_card.status.internal_error")), "error");
     }
 };
 
@@ -199,13 +207,13 @@ const handleLogin = async () => {
 const handleLogout = async () => {
     try {
         await api("/api/logout", { method: "POST" });
-        setStatus("已安全退出", "muted");
+        setStatus(t("login_card.status.logout_success"), "muted");
         form.email = '';
         form.password = '';
         // 通知父组件已登出
         emit('login-success', null);
-    } catch (e) {
-        setStatus("登出请求已发送", "muted");
+    } catch (e: any) {
+        setStatus(t("login_card.status.logout_fail") + (e.data?.message || t("login_card.status.internal_error")), "error");
     }
 };
 </script>
