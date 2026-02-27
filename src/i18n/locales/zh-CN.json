@@ -15,7 +15,7 @@
       "register_fail": "注册失败: ",
       "internal_error": "网络错误或服务器错误",
       "logging_in": "登录中...",
-      "login_success": "欢迎回来,{{ email }}",
+      "login_success": "欢迎回来,{email}",
       "login_fail": "登录失败,请检查账号密码: ",
       "logout_success": "已安全退出",
       "logout_fail": "退出登录失败: "
@@ -38,7 +38,7 @@
       }
     },
     "error": {
-      "ip_fail": "获取IP失败: {{ error }}"
+      "ip_fail": "获取IP失败: {error}"
     }
   },
   "main_page":{

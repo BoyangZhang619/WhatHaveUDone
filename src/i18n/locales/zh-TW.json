@@ -15,7 +15,7 @@
       "register_fail": "註冊失敗: ",
       "internal_error": "網絡錯誤或服務器錯誤",
       "logging_in": "登錄中...",
-      "login_success": "歡迎回來, {{ email }}",
+      "login_success": "歡迎回來, {email}",
       "login_fail": "登錄失敗, 請檢查帳號密碼: ",
       "logout_success": "已安全登出",
       "logout_fail": "登出失敗: "
@@ -39,7 +39,7 @@
     }
   },
   "error": {
-    "ip_fail": "獲取IP失敗: {{ error }}"
+    "ip_fail": "獲取IP失敗: {error}"
   },
   "main_page": {
     "header": {

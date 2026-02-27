@@ -15,7 +15,7 @@
       "register_fail": "Registration failed: ",
       "internal_error": "Network error or server error",
       "logging_in": "Logging in...",
-      "login_success": "Welcome back, {{ email }}",
+      "login_success": "Welcome back, {email}",
       "login_fail": "Login failed, please check your credentials: ",
       "logout_success": "Logged out successfully",
       "logout_fail": "Logout failed: "
@@ -38,7 +38,7 @@
       }
     },
     "error": {
-      "ip_fail": "Failed to get IP: {{ error }}"
+      "ip_fail": "Failed to get IP: {error}"
     }
   },
   "main_page": {
