@@ -208,7 +208,7 @@ const handleLogin = async () => {
         }
         console.log("Emitted login-success event successfully");
     } catch (e: any) {
-        console.error('login_card.login_error', { error: e instanceof Error ? e.message : String(e) });
+        console.error('login_card.login_error', e);
         setStatus(t("login_card.status.login_fail") + (e.data?.message || t("login_card.status.internal_error")), "error");
     }
 };
