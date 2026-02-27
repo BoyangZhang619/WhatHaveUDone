@@ -196,7 +196,7 @@ const handleLogin = async () => {
             body: JSON.stringify({ email: form.email, password: form.password })
         });
         console.log("login_success_data", data);
-        setStatus(t("login_card.status.login_success", { email: form.email }), "success");
+        setStatus(t("login_card.status.login_success", JSON.stringify({ email: form.email })), "success");
         // 如果需要通知父组件登录成功，传递后端返回的用户对象（如果存在）
         try {
             if (data) emit('login-success', data.success);
