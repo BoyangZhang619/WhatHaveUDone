@@ -195,20 +195,20 @@ const handleLogin = async () => {
             method: "POST",
             body: JSON.stringify({ email: form.email, password: form.password })
         });
-        console.log("login_success_data", data);
+        // console.log("login_success_data", data);
         setStatus(t("login_card.status.login_success", { email: form.email }), "success");
         // 如果需要通知父组件登录成功，传递后端返回的用户对象（如果存在）
-        console.log("Emitting login-success with data:", data);
+        // console.log("Emitting login-success with data:", data);
         try {
-            console.log("Emitting login-success with email:", form.email);
+            // console.log("Emitting login-success with email:", form.email);
             if (data) emit('login-success', data.success);
-            console.log("Emitted login-success event");
+            // console.log("Emitted login-success event");
         } catch (emitError) {
             console.error('login_card.emit_error', { error: emitError instanceof Error ? emitError.message : String(emitError) });
         }
-        console.log("Emitted login-success event successfully");
+        // console.log("Emitted login-success event successfully");
     } catch (e: any) {
-        console.error('login_card.login_error', e);
+        // console.error('login_card.login_error', e);
         setStatus(t("login_card.status.login_fail") + (e.data?.message || t("login_card.status.internal_error")), "error");
     }
 };
