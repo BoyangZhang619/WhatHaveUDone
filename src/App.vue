@@ -23,6 +23,10 @@ const handleLoginSuccess = () => {
 const handleLogout = () => {
   user.value = null
 }
+
+setInterval(() => {
+  console.log(user.value);
+}, 1000)
 </script>
 
 <template>

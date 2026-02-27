@@ -87,8 +87,8 @@ function question() {
 }
 const emit = defineEmits(['login-success']);
 // --- 配置与核心 API ---
- const API_BASE = "https://done.login.page.zbyblq.xin";
-//const API_BASE = ""; // 生产环境使用相对路径，开发环境通过 Vite 代理转发到后端
+const API_BASE = "https://done.login.page.zbyblq.xin"; // 生产环境使用正式域名，开发环境通过 Vite 代理转发到后端
+// const API_BASE = ""; // 生产环境使用相对路径，开发环境通过 Vite 代理转发到后端
 // console.log("API_BASE:", API_BASE);
 const form = reactive({
     email: '',
@@ -195,6 +195,7 @@ const handleLogin = async () => {
             method: "POST",
             body: JSON.stringify({ email: form.email, password: form.password })
         });
+        console.log("login_success_data", data);
         setStatus(t("login_card.status.login_success", { email: form.email }), "success");
         // 如果需要通知父组件登录成功，传递后端返回的用户对象（如果存在）
         try {
