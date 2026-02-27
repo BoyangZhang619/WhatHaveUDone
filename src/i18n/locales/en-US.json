@@ -58,6 +58,77 @@
           "c": "Project",
           "d": "Reciting"
         }
+      },
+      "list_area": {
+        "list_title": "Study Logs",
+        "select_page": {
+          "per_page": "Items per page",
+          "refresh": "Refresh"
+        },
+        "errorbox": "Failed to load: {error}",
+        "empty": {
+          "empty_title": "No Content",
+          "text": "Let's write a study log~",
+          "plus": "Add Now"
+        },
+        "cards": {
+          "non-title": "(No Title)",
+          "pinToTop": "Pin to Top",
+          "detail": "Details",
+          "min": "Min",
+          "focus": "Focus",
+          "diff": "Diff",
+          "update": "Update",
+          "non-content": "(No Content)",
+          "goal": "Goal",
+          "todos": "Todos",
+          "more": "More",
+          "create": "Created at:"
+        },
+        "pagination": {
+          "jump": "Jump to",
+          "pager": "Page",
+          "go": "Go",
+          "pages_total": "Total {total} items",
+          "pages_total_unknown": "(Total unknown)"
+        }
+      },
+      "composer_overlay": {
+        "overlay_title": "Add Record",
+        "overlay_sub_title": {
+          "draft": "Draft:",
+          "wordCount": "Word Count:",
+          "draft_status": {
+            "saved": "Saved",
+            "unsaved": "Unsaved",
+            "save_fail": "Save Failed",
+            "loaded": "Loaded"
+          }
+        },
+        "overlay_actions": {
+          "reset": "Reset",
+          "close": "Close",
+          "save": {
+            "to_save": "Save",
+            "saving": "Saving...",
+            "save_success": "Saved"
+          }
+        },
+        "overlay_body": {
+          "left_column": {
+            "panel_head": {
+              "title": "Templates",
+              "module": {
+                "a": "Reading",
+                "b": "Coding",
+                "c": "Project",
+                "d": "Reciting",
+                "e": "Review/Summary"
+               },
+               "pin": "Pin to Top"
+             }
+           }
+         }
       }
     }
   }

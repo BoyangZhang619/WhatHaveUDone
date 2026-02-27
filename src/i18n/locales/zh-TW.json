@@ -19,27 +19,27 @@
       "login_fail": "登錄失敗, 請檢查帳號密碼: ",
       "logout_success": "已安全登出",
       "logout_fail": "登出失敗: "
-    }
-  },
-  "question_alert": "你大可放心你的帳號安全，我自己是看不到任何人的密碼的，如果你不信你找我要worker代碼以及D1存儲庫的數據庫文件",
-  "validation": {
-    "email": {
-      "email_required": "電子郵件不能為空",
-      "email_invalid": "電子郵件格式不正確",
-      "email_min_length": "電子郵件過短",
-      "email_max_length": "電子郵件過長"
     },
-    "password": {
-      "password_required": "密碼不能為空",
-      "password_min_length": "密碼過短",
-      "password_max_length": "密碼過長",
-      "password_invalid": "密碼格式不正確",
-      "password_no_<>": "密碼不能包含 '<' 或 '>' 字符",
-      "password_no_support_letter": "密碼包含不支持的字符"
+    "question_alert": "你大可放心你的帳號安全，我自己是看不到任何人的密碼的，如果你不信你找我要worker代碼以及D1存儲庫的數據庫文件",
+    "validation": {
+      "email": {
+        "email_required": "電子郵件不能為空",
+        "email_invalid": "電子郵件格式不正確",
+        "email_min_length": "電子郵件過短",
+        "email_max_length": "電子郵件過長"
+      },
+      "password": {
+        "password_required": "密碼不能為空",
+        "password_min_length": "密碼過短",
+        "password_max_length": "密碼過長",
+        "password_invalid": "密碼格式不正確",
+        "password_no_<>": "密碼不能包含 '<' 或 '>' 字符",
+        "password_no_support_letter": "密碼包含不支持的字符"
+      }
+    },
+    "error": {
+      "ip_fail": "獲取IP失敗: {error}"
     }
-  },
-  "error": {
-    "ip_fail": "獲取IP失敗: {error}"
   },
   "main_page": {
     "header": {
@@ -57,6 +57,77 @@
           "b": "代碼",
           "c": "項目",
           "d": "背誦"
+        }
+      },
+      "list_area": {
+        "list_title": "學習記錄",
+        "select_page": {
+          "per_page": "條/每頁",
+          "refresh": "刷新"
+        },
+        "errorbox": "加載失敗:{error}",
+        "empty": {
+          "empty_title": "暫無內容",
+          "text": "先寫一條學習記錄吧~",
+          "plus": "立即新增"
+        },
+        "cards": {
+          "non-title": "(無標題)",
+          "pinToTop": "置頂",
+          "detail": "詳情",
+          "min": "分鐘",
+          "focus": "專注",
+          "diff": "難度",
+          "update": "更新",
+          "non-content": "（無內容）",
+          "goal": "目標",
+          "todos": "待辦事項",
+          "more": "更多",
+          "create": "創建於:"
+        },
+        "pagination": {
+          "jump": "跳轉",
+          "pager": "頁碼",
+          "go": "前往",
+          "pages_total": "共{total}條",
+          "pages_total_unknown": "（總數未知）"
+        }
+      },
+      "composer_overlay": {
+        "overlay_title": "新增記錄",
+        "overlay_sub_title": {
+          "draft": "草稿:",
+          "wordCount": "字數:",
+          "draft_status": {
+            "saved": "已保存",
+            "unsaved": "未保存",
+            "save_fail": "保存失敗",
+            "loaded": "已加載"
+          }
+        },
+        "overlay_actions": {
+          "reset": "重置",
+          "close": "關閉",
+          "save": {
+            "to_save": "保存",
+            "saving": "保存中...",
+            "save_success": "已保存"
+          }
+        },
+        "overlay_body": {
+          "left_column": {
+            "panel_head": {
+              "title": "基本信息",
+              "module": {
+                "a": "模板：無",
+                "b": "閱讀",
+                "c": "代碼",
+                "d": "課程/講座",
+                "e": "復盤/總結"
+              },
+              "pin": "置頂"
+            }
+          }
         }
       }
     }

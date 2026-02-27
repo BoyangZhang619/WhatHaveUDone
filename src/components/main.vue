@@ -49,20 +49,21 @@
             <!-- List -->
             <section class="list-area">
                 <div class="list-head">
-                    <div class="list-title">全部记录</div>
+                    <div class="list-title">{{ t("main_page.body.list_area.list_title") }}</div>
 
                     <div class="list-tools">
                         <div class="select">
-                            <span class="muted">每页</span>
                             <select v-model.number="pager.limit" @change="resetAndList">
+                                <option :value="3">3</option>
                                 <option :value="5">5</option>
-                                <option :value="10">10</option>
-                                <option :value="15">15</option>
+                                <option :value="8">8</option>
+                                <option :value="13">13</option>
                                 <option :value="20">20</option>
-                                <option :value="25">25</option>
+                                <option :value="30">30</option>
                             </select>
+                            <span class="muted">{{ t("main_page.body.list_area.select_page.per_page") }}</span>
                         </div>
-                        <button class="btn secondary" @click="listPosts()">刷新</button>
+                        <button class="btn secondary" @click="listPosts()">{{ t("main_page.body.list_area.select_page.refresh") }}</button>
                     </div>
                 </div>
 
@@ -71,13 +72,13 @@
                 </div>
 
                 <div v-else-if="listError" class="errorbox">
-                    加载失败：{{ listError }}
+                    {{ t("main_page.body.list_area.errorbox", { error: listError }) }}
                 </div>
 
                 <div v-else-if="!posts.length" class="empty">
-                    <div class="empty-title">暂无内容</div>
-                    <div class="muted">先写一条学习记录吧。</div>
-                    <button class="btn primary" @click="openComposer">立即新增</button>
+                    <div class="empty-title">{{ t("main_page.body.list_area.empty.empty_title") }}</div>
+                    <div class="muted">{{ t("main_page.body.list_area.empty.text") }}</div>
+                    <button class="btn primary" @click="openComposer">{{ t("main_page.body.list_area.empty.plus") }}</button>
                 </div>
 
                 <div v-else class="cards">
@@ -85,12 +86,12 @@
                         <header class="post-head">
                             <div class="post-title">
                                 <span class="post-id muted">#{{ p.id }}</span>
-                                <span class="post-title-text">{{ p.title || "(无标题)" }}</span>
-                                <span v-if="p.pinToTop" class="badge">置顶</span>
+                                <span class="post-title-text">{{ p.title || t("main_page.body.list_area.cards.non-title") }}</span>
+                                <span v-if="p.pinToTop" class="badge">{{ t("main_page.body.list_area.cards.pinToTop") }}</span>
                             </div>
 
                             <div class="post-actions">
-                                <button class="btn ghost" @click="openDetail(p.id)">Detail</button>
+                                <button class="btn ghost" @click="openDetail(p.id)">{{ t("main_page.body.list_area.cards.detail") }}</button>
                             </div>
                         </header>
 
@@ -98,31 +99,31 @@
                             <span v-if="p.happenedAt">{{ formatDate(p.happenedAt) }}</span>
 
                             <span v-if="p.durationMin" class="sep">·</span>
-                            <span v-if="p.durationMin">{{ p.durationMin }} min</span>
+                            <span v-if="p.durationMin">{{ p.durationMin }} {{ t("main_page.body.list_area.cards.min") }}</span>
 
                             <span v-if="p.focus != null" class="sep">·</span>
-                            <span v-if="p.focus != null">Focus {{ p.focus }}</span>
+                            <span v-if="p.focus != null">{{ t("main_page.body.list_area.cards.focus") }} {{ p.focus }}</span>
 
                             <span v-if="p.difficulty != null" class="sep">·</span>
-                            <span v-if="p.difficulty != null">Diff {{ p.difficulty }}</span>
+                            <span v-if="p.difficulty != null">{{ t("main_page.body.list_area.cards.diff") }} {{ p.difficulty }}</span>
 
                             <span v-if="p.updated_at" class="sep">·</span>
-                            <span v-if="p.updated_at">更新 {{ formatDate(p.updated_at) }}</span>
+                            <span v-if="p.updated_at">{{ t("main_page.body.list_area.cards.update") }} {{ formatDate(p.updated_at) }}</span>
                         </div>
 
                         <section class="post-body">
                             <p class="post-preview">
-                                {{ p.preview || p.contentPreview || p.content || "（无内容）" }}
+                                {{ p.preview || p.contentPreview || p.content || t("main_page.body.list_area.cards.non-content") }}
                             </p>
 
                             <div v-if="p.goal" class="post-block">
-                                <div class="post-block-title muted">Goal</div>
+                                <div class="post-block-title muted">{{ t("main_page.body.list_area.cards.goal") }}</div>
                                 <div class="post-block-content">{{ p.goal }}</div>
                             </div>
 
                             <div v-if="todoList(p).length" class="post-block">
                                 <div class="post-block-title muted">
-                                    Todos <span class="muted">({{ todoList(p).length }})</span>
+                                    {{ t("main_page.body.list_area.cards.todos") }} <span class="muted">({{ todoList(p).length }})</span>
                                 </div>
 
                                 <ul class="todo-list" style="justify-content: left !important;">
@@ -132,7 +133,7 @@
                                     </li>
 
                                     <li v-if="todoList(p).length > 3" class="todo-more muted">
-                                        +{{ todoList(p).length - 3 }} more
+                                        +{{ todoList(p).length - 3 }} {{ t("main_page.body.list_area.cards.more") }}
                                     </li>
                                 </ul>
                             </div>
@@ -148,7 +149,7 @@
                             </div>
 
                             <div class="post-time muted">
-                                <span v-if="p.created_at">创建于 {{ formatDate(p.created_at) }}</span>
+                                <span v-if="p.created_at">{{ t("main_page.body.list_area.cards.create") }} {{ formatDate(p.created_at) }}</span>
                             </div>
                         </footer>
                     </article>
@@ -175,15 +176,15 @@
 
                     <div class="pager-right">
                         <div class="jump">
-                            <span class="muted">跳转</span>
-                            <input v-model="jumpInput" inputmode="numeric" pattern="[0-9]*" placeholder="页码"
+                            <span class="muted">{{ t("main_page.body.list_area.pagination.jump") }}</span>
+                            <input v-model="jumpInput" inputmode="numeric" pattern="[0-9]*" :placeholder="t('main_page.body.list_area.pagination.pager')"
                                 @keydown.enter.prevent="jumpToPage" />
-                            <button class="btn secondary" @click="jumpToPage" :disabled="listLoading">Go</button>
+                            <button class="btn secondary" @click="jumpToPage" :disabled="listLoading">{{ t("main_page.body.list_area.pagination.go") }}</button>
                         </div>
 
                         <div class="muted pager-note">
-                            <span v-if="pager.total != null">共 {{ pager.total }} 条</span>
-                            <span v-else>（总数未知）</span>
+                            <span v-if="pager.total != null">{{ t("main_page.body.list_area.pagination.pages_total", { total: pager.total }) }}</span>
+                            <span v-else>{{ t("main_page.body.list_area.pagination.pages_total_unknown") }}</span>
                         </div>
                     </div>
                 </div>
@@ -195,19 +196,19 @@
             <div v-if="composerOpen" class="overlay" @keydown.esc.prevent="closeComposer" tabindex="-1" ref="overlayEl">
                 <div class="overlay-top">
                     <div class="overlay-title">
-                        <div class="overlay-title-main">新增记录</div>
+                        <div class="overlay-title-main">{{ $t("main_page.body.composer_overlay.overlay_title") }}</div>
                         <div class="muted overlay-title-sub">
-                            草稿：{{ draftStatus }}
+                            {{ $t("main_page.body.composer_overlay.overlay_sub_title.draft") }}：{{ draftStatus }}
                             <span class="dot">·</span>
-                            字数：{{ wordCount }}
+                            {{ $t("main_page.body.composer_overlay.overlay_sub_title.wordCount") }}：{{ wordCount }}
                         </div>
                     </div>
 
                     <div class="overlay-actions">
-                        <button class="btn ghost" @click="resetDraft(false)">清空</button>
-                        <button class="btn ghost" @click="closeComposer">关闭</button>
+                        <button class="btn ghost" @click="resetDraft(false)">{{ $t("main_page.body.composer_overlay.overlay_actions.reset") }}</button>
+                        <button class="btn ghost" @click="closeComposer">{{ $t("main_page.body.composer_overlay.overlay_actions.close") }}</button>
                         <button class="btn primary" :disabled="createLoading" @click="createPost">
-                            {{ createLoading ? '保存中…' : '保存' }}
+                            {{ createLoading ? $t("main_page.body.composer_overlay.overlay_actions.save.saving") : $t("main_page.body.composer_overlay.overlay_actions.save.to_save") }}
                         </button>
                     </div>
                 </div>
@@ -217,19 +218,19 @@
                         <!-- Left column -->
                         <div class="panel">
                             <div class="panel-head">
-                                <div class="panel-title">基础信息</div>
+                                <div class="panel-title">{{ $t("main_page.body.composer_overlay.overlay_body.left_column.panel_head.title") }}</div>
                                 <div class="panel-tools">
                                     <select v-model="draft.template" @change="applyTemplate" class="mini-select">
-                                        <option value="">模板：无</option>
-                                        <option value="reading">阅读</option>
-                                        <option value="coding">编码</option>
-                                        <option value="lecture">课程/讲座</option>
-                                        <option value="review">复盘/总结</option>
+                                        <option value="">{{ $t("main_page.body.composer_overlay.overlay_body.left_column.panel_head.module.a") }}</option>
+                                        <option value="reading">{{ $t("main_page.body.composer_overlay.overlay_body.left_column.panel_head.module.b") }}</option>
+                                        <option value="coding">{{ $t("main_page.body.composer_overlay.overlay_body.left_column.panel_head.module.c") }}</option>
+                                        <option value="lecture">{{ $t("main_page.body.composer_overlay.overlay_body.left_column.panel_head.module.d") }}</option>
+                                        <option value="review">{{ $t("main_page.body.composer_overlay.overlay_body.left_column.panel_head.module.e") }}</option>
                                     </select>
 
                                     <label class="toggle">
                                         <input type="checkbox" v-model="draft.pinToTop" />
-                                        <span>置顶</span>
+                                        <span>{{ $t("main_page.body.composer_overlay.overlay_body.left_column.panel_head.pin") }}</span>
                                     </label>
                                 </div>
                             </div>
@@ -893,7 +894,7 @@ const createStatus = reactive<CreateStatus>({
 });
 
 const DRAFT_KEY = "studylog:draft:v1";
-const draftStatus = ref("未保存");
+const draftStatus = ref(t("main_page.body.composer_overlay.overlay_sub_title.draft_status.unsaved"));
 
 interface Draft {
     template: string;
@@ -1060,14 +1061,14 @@ let draftTimer: ReturnType<typeof setTimeout> | null = null;
 watch(
     () => ({ ...draft, tags: [...draft.tags], todos: draft.todos.map((t) => ({ ...t })) }),
     () => {
-        draftStatus.value = "未保存";
+        draftStatus.value = t("main_page.body.composer_overlay.overlay_sub_title.draft_status.unsaved");
         if (draftTimer) clearTimeout(draftTimer);
         draftTimer = setTimeout(() => {
             try {
                 localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
-                draftStatus.value = "已保存";
+                draftStatus.value = t("main_page.body.composer_overlay.overlay_sub_title.draft_status.saved");
             } catch {
-                draftStatus.value = "保存失败（localStorage不可用）";
+                draftStatus.value = t("main_page.body.composer_overlay.overlay_sub_title.draft_status.save_fail");
             }
         }, 350);
     },
@@ -1095,7 +1096,7 @@ function loadDraft() {
             : [];
         draft.pinToTop = !!obj.pinToTop;
 
-        draftStatus.value = "已加载";
+        draftStatus.value = t("main_page.body.composer_overlay.overlay_sub_title.draft_status.loaded");
     } catch {
         // ignore
     }

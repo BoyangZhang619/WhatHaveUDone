@@ -41,24 +41,95 @@
       "ip_fail": "获取IP失败: {error}"
     }
   },
-  "main_page":{
+  "main_page": {
     "header": {
-        "user_loading": "加载用户中…",
-        "user_load_fail": "未登录 / 会话失效",
-        "settings": "设置",
-        "logout": "退登"
+      "user_loading": "加载用户中…",
+      "user_load_fail": "未登录 / 会话失效",
+      "settings": "设置",
+      "logout": "退登"
     },
-    "body":{
-        "create_block": {
-            "title": "新增学习记录",
-            "create_sub" : "点击展开全屏编辑（支持草稿自动保存、Ctrl/⌘ + Enter 快速保存）",
-            "pills":{
-                "a": "阅读",
-                "b": "代码",
-                "c": "项目",
-                "d": "背诵"
-            }
+    "body": {
+      "create_block": {
+        "title": "新增学习记录",
+        "create_sub": "点击展开全屏编辑（支持草稿自动保存、Ctrl/⌘ + Enter 快速保存）",
+        "pills": {
+          "a": "阅读",
+          "b": "代码",
+          "c": "项目",
+          "d": "背诵"
         }
+      },
+      "list_area": {
+        "list_title": "全部记录",
+        "select_page": {
+          "per_page": "条/每页",
+          "refresh": "刷新"
+        },
+        "errorbox": "加载失败:{error}",
+        "empty": {
+          "empty_title": "暂无内容",
+          "text": "先写一条学习记录吧~",
+          "plus": "立即新增"
+        },
+        "cards": {
+          "non-title": "(无标题)",
+          "pinToTop": "置顶",
+          "detail": "详情",
+          "min": "分钟",
+          "focus": "专注",
+          "diff": "难度",
+          "update": "更新",
+          "non-content": "（无内容）",
+          "goal": "目标",
+          "todos": "待办事项",
+          "more": "更多",
+          "create": "创建于:"
+        },
+        "pagination": {
+          "jump": "跳转",
+          "pager": "页码",
+          "go": "前往",
+          "pages_total": "共{total}条",
+          "pages_total_unknown": "（总数未知）"
+        }
+      },
+      "composer_overlay": {
+        "overlay_title": "新增记录",
+        "overlay_sub_title": {
+          "draft": "草稿:",
+          "wordCount": "字数:",
+          "draft_status": {
+            "saved": "已保存",
+            "unsaved": "未保存",
+            "save_fail": "保存失败",
+            "loaded": "已加载"
+          }
+        },
+        "overlay_actions": {
+          "reset": "重置",
+          "close": "关闭",
+          "save": {
+            "to_save": "保存",
+            "saving": "保存中...",
+            "save_success": "已保存"
+          }
+        },
+        "overlay_body": {
+          "left_column": {
+            "panel_head":{
+              "title": "基础信息",
+              "module":{
+                "a": "模板：无",
+                "b": "阅读",
+                "c": "编码",
+                "d": "课程/讲座",
+                "e": "复盘/总结"
+              },
+              "pin": "置顶"
+            }
+          }
+        }
+      }
     }
   }
 }

@@ -36,7 +36,7 @@ export const i18n = createI18n<[MessageSchema], SupportedLocale>({
     messages: {
         'zh-CN': zh_CN,
         'en-US': en_US,
-        'zh-TW': zh_TW as unknown as MessageSchema
+        'zh-TW': zh_TW
     }
 });
 
