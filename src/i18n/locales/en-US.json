@@ -73,7 +73,7 @@
         },
         "cards": {
           "non-title": "(No Title)",
-          "pinToTop": "Pin to Top",
+          "pinToTop": "PIN",
           "detail": "Details",
           "min": "Min",
           "focus": "Focus",
@@ -119,17 +119,179 @@
             "panel_head": {
               "title": "Templates",
               "module": {
-                "a": "Reading",
-                "b": "Coding",
-                "c": "Project",
-                "d": "Reciting",
+                "a": "Template: None",
+                "b": "Reading",
+                "c": "Coding",
+                "d": "Course/Lecture",
                 "e": "Review/Summary"
-               },
-               "pin": "Pin to Top"
-             }
-           }
-         }
+              },
+              "pin": "PIN"
+            }
+          }
+        }
+      },
+
+      "detail": {
+        "header": {
+          "id": "Record ID: {id}",
+          "loading": "...",
+          "no_title": "(No Title)",
+          "edit": "Edit",
+          "pin": "Pin",
+          "goal": "Goal",
+          "close": "Close",
+          "sub_title": {
+            "uploaded": "Uploaded at"
+          }
+        },
+        "body": {
+          "error": "Failed to load",
+          "hero_left": {
+            "start_at": "Started at:",
+            "min": "Min",
+            "pinned": "Pinned",
+            "normal": "Normal"
+          },
+
+          "grid": {
+            "hd": {
+              "content": "Content",
+              "chars": "Chars"
+            },
+            "todos": {
+              "content": "Todos"
+            },
+            "sidebar": {
+              "card_A": {
+                "title": "Indicators",
+                "visualization": "Visualization",
+                "focus": "Focus",
+                "diff": "Difficulty",
+                "duration": "Duration",
+                "min": "Min",
+                "no_data": "No Data"
+              },
+              "card_B": {
+                "title": "Goals",
+                "happened_at": "Happened at",
+                "duration": "Duration",
+                "focus": "Focus",
+                "diff": "Difficulty",
+                "pin_to_top": "Pin to Top",
+                "pin_status": {
+                  "true": "是",
+                  "false": "否"
+                },
+                "no_data": "No Data",
+                "min": "Min"
+              }
+            }
+          },
+          "footer": {
+            "delete": "Delete Record",
+            "delete_confirm": "Are you sure you want to delete this record? This action cannot be undone. Please type 'I am sure I want to delete' to confirm.",
+            "delete_confirm_text": "I am sure I want to delete",
+            "text_wrong": "The confirmation text is incorrect, deletion cancelled\nXIXI I knew you wouldn't want to delete me (>w<)"
+          }
+        }
       }
+    }
+  },
+  "setting": {
+    "alert": "This page is not implemented yet. If you want it, you can email me (boyangzhang246@gmail.com), but I will probably ignore it 99.999% of the time QwQ"
+  },
+  "apply_template": {
+    "type": {
+      "reciting": "Reciting",
+      "reading": "Reading",
+      "coding": "Coding",
+      "homework": "Homework",
+      "assignment": "Assignment/Project",
+      "course": "Course/Lecture",
+      "review": "Review/Summary"
+    },
+    "content": {
+      "reciting": "Reciting (Template): Recited [  ] for [  ] minutes, aiming to fully recall and remember the key points; current mastery: [  ]; problems encountered: [  ]; next improvement: [  ]",
+      "reading": "Reading (Template): Read page/section [  ] of [  ], summary: [  ]; key takeaways: [  ]; next steps: [  ]",
+      "coding": "Coding (Template): Implemented [  ] (approximately [  ] lines of code), resolved [  ]; testing status: [  ]; deployment/reproduction method: [  ]; remaining tasks: [  ]",
+      "homework": "Homework (Template): Completed homework for [  ], including [  ] problems/items; difficulties: [  ]; solution approach or key points: [  ]; areas to review: [  ]",
+      "assignment": "Assignment/Project (Template): Delivered for [  ], achieved [  ]; took [  ] hours; key steps: [  ]; encountered risks/issues: [  ]; next plan: [  ]",
+      "course": "Course/Lecture (Template): Attended lesson/unit [  ] of [  ], covered topics: [  ]; skills/concepts learned: [  ]; exercises or assignments: [  ]; application scenarios: [  ]",
+      "review": "Review/Summary (Template): Reviewed the goals and outcomes of [  ]; successes: [  ]; issues: [  ]; cause analysis: [  ]; improvement measures and action items: [  ]; expected indicators: [  ]"
+    },
+    "goal": {
+      "reciting": "Have recited [  ] for [  ] minutes, aiming to fully recall and remember the key points; current mastery: [  ]; problems encountered: [  ]; next improvement: [  ]",
+      "reading": "Have read [  ] pages or [  ] articles, able to summarize [  ] and list important excerpts.",
+      "coding": "Have implemented [  ] (approximately [  ] lines of code), passed testing and can run/reproduce in the environment.",
+      "homework": "Have completed [  ] problems or [  ] projects, submitted and passed evaluation/testing, with problem-solving ideas attached.",
+      "assignment": "Have delivered [  ], achieved [  ], and recorded implementation steps and encountered issues.",
+      "course": "Have attended [  ] lessons/units, organized [  ], mastered [  ] and can apply it in practice.",
+      "review": "Have completed review: Reviewed the work/study of [  ], identified [  ], proposed [  ] and formulated improvement plans."
+    }
+  },
+  "composed_preview": {
+    "time": "Time: {time}",
+    "duration": "Duration: {duration} minutes",
+    "focus_diff": "Focus: {focus}/5 Difficulty: {diff}/5",
+    "tags": "Tags: {tags}",
+    "target": "Target: {goal}",
+    "next_step": "Next Step: {next_step}"
+  },
+  "post_dealing": {
+    "create": {
+      "no_enough": "Title and content cannot both be empty",
+      "saving": "Saving...",
+      "success": {
+        "total": "The record has been created successfully! New record ID: {id}",
+        "part": "The record has been created successfully! New record ID: {id} (The backend does not currently support extended fields and has been automatically compatible)"
+      },
+      "fail": "The record creation failed: {error}"
+    },
+    "update": {
+      "zbyisgod": "have no this API yet, don't ask me to implement it QwQ"
+    },
+    "delete": {
+      "success": "The record has been deleted successfully! Deleted record ID: {id}",
+      "fail": "The record deletion failed: {error}"
+    }
+  },
+  "other": {
+    "logout_error": "Logout request failed (network or server error), but local session has been cleared. If you still see the logged-in status, it may be because the backend session was not successfully cleared. Please try refreshing the page or checking your network connection.",
+    "list_error": "Not logged in, unable to load list",
+    "draft_clean": "Cleared (Drafts will still be auto-saved)"
+  },
+  "overlay_rest":{
+    "left":{
+      "title":"TITLE",
+      "suggest":"10–60 characters recommended; up to 120 characters",
+      "time":"Study Time",
+      "duration":"Duration (minutes)",
+      "focus":"Focus (1-5)",
+      "diff":"Difficulty (1-5)",
+      "current":"Current:",
+      "tag_plus":"Tags (Press Enter to add)",
+      "target":"Target / Expected Outcome",
+      "placeholder":"What problem do you want to solve this time?",
+      "tag_placeholder":"For example: Vue / Class / Math",
+      "title_placeholder":"For example: Learning the word ABANDON",
+      "duration_placeholder":"For example: 45"
+    },
+    "right":{
+      "content":"CONTENT",
+      "title":"DETAILS",
+      "preview_on":"Preview",
+      "placeholder":"Write down what you did, what you learned, where you got stuck, and what the next step is...",
+      "suggest":"Tip: Write in four sections: “Conclusion / Process / Reflection / Next Step” for faster review later.",
+      "preview":"Preview (Plain text safe preview)",
+      "next_step":"Next Step Plan (Optional)",
+      "next_step_placeholder":"Press Enter to add",
+      "add":"Add",
+      "remove":"Remove"
+    },
+    "footer":{
+      "a":"Shortcut: Esc to close",
+      "b":"Ctrl/⌘ + Enter to save",
+      "c":"Drafts are automatically saved locally"
     }
   }
 }

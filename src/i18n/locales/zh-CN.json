@@ -116,10 +116,10 @@
         },
         "overlay_body": {
           "left_column": {
-            "panel_head":{
+            "panel_head": {
               "title": "基础信息",
-              "module":{
-                "a": "模板：无",
+              "module": {
+                "a": "模板:无",
                 "b": "阅读",
                 "c": "编码",
                 "d": "课程/讲座",
@@ -129,7 +129,167 @@
             }
           }
         }
+      },
+      "detail": {
+        "header": {
+          "id": "记录ID: {id}",
+          "loading": "加载中...",
+          "no_title": "(无标题)",
+          "edit": "编辑",
+          "pin": "置顶",
+          "goal": "目标",
+          "close": "关闭",
+          "sub_title": {
+            "uploaded": "上传于"
+          }
+        },
+        "body": {
+          "error": "加载失败",
+          "hero_left": {
+            "start_at": "开始于:",
+            "min": "分钟",
+            "pinned": "置顶",
+            "normal": "普通"
+          },
+          "grid": {
+            "hd": {
+              "content": "内容",
+              "chars": "字"
+            },
+            "todos": {
+              "content": "待办事项"
+            },
+            "sidebar": {
+              "card_A": {
+                "title": "指标",
+                "visualization": "可视化",
+                "focus": "专注度",
+                "diff": "难度",
+                "duration": "时长",
+                "min": "分钟",
+                "no_data": "暂无数据"
+              },
+              "card_B": {
+                "title": "目标",
+                "happened_at": "发生于",
+                "duration": "时长",
+                "focus": "专注度",
+                "diff": "难度",
+                "pin_to_top": "置顶",
+                "pin_status": {
+                  "true": "是",
+                  "false": "否"
+                },
+                "no_data": "暂无数据",
+                "min": "分钟"
+              }
+            }
+          },
+          "footer": {
+            "delete": "删除该记录",
+            "delete_confirm": "确定要删除这条记录吗？此操作不可撤销,请输入'我确定要删除'以确认",
+            "delete_confirm_text": "我确定要删除",
+            "text_wrong": "确认文本错误，已取消删除\n嘻嘻我就知道你不肯删我(>w<)"
+          }
+        }
       }
+    }
+  },
+  "setting": {
+    "alert": "还没写这个页面，你要是想要可以催我(boyangzhang246@gmail.com),不过我99.999%的概率会忽略QwQ"
+  },
+  "apply_template": {
+    "type": {
+      "reciting": "背诵",
+      "reading": "阅读",
+      "coding": "编码",
+      "homework": "作业",
+      "assignment": "任务/项目",
+      "course": "课程/讲座",
+      "review": "复盘/总结/复习"
+    },
+    "content": {
+      "reciting": "复述/背诵（模板）: 对【】进行背诵，时长 【】 分钟，目标是能完整复述并记住要点；当前掌握度：【】；遇到的问题：【】；下一步改进：【】",
+      "reading": "阅读（模板）: 阅读了【】的第 【】 页/篇，摘要：【】；关键收获：【】；后续行动：【】",
+      "coding": "编码（模板）: 实现了【】（约 【】 行代码），解决了 【】；测试情况：【】；部署/复现方法：【】；剩余任务：【】",
+      "homework": "作业（模板）: 完成了【】的作业，包括 【】 道题/项；难点：【】；解题思路或答案要点：【】；需复查的地方：【】",
+      "assignment": "任务/项目（模板）: 交付了【】的成果物，实现了 【】；用时 【】 小时；关键步骤：【】；遇到的风险/问题：【】；后续计划：【】",
+      "course": "课程/讲座（模板）: 听了【】的第 【】 节/单元，覆盖主题：【】；学到的技能/概念：【】；练习或作业：【】；应用场景：【】",
+      "review": "复盘（模板）: 回顾了【】的目标与结果；成功点：【】；问题点：【】；原因分析：【】；改进措施与行动项：【】；预期指标：【】"
+    },
+    "goal": {
+      "reciting": "已完成背诵:【】，重复 【】 次，能完整复述并记住主要要点。",
+      "reading": "已完成阅读:【】，共 【】 页或 【】 篇，能归纳出 【】 并列出重要摘录。",
+      "coding": "已完成编码:实现了 【】（约 【】 行代码），通过测试并能在环境中运行/复现。",
+      "homework": "已完成作业:完成了 【】 道题或 【】 个项目，提交并通过评估/测试，附带解题思路。",
+      "assignment": "已完成任务/项目:交付了 【】 ，实现了 【】 ，并记录了实现步骤与遇到的问题。",
+      "course": "已完成课程/讲座:听完 【】 节，整理了 【】 ，掌握了 【】 并能应用于实践。",
+      "review": "已完成复盘:回顾了 【】 的工作/学习，识别出 【】 ，提出 【】 并制定改进计划。"
+    }
+  },
+  "composed_preview": {
+    "time": "时间: {time}",
+    "duration": "时长: {duration}分钟",
+    "focus_diff": "专注度: {focus}/5 难度: {diff}/5",
+    "tags": "标签: {tags}",
+    "target": "目标: {goal}",
+    "next_step": "下一步: {next_step}"
+  },
+  "post_dealing": {
+    "create": {
+      "no_enough": "记录创建失败: 请输入标题和内容",
+      "saving": "记录创建中...",
+      "success": {
+        "total": "记录创建成功！新记录ID: {id}",
+        "part": "记录创建成功！新记录ID: {id}（后端暂不支持扩展字段，已自动兼容）"
+      },
+      "fail": "记录创建失败: {error}"
+    },
+    "update": {
+      "zbyisgod": "have no this API yet, don't ask me to implement it QwQ"
+    },
+    "delete": {
+      "success": "记录删除成功！删除记录ID: {id}",
+      "fail": "记录删除失败: {error}"
+    }
+  },
+  "other": {
+    "logout_error": "还没写这个页面，你要是想要可以催我(boyangzhang246@gmail.com),不过我99.999%的概率会忽略QwQ",
+    "list_error": "未登录，无法加载列表",
+    "draft_clean": "已清空（草稿仍会自动保存）"
+  },
+  "overlay_rest":{
+    "left":{
+      "title":"标题",
+      "suggest":"建议 10–60 字；最多 120 字",
+      "time":"学习时间",
+      "duration":"时长（分钟）",
+      "focus":"专注度（1-5）",
+      "diff":"难度（1-5）",
+      "current":"当前:",
+      "tag_plus":"标签（回车添加）",
+      "target":"目标 / 预期收获",
+      "placeholder":"这次想解决什么问题？",
+      "tag_placeholder":"例如：Vue / 上课 / 数学",
+      "title_placeholder":"例如: 单词ABANDON的学习",
+      "duration_placeholder":"例如 45"
+    },
+    "right":{
+      "content":"内容",
+      "title":"详述",
+      "preview_on":"预览",
+      "placeholder":"写下做了什么、学到了什么、哪里卡住、下一步是什么…",
+      "suggest":"小提示：用“结论 / 过程 / 反思 / 下一步”四段写，回头复盘更快。",
+      "preview":"预览（纯文本安全预览）",
+      "next_step":"下一步计划（可选）",
+      "next_step_placeholder":"输入后回车添加",
+      "add":"添加",
+      "remove":"移除"
+    },
+    "footer":{
+      "a":"快捷键：Esc 关闭",
+      "b":"Ctrl/⌘ + Enter 保存",
+      "c":"草稿自动保存到本地"
     }
   }
 }

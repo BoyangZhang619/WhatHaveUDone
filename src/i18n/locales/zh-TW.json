@@ -129,7 +129,167 @@
             }
           }
         }
+      },
+      "detail": {
+        "header": {
+          "id": "記錄ID: {id}",
+          "loading": "加載中…",
+          "no_title": "(無標題)",
+          "edit": "編輯",
+          "pin": "置頂",
+          "goal": "目標",
+          "close": "關閉",
+          "sub_title": {
+            "uploaded": "上傳於"
+          }
+        },
+        "body": {
+          "error": "加載失敗",
+          "hero_left": {
+            "start_at": "開始於:",
+            "min": "分鐘",
+            "pinned": "置頂",
+            "normal": "普通"
+          },
+          "grid": {
+            "hd": {
+              "content": "內容",
+              "chars": "字元數"
+            },
+            "todos": {
+              "content": "待辦事項"
+            },
+            "sidebar": {
+              "card_A": {
+                "title": "指標",
+                "visualization": "可視化",
+                "focus": "專注",
+                "diff": "難度",
+                "duration": "持續時間",
+                "min": "分鐘",
+                "no_data": "無數據"
+              },
+              "card_B": {
+                "title": "目標",
+                "happened_at": "發生於",
+                "duration": "持續時間",
+                "focus": "專注",
+                "diff": "難度",
+                "pin_to_top": "置頂",
+                "pin_status": {
+                  "true": "是",
+                  "false": "否"
+                },
+                "no_data": "無數據",
+                "min": "分鐘"
+              }
+            }
+          },
+          "footer": {
+            "delete": "刪除該記錄",
+            "delete_confirm": "確定要刪除這條記錄嗎？此操作不可撤銷，請輸入'我確定要刪除'以確認",
+            "delete_confirm_text": "我確定要刪除",
+            "text_wrong": "確認文本錯誤，已取消刪除\n 嘻嘻我就知道你不肯刪我(>w<)"
+          }
+        }
       }
+    }
+  },
+  "setting": {
+    "alert": "還沒寫這個頁面，你要是想要可以催我(boyangzhang246@gmail.com),不過我99.999%的概率會忽略QwQ"
+  },
+  "apply_template": {
+    "type": {
+      "reciting": "背誦",
+      "reading": "閱讀",
+      "coding": "編碼",
+      "homework": "作業",
+      "assignment": "任務/項目",
+      "course": "課程/講座",
+      "review": "復盤/總結/複習"
+    },
+    "content": {
+      "reciting": "復述/背誦（模板）: 對【】進行背誦，時長 【】 分鐘，目標是能完整復述並記住要點；當前掌握度：【】；遇到的問題：【】；下一步改進：【】",
+      "reading": "閱讀（模板）: 閱讀了【】的第 【】 頁/篇，摘要：【】；關鍵收穫：【】；後續行動：【】",
+      "coding": "編碼（模板）: 實現了【】（約 【】 行代碼），解決了 【】；測試情況：【】；部署/復現方法：【】；剩餘任務：【】",
+      "homework": "作業（模板）: 完成了【】的作業，包括 【】 道題/項；難點：【】；解題思路或答案要點：【】；需複查的地方：【】",
+      "assignment": "任務/項目（模板）: 交付了【】的成果物，實現了 【】；用時 【】 小時；關鍵步驟：【】；遇到的風險/問題：【】；後續計劃：【】",
+      "course": "課程/講座（模板）: 聽了【】的第 【】 節/單元，覆蓋主題：【】；學到的技能/概念：【】；練習或作業：【】；應用場景：【】",
+      "review": "復盤（模板）: 回顧了【】的目標與結果；成功點：【】；問題點：【】；原因分析：【】；改進措施與行動項：【】；預期指標：【】"
+    },
+    "goal": {
+      "reciting": "已完成背誦:【】，重複 【】 次，能完整復述並記住主要要點。",
+      "reading": "已完成閱讀:【】，共 【】 頁或 【】 篇，能歸納出 【】 並列出重要摘錄。",
+      "coding": "已完成編碼:實現了 【】（約 【】 行代碼），通過測試並能在環境中運行/復現。",
+      "homework": "已完成作業:完成了 【】 道題或 【】 個項目，提交並通過評估/測試，附帶解題思路。",
+      "assignment": "已完成任務/項目:交付了 【】 ，實現了 【】 ，並記錄了實現步驟與遇到的問題。",
+      "course": "已完成課程/講座:聽完 【】 節，整理了 【】 ，掌握了 【】 並能應用於實踐。",
+      "review": "已完成復盤:回顧了 【】 的工作/學習，識別出 【】 ，提出 【】 並制定改進計劃。"
+    }
+  },
+  "composed_preview": {
+    "time": "時間: {time}",
+    "duration": "時長: {duration}分鐘",
+    "focus_diff": "專注度: {focus}/5 難度: {diff}/5",
+    "tags": "標籤: {tags}",
+    "target": "目標: {goal}",
+    "next_step": "下一步: {next_step}"
+  },
+  "post_dealing": {
+    "create": {
+      "no_enough": "記錄創建失敗: 请输入標題和內容",
+      "saving": "記錄創建中...",
+      "success": {
+        "total": "記錄創建成功！新記錄ID: {id}",
+        "part": "記錄創建成功！新記錄ID: {id}（後端暫不支持擴展字段，已自動兼容）"
+      },
+      "fail": "記錄創建失敗: {error}"
+    },
+    "update": {
+      "zbyisgod": "have no this API yet, don't ask me to implement it QwQ"
+    },
+    "delete": {
+      "success": "記錄刪除成功！刪除記錄ID: {id}",
+      "fail": "記錄刪除失敗: {error}"
+    }
+  },
+  "other": {
+    "logout_error": "退出登錄請求失敗（網絡或服務器錯誤），但本地會話已清除。如果你仍然看到登錄狀態，可能是因為後端會話未成功清除。請嘗試刷新頁面或檢查你的網絡連接。",
+    "list_error": "未登錄，無法加載列表",
+    "draft_clean": "已清空（草稿仍會自動保存）"
+  },
+  "overlay_rest":{
+    "left":{
+      "title":"標題",
+      "suggest":"建議 10–60 字；最多 120 字",
+      "time":"學習時間",
+      "duration":"時長（分鐘）",
+      "focus":"專注度（1-5）",
+      "diff":"難度（1-5）",
+      "current":"當前:",
+      "tag_plus":"標籤（回車添加）",
+      "target":"目標 / 預期收穫",
+      "placeholder":"這次想解決什麼問題？",
+      "tag_placeholder":"例如：Vue / 上課 / 數學",
+      "title_placeholder":"例如: 單詞ABANDON的學習",
+      "duration_placeholder":"例如 45"
+    },
+    "right":{
+      "content":"內容",
+      "title":"詳述",
+      "preview_on":"預覽",
+      "placeholder":"寫下做了什麼、學到了什麼、哪裡卡住、下一步是什麼…",
+      "suggest":"小提示：用“結論 / 過程 / 反思 / 下一步”四段寫，回頭復盤更快。",
+      "preview":"預覽（純文本安全預覽）",
+      "next_step":"下一步計劃（可選）",
+      "next_step_placeholder":"輸入後回車添加",
+      "add":"添加",
+      "remove":"移除"
+    },
+    "footer":{
+      "a":"快捷鍵：Esc 關閉",
+      "b":"Ctrl/⌘ + Enter 保存",
+      "c":"草稿自動保存到本地"
     }
   }
 }
