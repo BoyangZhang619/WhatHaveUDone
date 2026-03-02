@@ -1,5 +1,4 @@
-﻿
-/* 柔和简约设计风格 */
+﻿/* 柔和简约设计风格 */
 .login-wrapper {
     display: flex;
     justify-content: center;
@@ -186,7 +185,8 @@ input:focus {
     /* 改成轻量级按钮样式 */
     width: 40px;
     height: 40px;
-    border-radius: 12px; /* 和输入框/按钮圆角统一风格 */
+    border-radius: 12px;
+    /* 和输入框/按钮圆角统一风格 */
     background: var(--bg-subtle);
     border: 1px solid var(--line);
     display: flex;
@@ -194,17 +194,21 @@ input:focus {
     align-items: center;
     font-size: 1rem;
     cursor: pointer;
-    color: var(--text-tertiary);
-    transition: all 0.3s ease; /* 和输入框过渡时长一致 */
+    transition: all 0.3s ease;
     box-sizing: border-box;
+    color: transparent;
+    -webkit-mask-image: linear-gradient(black, black);
+    mask-image: linear-gradient(black, black);
+    -webkit-background-clip: text;
+    background-clip: text;
+    background-color: var(--text-tertiary);
+    -webkit-text-fill-color: transparent;
 }
 
 .language:hover {
-    color: var(--text);
     border-color: var(--text);
-    background: var(--surface);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04); /* 轻微阴影，和主按钮呼应 */
-    transform: translateY(-1px); /* 轻微上移，和主按钮 hover 效果统一 */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    transform: translateY(-1px);
 }
 
 /* 问号按钮 - 右下角（优化版） */

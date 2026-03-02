@@ -313,8 +313,9 @@
       },
       "export": {
         "title": "匯出資料",
-        "desc": "將所有學習記錄匯出為 JSON 檔案，方便備份或遷移",
-        "btn": "匯出"
+        "desc": "將所有學習記錄匯出為 JSON 檔案，方便備份或遷移。每兩次該行為間隔為1小時",
+        "btn": "匯出",
+        "locked": "匯出功能已鎖定，請 {s} 秒後再試"
       },
       "import": {
         "title": "匯入資料",
@@ -375,7 +376,7 @@
       },
       "feedback": {
         "title": "意見反饋",
-        "desc": "有問題或建議？給開發者發送郵件",
+        "desc": "有問題或建議？給開發者發送郵件,我會認真閱讀每一封郵件的！(但是庫是 private 的,想看就給我發郵件反饋一下然後讓你看)",
         "btn": "反饋"
       },
       "source": {
@@ -416,9 +417,15 @@
       "password_todo": "修改密碼功能待實作",
       "email_todo": "修改郵箱功能待實作",
       "export_todo": "匯出資料功能待實作",
+      "export_success": "資料已匯出！檔名格式為 what-ive-done-export-{timestamp}.json",
+      "export_failed": "資料匯出失敗: {error}",
       "import_todo": "匯入資料功能待實作",
       "sessions_todo": "會話管理功能待實作",
       "clear_data_todo": "清除資料功能待實作",
+      "clear_data_success": "已成功清除所有資料",
+      "clear_data_confirm": "請確認是否要清除所有資料？此操作不可復原，請輸入'我確定要清除'以確認",
+      "clear_data_confirm_text": "我確定要清除",
+      "clear_data_cancelled": "已取消清除所有資料",
       "delete_account_todo": "註銷帳戶功能待實作",
       "daily_reminder_on": "每日提醒已啟用",
       "daily_reminder_off": "每日提醒已停用",

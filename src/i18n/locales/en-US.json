@@ -315,8 +315,9 @@
       },
       "export": {
         "title": "Export data",
-        "desc": "Export all study logs as a JSON file for backup or migration",
-        "btn": "Export"
+        "desc": "Export all study logs as a JSON file for backup or migration. Each export action is limited to once per hour.",
+        "btn": "Export",
+        "locked": "Export is locked, please try again in {s} seconds"
       },
       "import": {
         "title": "Import data",
@@ -372,7 +373,7 @@
       },
       "changelog": {
         "title": "Changelog",
-        "desc": "View the history of changes",
+        "desc": "View the history of changes, because I haven't implemented it yet, you can check the commit history on GitHub to see the latest updates, and the repo is private, so contact me if you want to see it",
         "btn": "View"
       },
       "feedback": {
@@ -418,9 +419,15 @@
       "password_todo": "Change password: not implemented yet",
       "email_todo": "Change email: not implemented yet",
       "export_todo": "Export data: not implemented yet",
+      "export_success": "Data exported successfully! Filename format: what-ive-done-export-{timestamp}.json",
+      "export_failed": "Data export failed: {error}",
       "import_todo": "Import data: not implemented yet",
       "sessions_todo": "Session management: not implemented yet",
       "clear_data_todo": "Clear data: not implemented yet",
+      "clear_data_success": "Clear data action succeeded",
+      "clear_data_confirm": "Please confirm whether you want to clear all data? This action is irreversible, please type 'I am sure I want to clear' to confirm",
+      "clear_data_cancelled": "Clear data action cancelled",
+      "clear_data_confirm_text": "I am sure I want to clear",
       "delete_account_todo": "Delete account: not implemented yet",
       "daily_reminder_on": "Daily reminder enabled",
       "daily_reminder_off": "Daily reminder disabled",

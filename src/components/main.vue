@@ -187,7 +187,7 @@
         <!-- Pagination -->
         <div class="pager" v-if="showPager">
           <button class="btn ghost" :disabled="pager.page <= 1 || listLoading" @click="goPage(pager.page - 1)"
-            style="color: #333;">
+            style="color: var(--text);">
             ‹
           </button>
 
@@ -199,7 +199,7 @@
           </button>
 
           <button class="btn ghost" :disabled="!pager.hasNext || listLoading" @click="goPage(pager.page + 1)"
-            style="color: #333;">
+            style="color: var(--text);">
             ›
           </button>
 
@@ -947,34 +947,45 @@ const showPager = computed(() => {
 });
 
 function buildPageItems(current: number, totalPages: number | null, hasNext: boolean) {
-  // 高级一点：窗口化 + 首尾 + 省略号
-  // totalPages 为空时：不显示尾页，但保留窗口与 next
   const items: Array<{ type: "page" | "ellipsis"; value?: number; key: string }> = [];
   const key = (t: string, v: any) => `${t}:${v}`;
-
   const pushPage = (v: number) => items.push({ type: "page", value: v, key: key("p", v) });
   const pushEllipsis = (id: string) => items.push({ type: "ellipsis", key: key("e", id) });
 
-  const windowSize = 2; // current ±2
-  const start = Math.max(1, current - windowSize);
-  const end = totalPages ? Math.min(totalPages, current + windowSize) : current + windowSize;
-
-  // 首页
-  if (start > 1) {
-    pushPage(1);
-    if (start > 2) pushEllipsis("l");
+  // 总页数未知：仅显示当前页，箭头靠 hasNext 控制
+  if (totalPages == null) {
+    pushPage(current);
+    if (hasNext) pushEllipsis("r");
+    return items;
   }
 
-  // 中间窗口
-  for (let i = start; i <= end; i++) pushPage(i);
+  // ≤ 4 页：全部显示
+  if (totalPages <= 4) {
+    for (let i = 1; i <= totalPages; i++) pushPage(i);
+    return items;
+  }
 
-  // 尾页（仅 totalPages 已知时）
-  if (totalPages) {
-    if (end < totalPages - 1) pushEllipsis("r");
-    if (end < totalPages) pushPage(totalPages);
+  // > 4 页：固定 4 个位置 [首页, 中间1, 中间2, 末页]
+  const last = totalPages;
+
+  if (current <= 2) {
+    // 靠近首页：[1, 2, …, 末页]
+    pushPage(1);
+    pushPage(2);
+    pushEllipsis("r");
+    pushPage(last);
+  } else if (current >= last - 1) {
+    // 靠近末页：[1, …, 末页-1, 末页]
+    pushPage(1);
+    pushEllipsis("l");
+    pushPage(last - 1);
+    pushPage(last);
   } else {
-    // total 未知：如果还有下一页，给一个“假尾部省略”，视觉更高级
-    if (hasNext) pushEllipsis("r");
+    // 中间区域：[1, …, 当前页, 末页]
+    pushPage(1);
+    pushEllipsis("l");
+    pushPage(current);
+    pushPage(last);
   }
 
   return items;

@@ -287,7 +287,7 @@
             <div class="setting-divider"></div>
 
             <!-- 导出数据 -->
-            <div class="setting-item locked">
+            <div class="setting-item">
               <div class="setting-item-info">
                 <div class="setting-item-title">{{ t('setting.account.export.title') }}</div>
                 <div class="setting-item-desc muted">{{ t('setting.account.export.desc') }}</div>
@@ -325,7 +325,7 @@
             <div class="setting-divider"></div>
 
             <!-- 清空数据 -->
-            <div class="setting-item locked">
+            <div class="setting-item">
               <div class="setting-item-info">
                 <div class="setting-item-title danger-text">{{ t('setting.account.clear_data.title') }}</div>
                 <div class="setting-item-desc muted">{{ t('setting.account.clear_data.desc') }}</div>
@@ -450,7 +450,7 @@
             </div>
 
             <!-- 更新日志 -->
-            <div class="setting-item locked">
+            <div class="setting-item">
               <div class="setting-item-info">
                 <div class="setting-item-title">{{ t('setting.about.changelog.title') }}</div>
                 <div class="setting-item-desc muted">{{ t('setting.about.changelog.desc') }}</div>
@@ -516,9 +516,44 @@ import { setLocale, SUPPORTED_LOCALES, type SupportedLocale } from "@/i18n";
 
 const { t, locale } = useI18n();
 
+const API_BASE = (import.meta as any).env?.VITE_API_BASE ?? "";
+
 defineEmits<{
   (e: "close"): void;
 }>();
+
+async function api(path: string, options: {
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE';
+  headers?: any;
+  body?: string;
+} = { method: "GET" }) {
+  const headers = options.headers ? { ...options.headers } : {};
+  if (options.body && !headers["Content-Type"]) headers["Content-Type"] = "application/json";
+
+  let res;
+  try {
+    res = await fetch(API_BASE + path, {
+      ...options,
+      headers,
+      credentials: "include",
+    });
+  } catch (err: any) {
+    throw { kind: "network", message: err?.message || String(err), err };
+  }
+
+  const text = await res.text();
+  let data = null;
+  try {
+    data = text ? JSON.parse(text) : null;
+  } catch {
+    data = { raw: text };
+  }
+
+  if (!res.ok) {
+    throw { kind: "http", status: res.status, statusText: res.statusText, data };
+  }
+  return data;
+}
 
 // ============ 本地持久化工具 ============
 const STORAGE_KEY = "whatIveDone_settings";
@@ -712,9 +747,86 @@ function onChangeEmail() {
 }
 
 /** 导出数据 */
-function onExportData() {
-  // TODO: 调用后端 API 拉取全部数据 → 生成 JSON → 触发浏览器下载
-  setStatus(t('setting.status.export_todo'), "muted");
+async function onExportData() {
+  // 简单前端限流：导出后 1 小时内不可再次导出
+  const LOCK_KEY = "whatIveDone_export_lock_v1";
+
+  async function sha256Base64(msg: string) {
+    const enc = new TextEncoder();
+    const buf = await crypto.subtle.digest("SHA-256", enc.encode(msg));
+    const bytes = new Uint8Array(buf);
+    let binary = "";
+    for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i]);
+    return btoa(binary);
+  }
+
+  // 检查是否存在有效锁（并验证签名以尽可能防篡改）
+  try {
+    const raw = localStorage.getItem(LOCK_KEY);
+    if (raw) {
+      try {
+        const obj = JSON.parse(raw);
+        if (obj?.ts && obj?.sig) {
+          const expected = await sha256Base64(String(obj.ts) + "|" + location.origin + "|" + navigator.userAgent);
+          if (expected === obj.sig) {
+            const now = Date.now();
+            const elapsed = now - Number(obj.ts);
+            const limit = 60 * 60 * 1000; // 1 小时
+            if (elapsed < limit) {
+              const remainingSec = Math.ceil((limit - elapsed) / 1000);
+              // 显示剩余时间，防止重复下载
+              setStatus(t('setting.account.export.locked', { s: remainingSec }), "error");
+              return;
+            }
+          } else {
+            // 签名不匹配，疑似被篡改，清除锁
+            localStorage.removeItem(LOCK_KEY);
+          }
+        } else {
+          localStorage.removeItem(LOCK_KEY);
+        }
+      } catch {
+        localStorage.removeItem(LOCK_KEY);
+      }
+    }
+  } catch (e) {
+    // 若 localStorage 不可用则继续（无法可靠限制）
+    console.warn("Export lock check failed:", e);
+  }
+
+  // 进行导出
+  try {
+    const data = await api(`/api/posts?all="true"`);
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.style.display = "none";
+    a.href = url;
+    const dateStr = new Date().toISOString().slice(0, 10);
+    a.download = `whatIveDone_export_${dateStr}.json`;
+    document.body.appendChild(a);
+    a.click();
+
+    // 延迟清理，以确保下载已触发
+    setTimeout(() => {
+      try { URL.revokeObjectURL(url); } catch (e) { /* noop */ }
+      try { document.body.removeChild(a); } catch (e) { /* noop */ }
+    }, 1500);
+
+    // 成功后设置锁并签名（防止用户直接修改时间戳绕过）
+    try {
+      const ts = Date.now();
+      const sig = await sha256Base64(String(ts) + "|" + location.origin + "|" + navigator.userAgent);
+      localStorage.setItem(LOCK_KEY, JSON.stringify({ ts, sig }));
+    } catch (e) {
+      console.warn("Failed to persist export lock:", e);
+    }
+    setStatus(t('setting.status.export_success', { timestamp: dateStr }), "success");
+  } catch (err) {
+    console.error("Export failed:", err);
+    setStatus(t('setting.status.export_failed', { error: (err as Error).message }), "error");
+    return;
+  }
 }
 
 /** 导入数据 */
@@ -730,9 +842,21 @@ function onManageSessions() {
 }
 
 /** 清空所有数据 */
-function onDeleteAllData() {
+async function onDeleteAllData() {
   // TODO: 二次确认 + 调用后端 API 删除所有记录
-  setStatus(t('setting.status.clear_data_todo'), "muted");
+  if (current.confirmDelete && prompt(t('setting.status.clear_data_confirm')) !== t('setting.status.clear_data_confirm_text')) {
+    alert(t('setting.status.clear_data_cancelled'));
+    return;
+  }
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem("whatIveDone_theme");
+    localStorage.removeItem("whatIveDone_locale");
+    await api("/api/delete", { method: "DELETE" });
+  } catch (e) {
+    console.warn("Failed to clear local settings:", e);
+  }
+  setStatus(t('setting.status.clear_data_success'), "muted");
 }
 
 /** 注销账户 */
