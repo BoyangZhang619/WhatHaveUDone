@@ -196,7 +196,235 @@
     }
   },
   "setting": {
-    "alert": "還沒寫這個頁面，你要是想要可以催我(boyangzhang246@gmail.com),不過我99.999%的概率會忽略QwQ"
+    "header": {
+      "back": "← 返回",
+      "title": "設置"
+    },
+    "group": {
+      "general": "通用",
+      "style": "外觀",
+      "account": "帳戶",
+      "notification": "通知與提醒",
+      "about": "關於"
+    },
+    "general": {
+      "language": {
+        "title": "語言 / Language",
+        "desc": "選擇介面顯示語言"
+      },
+      "page_size": {
+        "title": "預設每頁條數",
+        "desc": "打開列表時預設載入多少條記錄"
+      },
+      "sort_order": {
+        "title": "預設排序方式",
+        "desc": "記錄列表預設按什麼順序顯示",
+        "newest": "最新優先",
+        "oldest": "最早優先",
+        "updated": "最近更新",
+        "duration": "時長最長"
+      },
+      "auto_draft": {
+        "title": "草稿自動保存",
+        "desc": "編輯記錄時自動將草稿保存至本地，以防資料遺失"
+      },
+      "draft_interval": {
+        "title": "草稿保存間隔",
+        "desc": "每隔多少秒自動保存一次草稿（{n}s）"
+      },
+      "confirm_delete": {
+        "title": "刪除前確認",
+        "desc": "刪除記錄時是否彈出二次確認框"
+      },
+      "shortcuts": {
+        "title": "鍵盤快捷鍵",
+        "desc": "啟用 Ctrl/⌘+Enter 保存、Esc 關閉等全局快捷鍵"
+      },
+      "timezone": {
+        "title": "時區",
+        "desc": "影響記錄中「學習時間」的顯示方式",
+        "auto": "自動檢測",
+        "asia_shanghai": "中國標準時間 (UTC+8)",
+        "asia_tokyo": "日本標準時間 (UTC+9)",
+        "america_new_york": "美東時間 (UTC-5)",
+        "america_los_angeles": "美西時間 (UTC-8)",
+        "europe_london": "倫敦時間 (UTC+0)",
+        "europe_berlin": "中歐時間 (UTC+1)"
+      }
+    },
+    "style": {
+      "theme": {
+        "title": "主題",
+        "desc": "切換亮色 / 暗色模式",
+        "dark": "Dark",
+        "light": "Light"
+      },
+      "font_size": {
+        "title": "字體大小",
+        "desc": "調整全局正文字號（{n}px）"
+      },
+      "card_layout": {
+        "title": "卡片布局",
+        "desc": "列表區域使用卡片網格還是緊湊列表",
+        "grid": "網格",
+        "list": "列表",
+        "compact": "緊湊"
+      },
+      "animation": {
+        "title": "介面動畫",
+        "desc": "關閉後所有過渡動畫將被禁用，適合低效能設備"
+      },
+      "border_radius": {
+        "title": "圓角風格",
+        "desc": "卡片和按鈕的圓角大小偏好",
+        "none": "直角",
+        "small": "小圓角",
+        "medium": "中等圓角",
+        "large": "大圓角（預設）"
+      },
+      "preview_lines": {
+        "title": "卡片預覽行數",
+        "desc": "列表中每張卡片的內容預覽最多顯示幾行",
+        "lines_2": "2 行",
+        "lines_3": "3 行（預設）",
+        "lines_5": "5 行",
+        "lines_8": "8 行",
+        "lines_all": "全部展開"
+      }
+    },
+    "account": {
+      "nickname": {
+        "title": "暱稱",
+        "desc": "設定一個顯示名稱（不影響登入郵箱）",
+        "btn": "編輯"
+      },
+      "password": {
+        "title": "修改密碼",
+        "desc": "更換當前帳戶的登入密碼",
+        "btn": "修改"
+      },
+      "email": {
+        "title": "修改郵箱",
+        "desc": "更換當前帳戶的綁定郵箱",
+        "btn": "修改"
+      },
+      "export": {
+        "title": "匯出資料",
+        "desc": "將所有學習記錄匯出為 JSON 檔案，方便備份或遷移",
+        "btn": "匯出"
+      },
+      "import": {
+        "title": "匯入資料",
+        "desc": "從 JSON 檔案匯入學習記錄（會與現有記錄合併）",
+        "btn": "匯入"
+      },
+      "sessions": {
+        "title": "活動會話",
+        "desc": "查看並管理當前登入的設備與會話",
+        "btn": "管理"
+      },
+      "clear_data": {
+        "title": "清除所有資料",
+        "desc": "刪除所有學習記錄，此操作不可復原",
+        "btn": "清除"
+      },
+      "delete_account": {
+        "title": "註銷帳戶",
+        "desc": "永久刪除帳戶及所有關聯資料",
+        "btn": "註銷"
+      }
+    },
+    "notification": {
+      "daily_reminder": {
+        "title": "每日學習提醒",
+        "desc": "每天發送提醒通知，提示你記錄當日學習"
+      },
+      "reminder_time": {
+        "title": "提醒時間",
+        "desc": "每天幾點提醒你撰寫學習記錄"
+      },
+      "streak_reminder": {
+        "title": "連續打卡提醒",
+        "desc": "當你連續多天沒有記錄時發出提醒，避免斷簽"
+      },
+      "weekly_report": {
+        "title": "每週學習周報",
+        "desc": "每週一自動生成上週學習摘要（本地彈窗或郵件）",
+        "off": "關閉",
+        "popup": "本地彈窗",
+        "email": "郵件推送"
+      }
+    },
+    "about": {
+      "version": {
+        "title": "版本",
+        "desc": "當前應用版本號"
+      },
+      "check_update": {
+        "title": "檢查更新",
+        "desc": "查看是否有新版本可用",
+        "btn": "檢查"
+      },
+      "changelog": {
+        "title": "更新日誌",
+        "desc": "查看歷史版本變更說明",
+        "btn": "查看"
+      },
+      "feedback": {
+        "title": "意見反饋",
+        "desc": "有問題或建議？給開發者發送郵件",
+        "btn": "反饋"
+      },
+      "source": {
+        "title": "原始碼",
+        "desc": "在 GitHub 上查看本專案的原始碼（private，欲看請聯繫我）",
+        "btn": "GitHub"
+      },
+      "reset": {
+        "title": "重置所有設定",
+        "desc": "將所有設定項還原為預設值",
+        "btn": "重置"
+      }
+    },
+    "status": {
+      "lang_switched": "語言已切換為 {lang}",
+      "page_size_set": "預設每頁條數已設為 {n}",
+      "sort_updated": "預設排序方式已更新",
+      "auto_draft_on": "草稿自動保存已啟用",
+      "auto_draft_off": "草稿自動保存已停用",
+      "draft_interval_set": "草稿保存間隔已設為 {n} 秒",
+      "confirm_delete_on": "刪除前確認已啟用",
+      "confirm_delete_off": "刪除前確認已停用",
+      "shortcuts_on": "鍵盤快捷鍵已啟用",
+      "shortcuts_off": "鍵盤快捷鍵已停用",
+      "timezone_set": "時區已設為 {tz}",
+      "timezone_auto": "自動檢測",
+      "theme_dark": "主題已切換為暗色",
+      "theme_light": "主題已切換為亮色",
+      "font_size_set": "字體大小已設為 {n}px",
+      "card_layout_set": "卡片佈局已切換為「{layout}」",
+      "animation_on": "介面動畫已啟用",
+      "animation_off": "介面動畫已停用",
+      "border_radius_updated": "圓角風格已更新",
+      "preview_lines_set": "卡片預覽行數已設為 {n}",
+      "preview_lines_all": "全部展開",
+      "nickname_todo": "修改暱稱功能待實作",
+      "password_todo": "修改密碼功能待實作",
+      "email_todo": "修改郵箱功能待實作",
+      "export_todo": "匯出資料功能待實作",
+      "import_todo": "匯入資料功能待實作",
+      "sessions_todo": "會話管理功能待實作",
+      "clear_data_todo": "清除資料功能待實作",
+      "delete_account_todo": "註銷帳戶功能待實作",
+      "daily_reminder_on": "每日提醒已啟用",
+      "daily_reminder_off": "每日提醒已停用",
+      "reminder_time_set": "提醒時間已設為 {time}",
+      "streak_reminder_on": "連續打卡提醒已啟用",
+      "streak_reminder_off": "連續打卡提醒已停用",
+      "weekly_report_set": "每週周報已設為「{mode}」",
+      "check_update_latest": "已是最新版本 🎉",
+      "reset_done": "所有設定已還原為預設，重新載入頁面後完全生效"
+    }
   },
   "apply_template": {
     "type": {

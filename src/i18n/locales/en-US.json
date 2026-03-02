@@ -198,7 +198,235 @@
     }
   },
   "setting": {
-    "alert": "This page is not implemented yet. If you want it, you can email me (boyangzhang246@gmail.com), but I will probably ignore it 99.999% of the time QwQ"
+    "header": {
+      "back": "← Back",
+      "title": "Settings"
+    },
+    "group": {
+      "general": "General",
+      "style": "Appearance",
+      "account": "Account",
+      "notification": "Notifications",
+      "about": "About"
+    },
+    "general": {
+      "language": {
+        "title": "Language / Language",
+        "desc": "Select the UI language"
+      },
+      "page_size": {
+        "title": "Default items per page",
+        "desc": "How many records to load by default when opening lists"
+      },
+      "sort_order": {
+        "title": "Default sort order",
+        "desc": "Which order records are displayed by default",
+        "newest": "Newest first",
+        "oldest": "Oldest first",
+        "updated": "Recently updated",
+        "duration": "Longest duration"
+      },
+      "auto_draft": {
+        "title": "Auto-save drafts",
+        "desc": "Automatically save drafts locally while editing to prevent data loss"
+      },
+      "draft_interval": {
+        "title": "Draft save interval",
+        "desc": "How many seconds between automatic draft saves ({n}s)"
+      },
+      "confirm_delete": {
+        "title": "Confirm before delete",
+        "desc": "Show a confirmation dialog before deleting records"
+      },
+      "shortcuts": {
+        "title": "Keyboard shortcuts",
+        "desc": "Enable global shortcuts like Ctrl/⌘+Enter to save, Esc to close"
+      },
+      "timezone": {
+        "title": "Timezone",
+        "desc": "Affects how study time is displayed in records",
+        "auto": "Auto detect",
+        "asia_shanghai": "China Standard Time (UTC+8)",
+        "asia_tokyo": "Japan Standard Time (UTC+9)",
+        "america_new_york": "Eastern Time (UTC-5)",
+        "america_los_angeles": "Pacific Time (UTC-8)",
+        "europe_london": "London Time (UTC+0)",
+        "europe_berlin": "Central European Time (UTC+1)"
+      }
+    },
+    "style": {
+      "theme": {
+        "title": "Theme",
+        "desc": "Switch between light and dark mode",
+        "dark": "Dark",
+        "light": "Light"
+      },
+      "font_size": {
+        "title": "Font size",
+        "desc": "Adjust global body font size ({n}px)"
+      },
+      "card_layout": {
+        "title": "Card layout",
+        "desc": "Choose between grid, list or compact layouts",
+        "grid": "Grid",
+        "list": "List",
+        "compact": "Compact"
+      },
+      "animation": {
+        "title": "UI animations",
+        "desc": "Disable transitions and animations (for low-performance devices)"
+      },
+      "border_radius": {
+        "title": "Corner style",
+        "desc": "Preferred corner radius for cards and buttons",
+        "none": "Sharp corners",
+        "small": "Small radius",
+        "medium": "Medium radius",
+        "large": "Large radius (default)"
+      },
+      "preview_lines": {
+        "title": "Card preview lines",
+        "desc": "Maximum number of preview lines shown inside each card",
+        "lines_2": "2 lines",
+        "lines_3": "3 lines (default)",
+        "lines_5": "5 lines",
+        "lines_8": "8 lines",
+        "lines_all": "Show all"
+      }
+    },
+    "account": {
+      "nickname": {
+        "title": "Nickname",
+        "desc": "Set a display name (does not affect login email)",
+        "btn": "Edit"
+      },
+      "password": {
+        "title": "Change password",
+        "desc": "Change the password for your account",
+        "btn": "Change"
+      },
+      "email": {
+        "title": "Change email",
+        "desc": "Change the email address associated with your account",
+        "btn": "Change"
+      },
+      "export": {
+        "title": "Export data",
+        "desc": "Export all study logs as a JSON file for backup or migration",
+        "btn": "Export"
+      },
+      "import": {
+        "title": "Import data",
+        "desc": "Import study logs from a JSON file (will merge with existing records)",
+        "btn": "Import"
+      },
+      "sessions": {
+        "title": "Active sessions",
+        "desc": "View and manage currently logged-in devices and sessions",
+        "btn": "Manage"
+      },
+      "clear_data": {
+        "title": "Clear all data",
+        "desc": "Delete all study logs; this action is irreversible",
+        "btn": "Clear"
+      },
+      "delete_account": {
+        "title": "Delete account",
+        "desc": "Permanently delete your account and all associated data",
+        "btn": "Delete"
+      }
+    },
+    "notification": {
+      "daily_reminder": {
+        "title": "Daily study reminder",
+        "desc": "Send a daily notification reminding you to log your study"
+      },
+      "reminder_time": {
+        "title": "Reminder time",
+        "desc": "What time of day to remind you to write a study log"
+      },
+      "streak_reminder": {
+        "title": "Streak reminder",
+        "desc": "Remind you when you miss several days in a row to avoid breaking your streak"
+      },
+      "weekly_report": {
+        "title": "Weekly report",
+        "desc": "Generate a weekly summary of last week's study (local popup or email)",
+        "off": "Off",
+        "popup": "Local popup",
+        "email": "Email"
+      }
+    },
+    "about": {
+      "version": {
+        "title": "Version",
+        "desc": "Current application version"
+      },
+      "check_update": {
+        "title": "Check for updates",
+        "desc": "Check whether a new version is available",
+        "btn": "Check"
+      },
+      "changelog": {
+        "title": "Changelog",
+        "desc": "View the history of changes",
+        "btn": "View"
+      },
+      "feedback": {
+        "title": "Feedback",
+        "desc": "Have questions or suggestions? Email the developer",
+        "btn": "Send"
+      },
+      "source": {
+        "title": "Source code",
+        "desc": "View the project source on GitHub (private; contact me to request access)",
+        "btn": "GitHub"
+      },
+      "reset": {
+        "title": "Reset all settings",
+        "desc": "Restore all settings to their default values",
+        "btn": "Reset"
+      }
+    },
+    "status": {
+      "lang_switched": "Language switched to {lang}",
+      "page_size_set": "Default items per page set to {n}",
+      "sort_updated": "Default sort order updated",
+      "auto_draft_on": "Auto-draft saving enabled",
+      "auto_draft_off": "Auto-draft saving disabled",
+      "draft_interval_set": "Draft save interval set to {n} seconds",
+      "confirm_delete_on": "Confirm before delete enabled",
+      "confirm_delete_off": "Confirm before delete disabled",
+      "shortcuts_on": "Keyboard shortcuts enabled",
+      "shortcuts_off": "Keyboard shortcuts disabled",
+      "timezone_set": "Timezone set to {tz}",
+      "timezone_auto": "Auto detect",
+      "theme_dark": "Theme switched to dark",
+      "theme_light": "Theme switched to light",
+      "font_size_set": "Font size set to {n}px",
+      "card_layout_set": "Card layout switched to \"{layout}\"",
+      "animation_on": "UI animations enabled",
+      "animation_off": "UI animations disabled",
+      "border_radius_updated": "Corner style updated",
+      "preview_lines_set": "Card preview lines set to {n}",
+      "preview_lines_all": "Show all",
+      "nickname_todo": "Change nickname: not implemented yet",
+      "password_todo": "Change password: not implemented yet",
+      "email_todo": "Change email: not implemented yet",
+      "export_todo": "Export data: not implemented yet",
+      "import_todo": "Import data: not implemented yet",
+      "sessions_todo": "Session management: not implemented yet",
+      "clear_data_todo": "Clear data: not implemented yet",
+      "delete_account_todo": "Delete account: not implemented yet",
+      "daily_reminder_on": "Daily reminder enabled",
+      "daily_reminder_off": "Daily reminder disabled",
+      "reminder_time_set": "Reminder time set to {time}",
+      "streak_reminder_on": "Streak reminder enabled",
+      "streak_reminder_off": "Streak reminder disabled",
+      "weekly_report_set": "Weekly report set to \"{mode}\"",
+      "check_update_latest": "Already up to date 🎉",
+      "reset_done": "All settings restored to defaults; reload the page for full effect"
+    }
   },
   "apply_template": {
     "type": {

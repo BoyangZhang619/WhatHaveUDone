@@ -107,7 +107,7 @@ const MAX_EMAIL_LENGTH = 254;
 const MAX_PASSWORD_LENGTH = 128;
 
 function validateEmail(email: string): { ok: boolean; reason?: string } {
-    if (!email || typeof email !== 'string') return { ok: false, reason: t('login_card.validation.email.email_required') };
+    if (!email) return { ok: false, reason: t('login_card.validation.email.email_required') };
     if (email.length < MIN_EMAIL_LENGTH) return { ok: false, reason: t('login_card.validation.email.email_min_length') };
     if (email.length > MAX_EMAIL_LENGTH) return { ok: false, reason: t('login_card.validation.email.email_max_length') };
     // 简洁且严格的邮箱校验：本地部分限制长度，避免过度复杂的正则
@@ -117,7 +117,6 @@ function validateEmail(email: string): { ok: boolean; reason?: string } {
 
 function validatePassword(pw: string): { ok: boolean; reason?: string } {
     if (pw == null) return { ok: false, reason: t('login_card.validation.password.password_required') };
-    if (typeof pw !== 'string') return { ok: false, reason: t('login_card.validation.password.password_invalid') };
     if (pw.length < 6) return { ok: false, reason: t('login_card.validation.password.password_min_length') };
     if (pw.length > MAX_PASSWORD_LENGTH) return { ok: false, reason: t('login_card.validation.password.password_max_length') };
     // 禁止包含角括号以减小 XSS 注入风险（虽然 Vue 模板插值会自动转义，但防患于未然）
