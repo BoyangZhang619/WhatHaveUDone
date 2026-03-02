@@ -713,8 +713,8 @@ import {useI18n} from "vue-i18n";
 /** =========================
  *  API
  *  ========================= */
-//const API_BASE = "https://done.login.page.zbyblq.xin";
-const API_BASE = ""; // 默认同域，部署时请根据实际情况修改
+const API_BASE = "https://done.login.page.zbyblq.xin";
+//const API_BASE = ""; // 默认同域，部署时请根据实际情况修改
 
 const {t} = useI18n();
 const emit = defineEmits(["log-out", "settingOpen"]);
