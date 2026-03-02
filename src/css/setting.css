@@ -1,10 +1,10 @@
-/* ====== Setting Page — 黑灰白简约风（大尺寸版） ====== */
+﻿/* ====== Setting Page — 黑灰白简约风（大尺寸版） ====== */
 
 .setting-page {
   min-height: 100vh;
-  background: #fafafa;
+  background: var(--bg);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  color: #111;
+  color: var(--text);
   width: 90dvw;
   max-width: 600px;
 }
@@ -18,9 +18,9 @@
   align-items: center;
   justify-content: space-between;
   padding: 18px 24px;
-  background: rgba(250, 250, 250, 0.86);
+  background: var(--topbar-bg);
   backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid var(--line);
 }
 
 .setting-title {
@@ -51,10 +51,10 @@
 
 /* ====== Group (折叠面板) — 对标 main.css .panel / .list-area ====== */
 .setting-group {
-  background: #fff;
-  border: 1px solid rgba(0, 0, 0, 0.04);
+  background: var(--surface);
+  border: 1px solid var(--line);
   border-radius: 18px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
   overflow: hidden;
 }
 
@@ -72,18 +72,18 @@
 }
 
 .group-toggle:hover {
-  background: rgba(0, 0, 0, 0.02);
+  background: var(--bg-subtle);
 }
 
 .group-label {
   font-weight: 650;
   font-size: 17px;
-  color: #111;
+  color: var(--text);
 }
 
 .group-arrow {
   font-size: 16px;
-  color: #999;
+  color: var(--muted);
   transition: transform 0.25s ease;
   display: inline-block;
 }
@@ -102,7 +102,7 @@
   justify-content: space-between;
   gap: 24px;
   padding: 20px 0;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+  border-bottom: 1px solid var(--line);
 }
 
 .setting-item:last-child {
@@ -118,7 +118,7 @@
 .setting-item-title {
   font-size: 16px;
   font-weight: 550;
-  color: #111;
+  color: var(--text);
 }
 
 .setting-item-desc {
@@ -134,19 +134,19 @@
 /* ====== Select ====== */
 .setting-select {
   padding: 10px 16px;
-  border: 1px solid #e6e6e6;
+  border: 1px solid var(--border-subtle);
   border-radius: 12px;
-  background: #fff;
+  background: var(--surface);
   font-size: 14px;
-  color: #111;
+  color: var(--text);
   outline: none;
   cursor: pointer;
   transition: border-color 0.2s ease;
 }
 
 .setting-select:focus {
-  border-color: #111;
-  box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.04);
+  border-color: var(--text);
+  box-shadow: 0 0 0 4px rgba(128, 128, 128, 0.1);
 }
 
 /* ====== Switch (开关) ====== */
@@ -158,24 +158,24 @@
   width: 56px;
   height: 30px;
   padding: 3px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--line);
   border-radius: 999px;
-  background: #eee;
+  background: var(--bg-hover);
   cursor: pointer;
   transition: background 0.25s ease, border-color 0.25s ease;
   overflow: hidden;
 }
 
 .switch-track.active {
-  background: #111;
-  border-color: #111;
+  background: var(--text);
+  border-color: var(--text);
 }
 
 .switch-thumb {
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: #fff;
+  background: var(--surface);
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
   transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   flex: 0 0 auto;
@@ -196,7 +196,7 @@
 .setting-page .btn.ghost {
   background: transparent;
   border: none;
-  color: #444;
+  color: var(--text-secondary);
   cursor: pointer;
   padding: 10px 14px;
   border-radius: 12px;
@@ -206,24 +206,24 @@
 }
 
 .setting-page .btn.ghost:hover {
-  background: rgba(0, 0, 0, 0.04);
+  background: var(--bg-subtle);
 }
 
 .btn.secondary-sm {
   padding: 10px 20px;
   font-size: 14px;
   font-weight: 500;
-  border: 1px solid #e6e6e6;
+  border: 1px solid var(--border-subtle);
   border-radius: 12px;
-  background: #fff;
-  color: #111;
+  background: var(--surface);
+  color: var(--text);
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 .btn.secondary-sm:hover {
-  background: #f5f5f5;
-  border-color: #cfcfcf;
+  background: var(--bg);
+  border-color: var(--line);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
 }
@@ -232,24 +232,24 @@
   padding: 10px 20px;
   font-size: 14px;
   font-weight: 500;
-  border: 1px solid #fecaca;
+  border: 1px solid var(--status-error-border);
   border-radius: 12px;
-  background: #fff5f5;
-  color: #c53030;
+  background: var(--status-error-bg);
+  color: var(--status-error-text);
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 .btn.danger-sm:hover {
-  background: #fee2e2;
-  border-color: #f87171;
+  background: var(--status-error-bg);
+  border-color: var(--status-error-text);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(192, 48, 48, 0.1);
 }
 
 /* ====== Danger text ====== */
 .danger-text {
-  color: #c53030;
+  color: var(--status-error-text);
 }
 
 /* ====== Range slider ====== */
@@ -258,7 +258,7 @@
   appearance: none;
   width: 120px;
   height: 6px;
-  background: #eee;
+  background: var(--bg-hover);
   border-radius: 0;
   border: none;
   outline: none;
@@ -270,19 +270,19 @@
   appearance: none;
   width: 18px;
   height: 18px;
-  background: #333;
+  background: var(--range-thumb);
   border: none;
   border-radius: 0;
   transition: background 0.2s ease;
 }
 
 .setting-range::-webkit-slider-thumb:hover {
-  background: #666;
+  background: var(--range-thumb-hover);
 }
 
 .setting-range::-moz-range-track {
   height: 6px;
-  background: #eee;
+  background: var(--bg-hover);
   border: none;
   border-radius: 0;
 }
@@ -290,7 +290,7 @@
 .setting-range::-moz-range-thumb {
   width: 18px;
   height: 18px;
-  background: #333;
+  background: var(--range-thumb);
   border: none;
   border-radius: 0;
   cursor: pointer;
@@ -299,19 +299,19 @@
 /* ====== Time input ====== */
 .setting-time {
   padding: 8px 12px;
-  border: 1px solid #e6e6e6;
+  border: 1px solid var(--border-subtle);
   border-radius: 12px;
-  background: #fff;
+  background: var(--surface);
   font-size: 14px;
-  color: #111;
+  color: var(--text);
   outline: none;
   cursor: pointer;
   transition: border-color 0.2s ease;
 }
 
 .setting-time:focus {
-  border-color: #111;
-  box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.04);
+  border-color: var(--text);
+  box-shadow: 0 0 0 4px rgba(128, 128, 128, 0.1);
 }
 
 /* ====== Badge (version etc.) ====== */
@@ -320,9 +320,9 @@
   padding: 6px 14px;
   font-size: 13px;
   font-weight: 600;
-  color: #666;
-  background: #f5f5f5;
-  border: 1px solid #eee;
+  color: var(--text-tertiary);
+  background: var(--bg);
+  border: 1px solid var(--line);
   border-radius: 999px;
   letter-spacing: 0.03em;
 }
@@ -330,7 +330,7 @@
 /* ====== Divider ====== */
 .setting-divider {
   height: 1px;
-  background: rgba(0, 0, 0, 0.06);
+  background: var(--line);
   margin: 10px 0;
 }
 
@@ -356,25 +356,25 @@
 }
 
 .setting-status.muted {
-  background: #f5f5f5;
-  color: #666;
+  background: var(--bg);
+  color: var(--text-tertiary);
 }
 
 .setting-status.success {
-  background: #f0f9f0;
-  color: #2d7a2d;
-  border: 1px solid #e0eee0;
+  background: var(--status-success-bg);
+  color: var(--status-success-text);
+  border: 1px solid var(--status-success-border);
 }
 
 .setting-status.error {
-  background: #fff5f5;
-  color: #c53030;
-  border: 1px solid #fee2e2;
+  background: var(--status-error-bg);
+  color: var(--status-error-text);
+  border: 1px solid var(--status-error-border);
 }
 
 /* ====== Muted ====== */
 .setting-page .muted {
-  color: #8b8b8b;
+  color: var(--muted);
 }
 
 /* ====== Transitions ====== */

@@ -1,5 +1,5 @@
 <script setup>
-import {ref} from 'vue'
+import {ref, onMounted} from 'vue'
 import Login from './components/login.vue'
 import Main from './components/main.vue'
 import Setting from './components/setting.vue'
@@ -8,6 +8,15 @@ import Setting from './components/setting.vue'
 // false 表示未登录，存储对象（如 { email: '...' }）表示已登录
 const user = ref(false); // 这里先模拟一个已登录状态，实际开发中应初始化为 false
 const settingOpen = ref(false);
+
+/**
+ * 初始化主题
+ */
+onMounted(() => {
+  const saved = localStorage.getItem('whatIveDone_theme') || 'light';
+  document.documentElement.setAttribute('data-theme', saved);
+})
+
 /**
  * 处理登录成功
  * @param {Object} user_success 子组件传回的用户信息
@@ -62,9 +71,10 @@ const handleLogout = () => {
 body {
   margin: 0;
   padding: 0;
-  background-color: #fafafa; /* 极淡的底色 */
-  color: #1a1a1a;
+  background-color: var(--bg);
+  color: var(--text);
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .app-container {

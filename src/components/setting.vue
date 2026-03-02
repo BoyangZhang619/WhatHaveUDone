@@ -155,7 +155,7 @@
         <transition name="slide">
           <div v-if="displayState === 'style'" class="group-content">
             <!-- 主题切换 -->
-            <div class="setting-item locked">
+            <div class="setting-item">
               <div class="setting-item-info">
                 <div class="setting-item-title">{{ t('setting.style.theme.title') }}</div>
                 <div class="setting-item-desc muted">{{ t('setting.style.theme.desc') }}</div>
@@ -657,8 +657,8 @@ function onTimezoneChange() {
 function onThemeToggle() {
   current.theme = current.theme === "light" ? "dark" : "light";
   localStorage.setItem("whatIveDone_theme", current.theme);
+  document.documentElement.setAttribute("data-theme", current.theme);
   setStatus(current.theme === "dark" ? t('setting.status.theme_dark') : t('setting.status.theme_light'), "success");
-  // TODO: 实际切换 CSS 变量 / document class
 }
 
 /** 字体大小 */
