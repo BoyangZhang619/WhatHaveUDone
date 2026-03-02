@@ -38,7 +38,12 @@
 .setting-header-right {
   text-align: right;
 }
-
+.setting-header-desc {
+  font-size: 14px;
+  color: var(--text-secondary);
+  padding: 0 24px;
+  margin-top: 12px;
+}
 /* ====== Body ====== */
 .setting-body {
   max-width: 860px;
@@ -95,6 +100,7 @@
 .group-content {
   padding: 0 28px 24px;
 }
+
 /* ====== Setting Item ====== */
 .setting-item {
   display: flex;
@@ -130,7 +136,9 @@
 .setting-item-ctrl {
   flex: 0 0 auto;
 }
-
+.disappear {
+  display: none;
+}
 /* ====== Select ====== */
 .setting-select {
   padding: 10px 16px;

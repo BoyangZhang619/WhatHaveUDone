@@ -15,6 +15,22 @@ const settingOpen = ref(false);
 onMounted(() => {
   const saved = localStorage.getItem('whatIveDone_theme') || 'light';
   document.documentElement.setAttribute('data-theme', saved);
+
+  // 恢复外观设置
+  try {
+    const s = JSON.parse(localStorage.getItem('whatIveDone_settings') || '{}');
+    if (s.fontSize) document.documentElement.style.setProperty('--font-base', s.fontSize + 'px');
+    if (s.borderRadius) {
+      const radiusMap = { none: '0px', small: '6px', medium: '10px', large: '14px' };
+      document.documentElement.style.setProperty('--radius', radiusMap[s.borderRadius] || '14px');
+    }
+    if (s.previewLines !== undefined) {
+      document.documentElement.style.setProperty('--preview-lines', s.previewLines === 0 ? '9999' : String(s.previewLines));
+    }
+    if (s.animation === false) {
+      document.documentElement.setAttribute('data-no-animation', '');
+    }
+  } catch { /* ignore */ }
 })
 
 /**

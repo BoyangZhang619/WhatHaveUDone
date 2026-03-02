@@ -198,9 +198,11 @@
     }
   },
   "setting": {
+    "confirm_delete": "This is a bold decision, but I respect your choice. Please confirm again whether to switch the 'Confirm before delete' setting.",
     "header": {
       "back": "Back",
-      "title": "Settings"
+      "title": "Settings",
+      "desc": "General and appearance settings are saved locally only"
     },
     "group": {
       "general": "General",
@@ -224,7 +226,8 @@
         "newest": "Newest first",
         "oldest": "Oldest first",
         "updated": "Recently updated",
-        "duration": "Longest duration"
+        "duration": "Longest duration",
+        "pin": "Pinned first"
       },
       "auto_draft": {
         "title": "Auto-save drafts",
@@ -385,7 +388,8 @@
       "reset": {
         "title": "Reset all settings",
         "desc": "Restore all settings to their default values",
-        "btn": "Reset"
+        "btn": "Reset",
+        "confirm": "Are you sure you want to reset all settings? This will restore all preferences to their default values. You can change them again after resetting."
       }
     },
     "status": {
@@ -488,38 +492,38 @@
     "list_error": "Not logged in, unable to load list",
     "draft_clean": "Cleared (Drafts will still be auto-saved)"
   },
-  "overlay_rest":{
-    "left":{
-      "title":"TITLE",
-      "suggest":"10–60 characters recommended; up to 120 characters",
-      "time":"Study Time",
-      "duration":"Duration (minutes)",
-      "focus":"Focus (1-5)",
-      "diff":"Difficulty (1-5)",
-      "current":"Current:",
-      "tag_plus":"Tags (Press Enter to add)",
-      "target":"Target / Expected Outcome",
-      "placeholder":"What problem do you want to solve this time?",
-      "tag_placeholder":"For example: Vue / Class / Math",
-      "title_placeholder":"For example: Learning the word ABANDON",
-      "duration_placeholder":"For example: 45"
+  "overlay_rest": {
+    "left": {
+      "title": "TITLE",
+      "suggest": "10–60 characters recommended; up to 120 characters",
+      "time": "Study Time",
+      "duration": "Duration (minutes)",
+      "focus": "Focus (1-5)",
+      "diff": "Difficulty (1-5)",
+      "current": "Current:",
+      "tag_plus": "Tags (Press Enter to add)",
+      "target": "Target / Expected Outcome",
+      "placeholder": "What problem do you want to solve this time?",
+      "tag_placeholder": "For example: Vue / Class / Math",
+      "title_placeholder": "For example: Learning the word ABANDON",
+      "duration_placeholder": "For example: 45"
     },
-    "right":{
-      "content":"CONTENT",
-      "title":"DETAILS",
-      "preview_on":"Preview",
-      "placeholder":"Write down what you did, what you learned, where you got stuck, and what the next step is...",
-      "suggest":"Tip: Write in four sections: “Conclusion / Process / Reflection / Next Step” for faster review later.",
-      "preview":"Preview (Plain text safe preview)",
-      "next_step":"Next Step Plan (Optional)",
-      "next_step_placeholder":"Press Enter to add",
-      "add":"Add",
-      "remove":"Remove"
+    "right": {
+      "content": "CONTENT",
+      "title": "DETAILS",
+      "preview_on": "Preview",
+      "placeholder": "Write down what you did, what you learned, where you got stuck, and what the next step is...",
+      "suggest": "Tip: Write in four sections: “Conclusion / Process / Reflection / Next Step” for faster review later.",
+      "preview": "Preview (Plain text safe preview)",
+      "next_step": "Next Step Plan (Optional)",
+      "next_step_placeholder": "Press Enter to add",
+      "add": "Add",
+      "remove": "Remove"
     },
-    "footer":{
-      "a":"Shortcut: Esc to close",
-      "b":"Ctrl/⌘ + Enter to save",
-      "c":"Drafts are automatically saved locally"
+    "footer": {
+      "a": "Shortcut: Esc to close",
+      "b": "Ctrl/⌘ + Enter to save",
+      "c": "Drafts are automatically saved locally"
     }
   }
 }

@@ -3,6 +3,7 @@
   min-height: 100vh;
   background: var(--bg);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: var(--font-base, 14px);
   color: var(--text);
   width: 100dvw;
   overflow-x: hidden;
@@ -461,7 +462,7 @@ textarea {
   border: 1px solid var(--line);
   border-radius: 10px;
   outline: none;
-  font-size: 14px;
+  font-size: var(--font-base, 14px);
   background: var(--surface);
   color: var(--text);
   box-sizing: border-box;
@@ -942,7 +943,8 @@ html {
   margin: 0;
 
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: var(--preview-lines, 3);
+  line-clamp: var(--preview-lines, 3);
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -1087,6 +1089,8 @@ body {
   --shadow-sm: 0 10px 30px rgba(0, 0, 0, 0.05);
   --shadow-md: 0 14px 40px rgba(0, 0, 0, 0.08);
   --radius: 14px;
+  --font-base: 14px;
+  --preview-lines: 3;
   color-scheme: light;
 
   /* extended palette */
@@ -2017,4 +2021,14 @@ input[type=range]::-webkit-slider-runnable-track {
   background: var(--range-thumb);
   color: var(--pager-active-text);
   border-color: var(--range-thumb);
+}
+
+/* ===== Global animation disable ===== */
+[data-no-animation] *,
+[data-no-animation] *::before,
+[data-no-animation] *::after {
+  transition-duration: 0s !important;
+  animation-duration: 0s !important;
+  transition-delay: 0s !important;
+  animation-delay: 0s !important;
 }

@@ -26,8 +26,8 @@
     <main class="content">
       <!-- Create block -->
       <section class="create-area">
-        <div class="create-card" :class="{ compact: !composerOpen }" role="button" tabindex="0"
-             @click="openComposer" @keydown.enter.prevent="openComposer" @keydown.space.prevent="openComposer">
+        <div class="create-card" :class="{ compact: !composerOpen }" role="button" tabindex="0" @click="openComposer"
+          @keydown.enter.prevent="openComposer" @keydown.space.prevent="openComposer">
           <div class="create-card-left">
             <div class="create-badge">+</div>
             <div>
@@ -64,26 +64,26 @@
               <span class="muted">{{ t("main_page.body.list_area.select_page.per_page") }}</span>
             </div>
             <button class="btn secondary" @click="listPosts()">{{
-                t("main_page.body.list_area.select_page.refresh")
-              }}
+              t("main_page.body.list_area.select_page.refresh")
+            }}
             </button>
           </div>
         </div>
 
         <div v-if="listLoading" class="skeleton-wrap">
-          <div class="skeleton" v-for="i in 6" :key="i"/>
+          <div class="skeleton" v-for="i in 6" :key="i" />
         </div>
 
         <div v-else-if="listError" class="errorbox">
-          {{ t("main_page.body.list_area.errorbox", {error: listError}) }}
+          {{ t("main_page.body.list_area.errorbox", { error: listError }) }}
         </div>
 
         <div v-else-if="!posts.length" class="empty">
           <div class="empty-title">{{ t("main_page.body.list_area.empty.empty_title") }}</div>
           <div class="muted">{{ t("main_page.body.list_area.empty.text") }}</div>
           <button class="btn primary" @click="openComposer">{{
-              t("main_page.body.list_area.empty.plus")
-            }}
+            t("main_page.body.list_area.empty.plus")
+          }}
           </button>
         </div>
 
@@ -93,18 +93,18 @@
               <div class="post-title">
                 <span class="post-id muted">#{{ p.id }}</span>
                 <span class="post-title-text">{{
-                    p.title ||
-                    t("main_page.body.list_area.cards.non-title")
-                  }}</span>
+                  p.title ||
+                  t("main_page.body.list_area.cards.non-title")
+                }}</span>
                 <span v-if="p.pinToTop" class="badge">{{
-                    t("main_page.body.list_area.cards.pinToTop")
-                  }}</span>
+                  t("main_page.body.list_area.cards.pinToTop")
+                }}</span>
               </div>
 
               <div class="post-actions">
                 <button class="btn ghost" @click="openDetail(p.id)">{{
-                    t("main_page.body.list_area.cards.detail")
-                  }}
+                  t("main_page.body.list_area.cards.detail")
+                }}
                 </button>
               </div>
             </header>
@@ -114,23 +114,23 @@
 
               <span v-if="p.durationMin" class="sep">·</span>
               <span v-if="p.durationMin">{{ p.durationMin }} {{
-                  t("main_page.body.list_area.cards.min")
-                }}</span>
+                t("main_page.body.list_area.cards.min")
+              }}</span>
 
               <span v-if="p.focus != null" class="sep">·</span>
               <span v-if="p.focus != null">{{ t("main_page.body.list_area.cards.focus") }} {{
-                  p.focus
-                }}</span>
+                p.focus
+              }}</span>
 
               <span v-if="p.difficulty != null" class="sep">·</span>
               <span v-if="p.difficulty != null">{{ t("main_page.body.list_area.cards.diff") }} {{
-                  p.difficulty
-                }}</span>
+                p.difficulty
+              }}</span>
 
               <span v-if="p.updated_at" class="sep">·</span>
               <span v-if="p.updated_at">{{ t("main_page.body.list_area.cards.update") }} {{
-                  formatDate(p.updated_at)
-                }}</span>
+                formatDate(p.updated_at)
+              }}</span>
             </div>
 
             <section class="post-body">
@@ -167,18 +167,18 @@
             </section>
             <footer class="post-foot">
               <div class="tag-row" v-if="tagList(p).length">
-                                <span class="tag" v-for="(t, i) in tagList(p).slice(0, 6)" :key="i">
-                                    {{ t }}
-                                </span>
+                <span class="tag" v-for="(t, i) in tagList(p).slice(0, 6)" :key="i">
+                  {{ t }}
+                </span>
                 <span v-if="tagList(p).length > 6" class="tag muted">
-                                    +{{ tagList(p).length - 6 }}
-                                </span>
+                  +{{ tagList(p).length - 6 }}
+                </span>
               </div>
 
               <div class="post-time muted">
-                                <span v-if="p.created_at">{{ t("main_page.body.list_area.cards.create") }} {{
-                                    formatDate(p.created_at)
-                                  }}</span>
+                <span v-if="p.created_at">{{ t("main_page.body.list_area.cards.create") }} {{
+                  formatDate(p.created_at)
+                }}</span>
               </div>
             </footer>
           </article>
@@ -187,19 +187,19 @@
         <!-- Pagination -->
         <div class="pager" v-if="showPager">
           <button class="btn ghost" :disabled="pager.page <= 1 || listLoading" @click="goPage(pager.page - 1)"
-                  style="color: #333;">
+            style="color: #333;">
             ‹
           </button>
 
           <button v-for="it in pageItems" :key="String(it.key)" class="btn"
-                  :class="{ active: it.type === 'page' && it.value === pager.page }"
-                  :disabled="it.type !== 'page' || listLoading" @click="it.type === 'page' && goPage(it.value)">
+            :class="{ active: it.type === 'page' && it.value === pager.page }"
+            :disabled="it.type !== 'page' || listLoading" @click="it.type === 'page' && goPage(it.value)">
             <span v-if="it.type === 'page'">{{ it.value }}</span>
             <span v-else class="muted">…</span>
           </button>
 
           <button class="btn ghost" :disabled="!pager.hasNext || listLoading" @click="goPage(pager.page + 1)"
-                  style="color: #333;">
+            style="color: #333;">
             ›
           </button>
 
@@ -207,20 +207,19 @@
             <div class="jump">
               <span class="muted">{{ t("main_page.body.list_area.pagination.jump") }}</span>
               <input v-model="jumpInput" inputmode="numeric" pattern="[0-9]*"
-                     :placeholder="t('main_page.body.list_area.pagination.pager')"
-                     @keydown.enter.prevent="jumpToPage"/>
+                :placeholder="t('main_page.body.list_area.pagination.pager')" @keydown.enter.prevent="jumpToPage" />
               <button class="btn secondary" @click="jumpToPage" :disabled="listLoading">{{
-                  t("main_page.body.list_area.pagination.go")
-                }}
+                t("main_page.body.list_area.pagination.go")
+              }}
               </button>
             </div>
 
             <div class="muted pager-note">
-                            <span v-if="pager.total != null">{{
-                                t("main_page.body.list_area.pagination.pages_total", {
-                                  total: pager.total
-                                })
-                              }}</span>
+              <span v-if="pager.total != null">{{
+                t("main_page.body.list_area.pagination.pages_total", {
+                  total: pager.total
+                })
+              }}</span>
               <span v-else>{{ t("main_page.body.list_area.pagination.pages_total_unknown") }}</span>
             </div>
           </div>
@@ -243,17 +242,17 @@
 
           <div class="overlay-actions">
             <button class="btn ghost" @click="resetDraft(false)">{{
-                $t("main_page.body.composer_overlay.overlay_actions.reset")
-              }}
+              $t("main_page.body.composer_overlay.overlay_actions.reset")
+            }}
             </button>
             <button class="btn ghost" @click="closeComposer">{{
-                $t("main_page.body.composer_overlay.overlay_actions.close")
-              }}
+              $t("main_page.body.composer_overlay.overlay_actions.close")
+            }}
             </button>
             <button class="btn primary" :disabled="createLoading" @click="createPost">
               {{
                 createLoading ? $t("main_page.body.composer_overlay.overlay_actions.save.saving") :
-                    $t("main_page.body.composer_overlay.overlay_actions.save.to_save")
+                  $t("main_page.body.composer_overlay.overlay_actions.save.to_save")
               }}
             </button>
           </div>
@@ -265,8 +264,8 @@
             <div class="panel">
               <div class="panel-head">
                 <div class="panel-title">{{
-                    $t("main_page.body.composer_overlay.overlay_body.left_column.panel_head.title")
-                  }}
+                  $t("main_page.body.composer_overlay.overlay_body.left_column.panel_head.title")
+                }}
                 </div>
                 <div class="panel-tools">
                   <select v-model="draft.template" @change="applyTemplate" class="mini-select">
@@ -281,10 +280,10 @@
                   </select>
 
                   <label class="toggle">
-                    <input type="checkbox" v-model="draft.pinToTop"/>
+                    <input type="checkbox" v-model="draft.pinToTop" />
                     <span>{{
-                        $t("main_page.body.composer_overlay.overlay_body.left_column.panel_head.pin")
-                      }}</span>
+                      $t("main_page.body.composer_overlay.overlay_body.left_column.panel_head.pin")
+                    }}</span>
                   </label>
                 </div>
               </div>
@@ -292,31 +291,31 @@
               <div class="field">
                 <label>{{ $t("overlay_rest.left.title") }}</label>
                 <input v-model.trim="draft.title" maxlength="120"
-                       :placeholder="$t('overlay_rest.left.title_placeholder')"/>
+                  :placeholder="$t('overlay_rest.left.title_placeholder')" />
                 <div class="muted tiny">{{ $t("overlay_rest.left.suggest") }}</div>
               </div>
 
               <div class="row">
                 <div class="field">
                   <label>{{ $t("overlay_rest.left.time") }}</label>
-                  <input v-model="draft.happenedAt" type="datetime-local"/>
+                  <input v-model="draft.happenedAt" type="datetime-local" />
                 </div>
                 <div class="field">
                   <label>{{ $t("overlay_rest.left.duration") }}</label>
                   <input v-model.number="draft.durationMin" type="number" min="0" max="1440"
-                         :placeholder="$t('overlay_rest.left.duration_placeholder')"/>
+                    :placeholder="$t('overlay_rest.left.duration_placeholder')" />
                 </div>
               </div>
 
               <div class="row">
                 <div class="field">
                   <label>{{ $t("overlay_rest.left.focus") }}</label>
-                  <input v-model.number="draft.focus" type="range" min="1" max="5" step="0.05"/>
+                  <input v-model.number="draft.focus" type="range" min="1" max="5" step="0.05" />
                   <div class="muted tiny">{{ $t("overlay_rest.left.current") }}{{ draft.focus }}</div>
                 </div>
                 <div class="field">
                   <label>{{ $t("overlay_rest.left.diff") }}</label>
-                  <input v-model.number="draft.difficulty" type="range" min="1" max="5" step="0.05"/>
+                  <input v-model.number="draft.difficulty" type="range" min="1" max="5" step="0.05" />
                   <div class="muted tiny">{{ $t("overlay_rest.left.current") }}{{ draft.difficulty }}</div>
                 </div>
               </div>
@@ -325,14 +324,13 @@
                 <label>{{ $t("overlay_rest.left.tag_plus") }}</label>
                 <div class="tagbox">
                   <div>
-                                        <span class="tag" v-for="t in draft.tags" :key="t">
-                                            {{ t }}
-                                            <button class="tag-x" @click="removeTag(t)" aria-label="remove">×</button>
-                                        </span>
+                    <span class="tag" v-for="t in draft.tags" :key="t">
+                      {{ t }}
+                      <button class="tag-x" @click="removeTag(t)" aria-label="remove">×</button>
+                    </span>
                   </div>
                   <input v-model.trim="tagInput" :placeholder="$t('overlay_rest.left.tag_placeholder')"
-                         @keydown.enter.prevent="addTag(tagInput)"
-                         @keydown.,.prevent="addTag(tagInput)"/>
+                    @keydown.enter.prevent="addTag(tagInput)" @keydown.,.prevent="addTag(tagInput)" />
                 </div>
 
                 <div class="quick-tags">
@@ -346,7 +344,7 @@
               <div class="field">
                 <label>{{ $t("overlay_rest.left.target") }}</label>
                 <textarea v-model.trim="draft.goal" rows="3"
-                          :placeholder="$t('overlay_rest.left.placeholder')"></textarea>
+                  :placeholder="$t('overlay_rest.left.placeholder')"></textarea>
               </div>
             </div>
 
@@ -356,7 +354,7 @@
                 <div class="panel-title">{{ $t("overlay_rest.right.content") }}</div>
                 <div class="panel-tools">
                   <label class="toggle">
-                    <input type="checkbox" v-model="ui.previewMode"/>
+                    <input type="checkbox" v-model="ui.previewMode" />
                     <span>{{ $t("overlay_rest.right.preview_on") }}</span>
                   </label>
                 </div>
@@ -365,8 +363,7 @@
               <div class="field" v-if="!ui.previewMode">
                 <label>{{ $t("overlay_rest.right.title") }}</label>
                 <textarea v-model.trim="draft.content" rows="14" :placeholder="$t('overlay_rest.right.placeholder')"
-                          @keydown.ctrl.enter.prevent="createPost"
-                          @keydown.meta.enter.prevent="createPost"></textarea>
+                  @keydown.ctrl.enter.prevent="createPost" @keydown.meta.enter.prevent="createPost"></textarea>
                 <div class="muted tiny">
                   {{ $t("overlay_rest.right.suggest") }}
                 </div>
@@ -381,17 +378,17 @@
                 <label>{{ $t("overlay_rest.right.next_step") }}</label>
                 <div class="todo">
                   <input v-model.trim="todoInput" :placeholder="$t('overlay_rest.right.next_step_placeholder')"
-                         @keydown.enter.prevent="addTodo(todoInput)"/>
+                    @keydown.enter.prevent="addTodo(todoInput)" />
                   <button class="btn secondary" @click="addTodo(todoInput)">{{ $t("overlay_rest.right.add") }}</button>
                 </div>
 
                 <ul class="todo-list" v-if="draft.todos.length">
                   <li v-for="(t, i) in draft.todos" :key="i">
-                    <input type="checkbox" v-model="t.done"/>
+                    <input type="checkbox" v-model="t.done" />
                     <span :class="{ done: t.done }">{{ t.text }}</span>
                     <button class="btn ghost tinybtn" @click="removeTodo(i)">{{
-                        $t("overlay_rest.right.remove")
-                      }}
+                      $t("overlay_rest.right.remove")
+                    }}
                     </button>
                   </li>
                 </ul>
@@ -417,19 +414,19 @@
     <!-- Detail modal -->
     <transition name="neo-pop">
       <div v-if="detail.open" class="neoOverlay" role="dialog" aria-modal="true" tabindex="-1"
-           @click.self="detail.open = false">
+        @click.self="detail.open = false">
         <section class="neoPanel" @click.stop>
           <!-- Topbar -->
           <header class="neoTop">
             <div class="neoTop__left">
               <div class="neoKicker">
-                                <span class="neoKicker__id">{{
-                                    t("main_page.body.detail.header.id", {id: detail.id})
-                                  }}</span>
+                <span class="neoKicker__id">{{
+                  t("main_page.body.detail.header.id", { id: detail.id })
+                }}</span>
                 <span class="neoKicker__dot">•</span>
                 <span v-if="detailLoading" class="neoKicker__muted">{{
-                    t("main_page.body.detail.header.loading")
-                  }}</span>
+                  t("main_page.body.detail.header.loading")
+                }}</span>
                 <span v-else-if="detailError" class="neoKicker__err">{{ detailError }}</span>
                 <span v-else class="neoKicker__muted">{{ detailSubtitle }}</span>
               </div>
@@ -440,20 +437,20 @@
                 </div>
 
                 <div class="neoBadges">
-                                    <span v-if="detail.post?.pinToTop" class="neoBadge neoBadge--pin">{{
-                                        t("main_page.body.detail.header.pin")
-                                      }}</span>
+                  <span v-if="detail.post?.pinToTop" class="neoBadge neoBadge--pin">{{
+                    t("main_page.body.detail.header.pin")
+                  }}</span>
                   <span v-if="detail.post?.goal" class="neoBadge">{{
-                      t("main_page.body.detail.header.goal")
-                    }}</span>
+                    t("main_page.body.detail.header.goal")
+                  }}</span>
                 </div>
               </div>
             </div>
 
             <div class="neoTop__right">
               <button class="neoBtn neoBtn--ghost" type="button" @click="detail.open = false">{{
-                  t("main_page.body.detail.header.close")
-                }}
+                t("main_page.body.detail.header.close")
+              }}
               </button>
             </div>
           </header>
@@ -462,7 +459,7 @@
           <main class="neoBody">
             <!-- Loading -->
             <div v-if="detailLoading" class="neoLoad">
-              <div class="neoLoad__bar" v-for="i in 11" :key="i"/>
+              <div class="neoLoad__bar" v-for="i in 11" :key="i" />
             </div>
 
             <!-- Error -->
@@ -477,38 +474,36 @@
               <section class="neoHero">
                 <div class="neoHero__left">
                   <div class="neoMetaLine">
-                                        <span class="neoMeta" v-if="detail.post?.happenedAt || detailDate">
-                                            {{ t("main_page.body.detail.body.hero_left.start_at") }}{{
-                                            formatDate(detail.post?.happenedAt || detailDate)
-                                          }}
-                                        </span>
+                    <span class="neoMeta" v-if="detail.post?.happenedAt || detailDate">
+                      {{ t("main_page.body.detail.body.hero_left.start_at") }}{{
+                        formatDate(detail.post?.happenedAt || detailDate)
+                      }}
+                    </span>
                     <span class="neoSep"
-                          v-if="(detail.post?.happenedAt || detailDate) && (detail.post?.durationMin != null)">/</span>
+                      v-if="(detail.post?.happenedAt || detailDate) && (detail.post?.durationMin != null)">/</span>
                     <span class="neoMeta" v-if="detail.post?.durationMin != null">
-                                            {{ detail.post.durationMin }} {{
+                      {{ detail.post.durationMin }} {{
                         t("main_page.body.detail.body.hero_left.min")
                       }}
-                                        </span>
+                    </span>
                   </div>
 
                   <div class="neoTags" v-if="(detail.post?.tags?.length || detailTags.length)">
-                                        <span
-                                            v-for="(t, idx) in (detail.post?.tags?.length ? detail.post.tags : detailTags)"
-                                            :key="String(t) + '_' + idx" class="neoTag">
-                                            {{ t }}
-                                        </span>
+                    <span v-for="(t, idx) in (detail.post?.tags?.length ? detail.post.tags : detailTags)"
+                      :key="String(t) + '_' + idx" class="neoTag">
+                      {{ t }}
+                    </span>
                   </div>
                 </div>
 
                 <div class="neoHero__right">
-                  <div class="neoSwitch" :class="{ 'isOn': !!detail.post?.pinToTop }"
-                       aria-hidden="true">
+                  <div class="neoSwitch" :class="{ 'isOn': !!detail.post?.pinToTop }" aria-hidden="true">
                     <div class="neoSwitch__dot"></div>
                     <div class="neoSwitch__txt">{{
-                        detail.post?.pinToTop ?
-                            t("main_page.body.detail.body.hero_left.pinned") :
-                            t("main_page.body.detail.body.hero_left.normal")
-                      }}
+                      detail.post?.pinToTop ?
+                        t("main_page.body.detail.body.hero_left.pinned") :
+                        t("main_page.body.detail.body.hero_left.normal")
+                    }}
                     </div>
                   </div>
                 </div>
@@ -522,8 +517,8 @@
                   <section class="neoCard">
                     <div class="neoCard__hd">
                       <div class="neoCard__title">{{
-                          t("main_page.body.detail.body.grid.hd.content")
-                        }}
+                        t("main_page.body.detail.body.grid.hd.content")
+                      }}
                       </div>
                       <div class="neoCard__side neoMuted" v-if="detail.post?.content?.length">
                         {{ detail.post.content.length }} {{
@@ -539,8 +534,8 @@
                   <section v-if="(detail.post?.todos?.length || 0) > 0" class="neoCard">
                     <div class="neoCard__hd">
                       <div class="neoCard__title">{{
-                          t("main_page.body.detail.body.grid.todos.content")
-                        }}
+                        t("main_page.body.detail.body.grid.todos.content")
+                      }}
                       </div>
                       <div class="neoCard__side">
                         <span class="neoPill">{{ detail.post.todos.length }}</span>
@@ -549,7 +544,7 @@
 
                     <ul class="neoTodos">
                       <li v-for="(todo, i) in detail.post.todos" :key="i" class="neoTodo"
-                          :class="{ isDone: typeof todo === 'object' ? !!todo?.done : false }">
+                        :class="{ isDone: typeof todo === 'object' ? !!todo?.done : false }">
                         <span class="neoTodo__box" aria-hidden="true"></span>
                         <div class="neoTodo__txt">
                           {{ typeof todo === "object" ? (todo?.text ?? "") : todo }}
@@ -565,39 +560,39 @@
                   <section class="neoCard">
                     <div class="neoCard__hd">
                       <div class="neoCard__title">{{
-                          t("main_page.body.detail.body.grid.sidebar.card_A.title")
-                        }}
+                        t("main_page.body.detail.body.grid.sidebar.card_A.title")
+                      }}
                       </div>
                       <div class="neoCard__side neoMuted">{{
-                          t("main_page.body.detail.body.grid.sidebar.card_A.visualization")
-                        }}
+                        t("main_page.body.detail.body.grid.sidebar.card_A.visualization")
+                      }}
                       </div>
                     </div>
 
                     <div class="neoGauges">
                       <div class="neoGauge" :style="{
-                                                '--p': detail.post?.focus != null ? Math.min(100, Math.max(0, (Number(detail.post.focus) / 5) * 100)) : 0
-                                            }">
+                        '--p': detail.post?.focus != null ? Math.min(100, Math.max(0, (Number(detail.post.focus) / 5) * 100)) : 0
+                      }">
                         <div class="neoGauge__ring" aria-hidden="true"></div>
                         <div class="neoGauge__txt">
                           <div class="neoGauge__num">{{ detail.post?.focus ?? "—" }}</div>
                           <div class="neoGauge__cap neoMuted">{{
-                              t("main_page.body.detail.body.grid.sidebar.card_A.focus")
-                            }}
+                            t("main_page.body.detail.body.grid.sidebar.card_A.focus")
+                          }}
                           </div>
                         </div>
                       </div>
 
                       <div class="neoGauge" :style="{
-                                                '--p': detail.post?.difficulty != null ? Math.min(100, Math.max(0, (Number(detail.post.difficulty) / 5) * 100)) : 0
-                                            }">
+                        '--p': detail.post?.difficulty != null ? Math.min(100, Math.max(0, (Number(detail.post.difficulty) / 5) * 100)) : 0
+                      }">
                         <div class="neoGauge__ring" aria-hidden="true"></div>
                         <div class="neoGauge__txt">
                           <div class="neoGauge__num">{{ detail.post?.difficulty ?? "—" }}
                           </div>
                           <div class="neoGauge__cap neoMuted">{{
-                              t("main_page.body.detail.body.grid.sidebar.card_A.diff")
-                            }}
+                            t("main_page.body.detail.body.grid.sidebar.card_A.diff")
+                          }}
                           </div>
                         </div>
                       </div>
@@ -606,31 +601,31 @@
                     <div class="neoTape">
                       <div class="neoTape__top">
                         <div class="neoTape__label neoMuted">{{
-                            t("main_page.body.detail.body.grid.sidebar.card_A.duration")
-                          }}
+                          t("main_page.body.detail.body.grid.sidebar.card_A.duration")
+                        }}
                         </div>
                         <div class="neoTape__value">{{
-                            detail.post?.durationMin != null ?
-                                (detail.post.durationMin + " " +
-                                    t("main_page.body.detail.body.grid.sidebar.card_A.min")) : "—"
-                          }}
+                          detail.post?.durationMin != null ?
+                            (detail.post.durationMin + " " +
+                              t("main_page.body.detail.body.grid.sidebar.card_A.min")) : "—"
+                        }}
                         </div>
                       </div>
 
                       <div class="neoTape__track" aria-hidden="true">
                         <div class="neoTape__fill" :style="{
-                                                    width:
-                                                        detail.post?.durationMin != null
-                                                            ? Math.min(100, Math.max(0, (Number(detail.post.durationMin) / 180) * 100)) + '%'
-                                                            : '0%'
-                                                }"/>
+                          width:
+                            detail.post?.durationMin != null
+                              ? Math.min(100, Math.max(0, (Number(detail.post.durationMin) / 180) * 100)) + '%'
+                              : '0%'
+                        }" />
                       </div>
                       <div class="neoTape__hint neoMuted">{{
-                          detail.post?.durationMin != null ?
-                              (detail.post.durationMin + " / 180 " +
-                                  t("main_page.body.detail.body.grid.sidebar.card_A.min")) :
-                              t("main_page.body.detail.body.grid.sidebar.card_A.no_data")
-                        }}
+                        detail.post?.durationMin != null ?
+                          (detail.post.durationMin + " / 180 " +
+                            t("main_page.body.detail.body.grid.sidebar.card_A.min")) :
+                          t("main_page.body.detail.body.grid.sidebar.card_A.no_data")
+                      }}
                       </div>
                     </div>
                   </section>
@@ -639,8 +634,8 @@
                   <section class="neoCard">
                     <div class="neoCard__hd">
                       <div class="neoCard__title">{{
-                          t("main_page.body.detail.body.grid.sidebar.card_B.title")
-                        }}
+                        t("main_page.body.detail.body.grid.sidebar.card_B.title")
+                      }}
                       </div>
                     </div>
                     <div class="neoText">
@@ -651,42 +646,42 @@
 
                     <ul class="neoKV">
                       <li class="neoKV__row">
-                                                <span class="neoKV__k">{{
-                                                    t("main_page.body.detail.body.grid.sidebar.card_B.happened_at")
-                                                  }}</span>
+                        <span class="neoKV__k">{{
+                          t("main_page.body.detail.body.grid.sidebar.card_B.happened_at")
+                        }}</span>
                         <span class="neoKV__v">{{
-                            detail.post?.happenedAt ?
-                                formatDate(detail.post.happenedAt) : "—"
-                          }}</span>
+                          detail.post?.happenedAt ?
+                            formatDate(detail.post.happenedAt) : "—"
+                        }}</span>
                       </li>
                       <li class="neoKV__row">
-                                                <span class="neoKV__k">{{
-                                                    t("main_page.body.detail.body.grid.sidebar.card_B.duration")
-                                                  }}</span>
+                        <span class="neoKV__k">{{
+                          t("main_page.body.detail.body.grid.sidebar.card_B.duration")
+                        }}</span>
                         <span class="neoKV__v">{{ detail.post?.durationMin ?? "—" }}</span>
                       </li>
                       <li class="neoKV__row">
-                                                <span class="neoKV__k">{{
-                                                    t("main_page.body.detail.body.grid.sidebar.card_B.focus")
-                                                  }}</span>
+                        <span class="neoKV__k">{{
+                          t("main_page.body.detail.body.grid.sidebar.card_B.focus")
+                        }}</span>
                         <span class="neoKV__v">{{ detail.post?.focus ?? "—" }}</span>
                       </li>
                       <li class="neoKV__row">
-                                                <span class="neoKV__k">{{
-                                                    t("main_page.body.detail.body.grid.sidebar.card_B.diff")
-                                                  }}</span>
+                        <span class="neoKV__k">{{
+                          t("main_page.body.detail.body.grid.sidebar.card_B.diff")
+                        }}</span>
                         <span class="neoKV__v">{{ detail.post?.difficulty ?? "—" }}</span>
                       </li>
                       <li class="neoKV__row">
-                                                <span class="neoKV__k">{{
-                                                    t("main_page.body.detail.body.grid.sidebar.card_B.pin_to_top")
-                                                  }}</span>
+                        <span class="neoKV__k">{{
+                          t("main_page.body.detail.body.grid.sidebar.card_B.pin_to_top")
+                        }}</span>
                         <span class="neoKV__v">{{
-                            detail.post?.pinToTop ?
-                                t("main_page.body.detail.body.grid.sidebar.card_B.pin_status.true")
-                                :
-                                t("main_page.body.detail.body.grid.sidebar.card_B.pin_status.false")
-                          }}</span>
+                          detail.post?.pinToTop ?
+                            t("main_page.body.detail.body.grid.sidebar.card_B.pin_status.true")
+                            :
+                            t("main_page.body.detail.body.grid.sidebar.card_B.pin_status.false")
+                        }}</span>
                       </li>
                     </ul>
                   </section>
@@ -696,8 +691,8 @@
           </main>
           <footer class="neoFooter">
             <button @click="deletePost" class="neoFooter_button">{{
-                t("main_page.body.detail.body.footer.delete")
-              }}
+              t("main_page.body.detail.body.footer.delete")
+            }}
             </button>
           </footer>
         </section>
@@ -707,8 +702,8 @@
 </template>
 
 <script setup lang="ts">
-import {computed, nextTick, onMounted, reactive, ref, Ref, watch} from "vue";
-import {useI18n} from "vue-i18n";
+import { computed, nextTick, onMounted, reactive, ref, Ref, watch } from "vue";
+import { useI18n } from "vue-i18n";
 
 /** =========================
  *  API
@@ -716,7 +711,7 @@ import {useI18n} from "vue-i18n";
 const API_BASE = "https://done.login.page.zbyblq.xin";
 //const API_BASE = ""; // 默认同域，部署时请根据实际情况修改
 
-const {t} = useI18n();
+const { t } = useI18n();
 const emit = defineEmits(["log-out", "settingOpen"]);
 
 const safeJSON = (v: Array<any>, fallback = []) => {
@@ -736,8 +731,8 @@ async function api(path: string, options: {
   method: 'GET' | 'POST' | 'PUT' | 'DELETE';
   headers?: any;
   body?: string;
-} = {method: "GET"}) {
-  const headers = options.headers ? {...options.headers} : {};
+} = { method: "GET" }) {
+  const headers = options.headers ? { ...options.headers } : {};
   if (options.body && !headers["Content-Type"]) headers["Content-Type"] = "application/json";
 
   let res;
@@ -748,7 +743,7 @@ async function api(path: string, options: {
       credentials: "include",
     });
   } catch (err: any) {
-    throw {kind: "network", message: err?.message || String(err), err};
+    throw { kind: "network", message: err?.message || String(err), err };
   }
 
   const text = await res.text();
@@ -756,11 +751,11 @@ async function api(path: string, options: {
   try {
     data = text ? JSON.parse(text) : null;
   } catch {
-    data = {raw: text};
+    data = { raw: text };
   }
 
   if (!res.ok) {
-    throw {kind: "http", status: res.status, statusText: res.statusText, data};
+    throw { kind: "http", status: res.status, statusText: res.statusText, data };
   }
   return data;
 }
@@ -774,7 +769,7 @@ interface User {
   // 其他用户相关字段
 }
 
-const meUser = reactive<User>({value: null, email: null});
+const meUser = reactive<User>({ value: null, email: null });
 const meLoading = ref(false);
 
 async function refreshMe() {
@@ -804,7 +799,7 @@ function onOpenSettings() {
 async function onLogout() {
   // TODO: 由你决定是否要走后端 /api/logout
   try {
-    await api("/api/logout", {method: "POST"});
+    await api("/api/logout", { method: "POST" });
     emit("log-out");
   } catch {
     alert(t("other.logout_error"));
@@ -847,8 +842,16 @@ interface Pager {
   hasNext: boolean;
 }
 
+let _savedSettings: any = {};
+try {
+  const _raw = localStorage.getItem("whatIveDone_settings");
+  _savedSettings = _raw ? JSON.parse(_raw) : {};
+} catch {
+  _savedSettings = {};
+}
+
 const pager = reactive<Pager>({
-  limit: userDevice.value.includes("Mobile") ? 3 : 5, // 移动设备默认每页少一点
+  limit: _savedSettings?.pageSize != null ? Number(_savedSettings.pageSize) : (userDevice.value.includes("Mobile") ? 3 : 5), // 移动设备默认每页少一点
   offset: 0,
   page: 1,
   total: null, // 若后端返回 total，就会启用完整页码
@@ -872,9 +875,25 @@ async function listPosts() {
 
     let items = data?.results || [];
     if (items.length) {
-      items = items.sort((a: any, b: any) => {
-        return b.pinToTop - a.pinToTop;
-      });
+      const sortType: string = JSON.parse(localStorage.getItem("whatIveDone_settings") || "{}").sortOrder || "by_time_desc";
+      switch (sortType) {
+        case "pin":
+          items = items.sort((a: any, b: any) => {
+            return b.pinToTop - a.pinToTop;
+          });
+          break;
+        case "newest": break;
+        case "oldest":
+          items = items.reverse();
+          break;
+        case "duration":
+          items = items.sort((a: any, b: any) => {
+            return (b.durationMin || 0) - (a.durationMin || 0);
+          });
+          break;
+        // 默认排序：置顶 > 时间 desc
+        default:
+      }
     }
     // console.log("当前用户数据总条数", data?.posts_count);
     posts.value = items;
@@ -934,8 +953,8 @@ function buildPageItems(current: number, totalPages: number | null, hasNext: boo
   const items: Array<{ type: "page" | "ellipsis"; value?: number; key: string }> = [];
   const key = (t: string, v: any) => `${t}:${v}`;
 
-  const pushPage = (v: number) => items.push({type: "page", value: v, key: key("p", v)});
-  const pushEllipsis = (id: string) => items.push({type: "ellipsis", key: key("e", id)});
+  const pushPage = (v: number) => items.push({ type: "page", value: v, key: key("p", v) });
+  const pushEllipsis = (id: string) => items.push({ type: "ellipsis", key: key("e", id) });
 
   const windowSize = 2; // current ±2
   const start = Math.max(1, current - windowSize);
@@ -968,7 +987,7 @@ const totalPages = computed(() => {
 });
 
 const pageItems = computed(() =>
-    buildPageItems(pager.page, totalPages.value, pager.hasNext)
+  buildPageItems(pager.page, totalPages.value, pager.hasNext)
 );
 
 /** =========================
@@ -1117,7 +1136,7 @@ function removeTag(tag: string) {
 function addTodo(raw: string) {
   const text = String(raw || "").trim();
   if (!text) return;
-  draft.todos.push({text: text.slice(0, 120), done: false});
+  draft.todos.push({ text: text.slice(0, 120), done: false });
   todoInput.value = "";
 }
 
@@ -1212,16 +1231,16 @@ const composedPreview = computed(() => {
   if (draft.title) lines.push(draft.title);
   lines.push("");
 
-  lines.push(t("composed_preview.time", {time: draft.happenedAt || "-"}));
-  lines.push(t("composed_preview.duration", {duration: draft.durationMin ?? "-"}));
-  lines.push(t("composed_preview.focus_diff", {focus: draft.focus, diff: draft.difficulty}));
-  if (draft.tags.length) lines.push(t("composed_preview.tags", {tags: draft.tags.join(", ")}));
-  if (draft.goal) lines.push(t("composed_preview.target", {goal: draft.goal}));
+  lines.push(t("composed_preview.time", { time: draft.happenedAt || "-" }));
+  lines.push(t("composed_preview.duration", { duration: draft.durationMin ?? "-" }));
+  lines.push(t("composed_preview.focus_diff", { focus: draft.focus, diff: draft.difficulty }));
+  if (draft.tags.length) lines.push(t("composed_preview.tags", { tags: draft.tags.join(", ") }));
+  if (draft.goal) lines.push(t("composed_preview.target", { goal: draft.goal }));
   lines.push("");
   lines.push(draft.content || "");
   if (draft.todos.length) {
     lines.push("");
-    lines.push(t("composed_preview.next_step", {next_step: draft.todos.map((t) => `- [${t.done ? "x" : " "}] ${t.text}`).join("\n")}));
+    lines.push(t("composed_preview.next_step", { next_step: draft.todos.map((t) => `- [${t.done ? "x" : " "}] ${t.text}`).join("\n") }));
   }
   return lines.join("\n");
 });
@@ -1238,20 +1257,23 @@ const wordCount = computed(() => {
 // 草稿自动保存（简单节流）
 let draftTimer: ReturnType<typeof setTimeout> | null = null;
 watch(
-    () => ({...draft, tags: [...draft.tags], todos: draft.todos.map((t) => ({...t}))}),
-    () => {
-      draftStatus.value = t("main_page.body.composer_overlay.overlay_sub_title.draft_status.unsaved");
-      if (draftTimer) clearTimeout(draftTimer);
-      draftTimer = setTimeout(() => {
-        try {
-          localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
-          draftStatus.value = t("main_page.body.composer_overlay.overlay_sub_title.draft_status.saved");
-        } catch {
-          draftStatus.value = t("main_page.body.composer_overlay.overlay_sub_title.draft_status.save_fail");
-        }
-      }, 350);
-    },
-    {deep: true}
+  () => ({ ...draft, tags: [...draft.tags], todos: draft.todos.map((t) => ({ ...t })) }),
+  () => {
+    if (JSON.parse(localStorage.getItem("whatIveDone_settings") || "{}").autoDraft !== true) {
+      return;
+    }
+    draftStatus.value = t("main_page.body.composer_overlay.overlay_sub_title.draft_status.unsaved");
+    if (draftTimer) clearTimeout(draftTimer);
+    draftTimer = setTimeout(() => {
+      try {
+        localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+        draftStatus.value = t("main_page.body.composer_overlay.overlay_sub_title.draft_status.saved");
+      } catch {
+        draftStatus.value = t("main_page.body.composer_overlay.overlay_sub_title.draft_status.save_fail");
+      }
+    }, 350);
+  },
+  { deep: true }
 );
 
 function loadDraft() {
@@ -1271,8 +1293,8 @@ function loadDraft() {
     draft.tags = Array.isArray(obj.tags) ? obj.tags.slice(0, 20).map((x: any) => String(x).slice(0, 24)) : [];
     draft.goal = obj.goal || "";
     draft.todos = Array.isArray(obj.todos)
-        ? obj.todos.slice(0, 30).map((t: any) => ({text: String(t.text || "").slice(0, 120), done: !!t.done}))
-        : [];
+      ? obj.todos.slice(0, 30).map((t: any) => ({ text: String(t.text || "").slice(0, 120), done: !!t.done }))
+      : [];
     draft.pinToTop = !!obj.pinToTop;
 
     draftStatus.value = t("main_page.body.composer_overlay.overlay_sub_title.draft_status.loaded");
@@ -1316,7 +1338,7 @@ async function createPost() {
       body: JSON.stringify(payloadRich),
     });
 
-    setCreateStatus(t("post_dealing.create.success.total", {id: data?.id ?? "?"}), "success");
+    setCreateStatus(t("post_dealing.create.success.total", { id: data?.id ?? "?" }), "success");
     resetDraft(false);
     await resetAndList();
     closeComposer();
@@ -1328,17 +1350,17 @@ async function createPost() {
       try {
         const data2 = await api("/api/posts", {
           method: "POST",
-          body: JSON.stringify({title, content}),
+          body: JSON.stringify({ title, content }),
         });
-        setCreateStatus(t("post_dealing.create.success.part", {id: data2?.id ?? "?"}), "success");
+        setCreateStatus(t("post_dealing.create.success.part", { id: data2?.id ?? "?" }), "success");
         resetDraft(false);
         await resetAndList();
         closeComposer();
       } catch (e2: any) {
-        setCreateStatus(t("post_dealing.create.fail", {error: safeErr(e2?.data ?? e2)}), "error");
+        setCreateStatus(t("post_dealing.create.fail", { error: safeErr(e2?.data ?? e2) }), "error");
       }
     } else {
-      setCreateStatus(t("post_dealing.create.fail", {error: safeErr(e?.data ?? e)}), "error");
+      setCreateStatus(t("post_dealing.create.fail", { error: safeErr(e?.data ?? e) }), "error");
     }
   } finally {
     createLoading.value = false;
@@ -1347,17 +1369,17 @@ async function createPost() {
 
 async function deletePost() {
   if (!detail.post?.id) return;
-  if (prompt(t("main_page.body.detail.body.footer.delete_confirm")) !== t("main_page.body.detail.body.footer.delete_confirm_text")) {
+  if (JSON.parse(localStorage.getItem("whatIveDone_settings") || "{}").confirmDelete && prompt(t("main_page.body.detail.body.footer.delete_confirm")) !== t("main_page.body.detail.body.footer.delete_confirm_text")) {
     alert(t("main_page.body.detail.body.footer.text_wrong"));
     return;
   }
   try {
-    await api(`/api/posts/${detail.post.id}`, {method: "DELETE"});
-    setCreateStatus(t("post_dealing.delete.success", {id: detail.post.id}), "success");
+    await api(`/api/posts/${detail.post.id}`, { method: "DELETE" });
+    setCreateStatus(t("post_dealing.delete.success", { id: detail.post.id }), "success");
     detail.open = false;
     await resetAndList();
   } catch (e: any) {
-    alert(t("post_dealing.delete.fail", {error: safeErr(e?.data ?? e)}));
+    alert(t("post_dealing.delete.fail", { error: safeErr(e?.data ?? e) }));
   }
 }
 

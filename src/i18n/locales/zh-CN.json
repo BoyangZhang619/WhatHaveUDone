@@ -196,9 +196,11 @@
     }
   },
   "setting": {
+    "confirm_delete": "很勇敢的决定，但我尊重你的选择。请再次确认是否要切换「删除前确认」设置？",
     "header": {
       "back": "返回",
-      "title": "设置"
+      "title": "设置",
+      "desc": "通用与外观仅保存至本地"
     },
     "group": {
       "general": "通用",
@@ -222,7 +224,8 @@
         "newest": "最新优先",
         "oldest": "最早优先",
         "updated": "最近更新",
-        "duration": "时长最长"
+        "duration": "时长最长",
+        "pin": "置顶优先"
       },
       "auto_draft": {
         "title": "草稿自动保存",
@@ -234,7 +237,7 @@
       },
       "confirm_delete": {
         "title": "删除前确认",
-        "desc": "删除记录时是否弹出二次确认框"
+        "desc": "删除记录时是否弹出确认框"
       },
       "shortcuts": {
         "title": "键盘快捷键",
@@ -383,7 +386,8 @@
       "reset": {
         "title": "重置所有设置",
         "desc": "将全部设置项恢复为默认值",
-        "btn": "重置"
+        "btn": "重置",
+        "confirm": "确认重置所有设置吗？这将恢复所有偏好设置为默认值。重置后您可以再次更改它们。"
       }
     },
     "status": {
@@ -486,38 +490,38 @@
     "list_error": "未登录，无法加载列表",
     "draft_clean": "已清空（草稿仍会自动保存）"
   },
-  "overlay_rest":{
-    "left":{
-      "title":"标题",
-      "suggest":"建议 10–60 字；最多 120 字",
-      "time":"学习时间",
-      "duration":"时长（分钟）",
-      "focus":"专注度（1-5）",
-      "diff":"难度（1-5）",
-      "current":"当前:",
-      "tag_plus":"标签（回车添加）",
-      "target":"目标 / 预期收获",
-      "placeholder":"这次想解决什么问题？",
-      "tag_placeholder":"例如：Vue / 上课 / 数学",
-      "title_placeholder":"例如: 单词ABANDON的学习",
-      "duration_placeholder":"例如 45"
+  "overlay_rest": {
+    "left": {
+      "title": "标题",
+      "suggest": "建议 10–60 字；最多 120 字",
+      "time": "学习时间",
+      "duration": "时长（分钟）",
+      "focus": "专注度（1-5）",
+      "diff": "难度（1-5）",
+      "current": "当前:",
+      "tag_plus": "标签（回车添加）",
+      "target": "目标 / 预期收获",
+      "placeholder": "这次想解决什么问题？",
+      "tag_placeholder": "例如：Vue / 上课 / 数学",
+      "title_placeholder": "例如: 单词ABANDON的学习",
+      "duration_placeholder": "例如 45"
     },
-    "right":{
-      "content":"内容",
-      "title":"详述",
-      "preview_on":"预览",
-      "placeholder":"写下做了什么、学到了什么、哪里卡住、下一步是什么…",
-      "suggest":"小提示：用“结论 / 过程 / 反思 / 下一步”四段写，回头复盘更快。",
-      "preview":"预览（纯文本安全预览）",
-      "next_step":"下一步计划（可选）",
-      "next_step_placeholder":"输入后回车添加",
-      "add":"添加",
-      "remove":"移除"
+    "right": {
+      "content": "内容",
+      "title": "详述",
+      "preview_on": "预览",
+      "placeholder": "写下做了什么、学到了什么、哪里卡住、下一步是什么…",
+      "suggest": "小提示：用“结论 / 过程 / 反思 / 下一步”四段写，回头复盘更快。",
+      "preview": "预览（纯文本安全预览）",
+      "next_step": "下一步计划（可选）",
+      "next_step_placeholder": "输入后回车添加",
+      "add": "添加",
+      "remove": "移除"
     },
-    "footer":{
-      "a":"快捷键：Esc 关闭",
-      "b":"Ctrl/⌘ + Enter 保存",
-      "c":"草稿自动保存到本地"
+    "footer": {
+      "a": "快捷键：Esc 关闭",
+      "b": "Ctrl/⌘ + Enter 保存",
+      "c": "草稿自动保存到本地"
     }
   }
 }

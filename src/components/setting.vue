@@ -3,11 +3,13 @@
     <!-- Header -->
     <header class="setting-header">
       <div class="setting-header-left">
-        <button class="btn ghost" @click="$emit('close')">{{ t('setting.header.back') }}</button>
       </div>
       <h1 class="setting-title">{{ t('setting.header.title') }}</h1>
-      <div class="setting-header-right"></div>
+      <div class="setting-header-right">
+        <button class="btn ghost" @click="$emit('close')">{{ t('setting.header.back') }}</button>
+      </div>
     </header>
+    <div class="setting-header-desc">{{ t('setting.header.desc') }}</div>
 
     <main class="setting-body">
       <!-- ===================== 通用设置 ===================== -->
@@ -35,13 +37,16 @@
             </div>
 
             <!-- 每页默认条数 -->
-            <div class="setting-item locked">
+            <div class="setting-item">
               <div class="setting-item-info">
                 <div class="setting-item-title">{{ t('setting.general.page_size.title') }}</div>
                 <div class="setting-item-desc muted">{{ t('setting.general.page_size.desc') }}</div>
               </div>
               <div class="setting-item-ctrl">
                 <select v-model.number="current.pageSize" class="setting-select" @change="onPageSizeChange">
+                  <option :value="1">1</option>
+                  <option :value="3">3</option>
+                  <option :value="5">5</option>
                   <option :value="10">10</option>
                   <option :value="15">15</option>
                   <option :value="20">20</option>
@@ -52,23 +57,23 @@
             </div>
 
             <!-- 默认排序 -->
-            <div class="setting-item locked">
+            <div class="setting-item">
               <div class="setting-item-info">
                 <div class="setting-item-title">{{ t('setting.general.sort_order.title') }}</div>
                 <div class="setting-item-desc muted">{{ t('setting.general.sort_order.desc') }}</div>
               </div>
               <div class="setting-item-ctrl">
                 <select v-model="current.sortOrder" class="setting-select" @change="onSortOrderChange">
+                  <option value="updated">{{ t('setting.general.sort_order.pin') }}</option>
                   <option value="newest">{{ t('setting.general.sort_order.newest') }}</option>
                   <option value="oldest">{{ t('setting.general.sort_order.oldest') }}</option>
-                  <option value="updated">{{ t('setting.general.sort_order.updated') }}</option>
                   <option value="duration">{{ t('setting.general.sort_order.duration') }}</option>
                 </select>
               </div>
             </div>
 
             <!-- 草稿自动保存 -->
-            <div class="setting-item locked">
+            <div class="setting-item">
               <div class="setting-item-info">
                 <div class="setting-item-title">{{ t('setting.general.auto_draft.title') }}</div>
                 <div class="setting-item-desc muted">{{ t('setting.general.auto_draft.desc') }}</div>
@@ -81,22 +86,8 @@
               </div>
             </div>
 
-            <!-- 草稿保存间隔 -->
-            <div class="setting-item locked" v-if="current.autoDraft">
-              <div class="setting-item-info">
-                <div class="setting-item-title">{{ t('setting.general.draft_interval.title') }}</div>
-                <div class="setting-item-desc muted">{{ t('setting.general.draft_interval.desc', {
-                  n:
-                    current.draftInterval }) }}</div>
-              </div>
-              <div class="setting-item-ctrl">
-                <input type="range" class="setting-range" v-model.number="current.draftInterval" min="5" max="120"
-                  step="5" @change="onDraftIntervalChange" />
-              </div>
-            </div>
-
             <!-- 确认删除 -->
-            <div class="setting-item locked">
+            <div class="setting-item">
               <div class="setting-item-info">
                 <div class="setting-item-title">{{ t('setting.general.confirm_delete.title') }}</div>
                 <div class="setting-item-desc muted">{{ t('setting.general.confirm_delete.desc') }}</div>
@@ -110,7 +101,7 @@
             </div>
 
             <!-- 快捷键 -->
-            <div class="setting-item locked">
+            <div class="setting-item">
               <div class="setting-item-info">
                 <div class="setting-item-title">{{ t('setting.general.shortcuts.title') }}</div>
                 <div class="setting-item-desc muted">{{ t('setting.general.shortcuts.desc') }}</div>
@@ -131,6 +122,7 @@
               </div>
               <div class="setting-item-ctrl">
                 <select v-model="current.timezone" class="setting-select" @change="onTimezoneChange">
+                  <option value="-">-</option>
                   <option value="auto">{{ t('setting.general.timezone.auto') }}</option>
                   <option value="Asia/Shanghai">{{ t('setting.general.timezone.asia_shanghai') }}</option>
                   <option value="Asia/Tokyo">{{ t('setting.general.timezone.asia_tokyo') }}</option>
@@ -171,7 +163,7 @@
             </div>
 
             <!-- 字体大小 -->
-            <div class="setting-item locked">
+            <div class="setting-item">
               <div class="setting-item-info">
                 <div class="setting-item-title">{{ t('setting.style.font_size.title') }}</div>
                 <div class="setting-item-desc muted">{{ t('setting.style.font_size.desc', { n: current.fontSize }) }}
@@ -199,7 +191,7 @@
             </div>
 
             <!-- 动画效果 -->
-            <div class="setting-item locked">
+            <div class="setting-item">
               <div class="setting-item-info">
                 <div class="setting-item-title">{{ t('setting.style.animation.title') }}</div>
                 <div class="setting-item-desc muted">{{ t('setting.style.animation.desc') }}</div>
@@ -213,7 +205,7 @@
             </div>
 
             <!-- 圆角大小 -->
-            <div class="setting-item locked">
+            <div class="setting-item">
               <div class="setting-item-info">
                 <div class="setting-item-title">{{ t('setting.style.border_radius.title') }}</div>
                 <div class="setting-item-desc muted">{{ t('setting.style.border_radius.desc') }}</div>
@@ -229,7 +221,7 @@
             </div>
 
             <!-- 内容预览行数 -->
-            <div class="setting-item locked">
+            <div class="setting-item">
               <div class="setting-item-info">
                 <div class="setting-item-title">{{ t('setting.style.preview_lines.title') }}</div>
                 <div class="setting-item-desc muted">{{ t('setting.style.preview_lines.desc') }}</div>
@@ -265,7 +257,7 @@
               </div>
               <div class="setting-item-ctrl">
                 <button class="btn secondary-sm" @click="onChangeNickname">{{ t('setting.account.nickname.btn')
-                  }}</button>
+                }}</button>
               </div>
             </div>
 
@@ -277,7 +269,7 @@
               </div>
               <div class="setting-item-ctrl">
                 <button class="btn secondary-sm" @click="onChangePassword">{{ t('setting.account.password.btn')
-                  }}</button>
+                }}</button>
               </div>
             </div>
 
@@ -326,7 +318,7 @@
               </div>
               <div class="setting-item-ctrl">
                 <button class="btn secondary-sm" @click="onManageSessions">{{ t('setting.account.sessions.btn')
-                  }}</button>
+                }}</button>
               </div>
             </div>
 
@@ -340,7 +332,7 @@
               </div>
               <div class="setting-item-ctrl">
                 <button class="btn danger-sm" @click="onDeleteAllData">{{ t('setting.account.clear_data.btn')
-                  }}</button>
+                }}</button>
               </div>
             </div>
 
@@ -352,7 +344,7 @@
               </div>
               <div class="setting-item-ctrl">
                 <button class="btn danger-sm" @click="onDeleteAccount">{{ t('setting.account.delete_account.btn')
-                  }}</button>
+                }}</button>
               </div>
             </div>
           </div>
@@ -453,7 +445,7 @@
               </div>
               <div class="setting-item-ctrl">
                 <button class="btn secondary-sm" @click="onCheckUpdate">{{ t('setting.about.check_update.btn')
-                  }}</button>
+                }}</button>
               </div>
             </div>
 
@@ -494,7 +486,7 @@
 
             <!-- 重置所有设置 -->
             <div class="setting-divider"></div>
-            <div class="setting-item locked">
+            <div class="setting-item">
               <div class="setting-item-info">
                 <div class="setting-item-title">{{ t('setting.about.reset.title') }}</div>
                 <div class="setting-item-desc muted">{{ t('setting.about.reset.desc') }}</div>
@@ -558,7 +550,7 @@ const current = reactive({
   draftInterval: load<number>("draftInterval", 30),
   confirmDelete: load<boolean>("confirmDelete", true),
   shortcuts: load<boolean>("shortcuts", true),
-  timezone: load<string>("timezone", "auto"),
+  timezone: load<string>("timezone", "-"),
   // 外观
   theme: (localStorage.getItem("whatIveDone_theme") || "light") as "light" | "dark",
   fontSize: load<number>("fontSize", 14),
@@ -617,21 +609,15 @@ function onAutoDraftToggle() {
   current.autoDraft = !current.autoDraft;
   saveSettings({ autoDraft: current.autoDraft });
   setStatus(current.autoDraft ? t('setting.status.auto_draft_on') : t('setting.status.auto_draft_off'), "success");
-  // TODO: 启动 / 停止草稿定时器
-}
-
-/** 草稿保存间隔 */
-function onDraftIntervalChange() {
-  saveSettings({ draftInterval: current.draftInterval });
-  setStatus(t('setting.status.draft_interval_set', { n: current.draftInterval }), "success");
-  // TODO: 更新草稿定时器
 }
 
 /** 删除前确认 */
 function onConfirmDeleteToggle() {
-  current.confirmDelete = !current.confirmDelete;
-  saveSettings({ confirmDelete: current.confirmDelete });
-  setStatus(current.confirmDelete ? t('setting.status.confirm_delete_on') : t('setting.status.confirm_delete_off'), "success");
+  if (!current.confirmDelete || confirm(t("setting.confirm_delete"))) {
+    current.confirmDelete = !current.confirmDelete;
+    saveSettings({ confirmDelete: current.confirmDelete });
+    setStatus(current.confirmDelete ? t('setting.status.confirm_delete_on') : t('setting.status.confirm_delete_off'), "success");
+  }
 }
 
 /** 快捷键 */
@@ -664,8 +650,8 @@ function onThemeToggle() {
 /** 字体大小 */
 function onFontSizeChange() {
   saveSettings({ fontSize: current.fontSize });
+  document.documentElement.style.setProperty('--font-base', current.fontSize + 'px');
   setStatus(t('setting.status.font_size_set', { n: current.fontSize }), "success");
-  // TODO: document.documentElement.style.fontSize = current.fontSize + 'px';
 }
 
 /** 卡片布局 */
@@ -680,22 +666,27 @@ function onCardLayoutChange() {
 function onAnimationToggle() {
   current.animation = !current.animation;
   saveSettings({ animation: current.animation });
+  if (current.animation) {
+    document.documentElement.removeAttribute('data-no-animation');
+  } else {
+    document.documentElement.setAttribute('data-no-animation', '');
+  }
   setStatus(current.animation ? t('setting.status.animation_on') : t('setting.status.animation_off'), "success");
-  // TODO: document.documentElement.classList.toggle('no-animation', !current.animation);
 }
 
 /** 圆角风格 */
 function onBorderRadiusChange() {
+  const radiusMap: Record<string, string> = { none: '0px', small: '6px', medium: '10px', large: '14px' };
   saveSettings({ borderRadius: current.borderRadius });
+  document.documentElement.style.setProperty('--radius', radiusMap[current.borderRadius] || '14px');
   setStatus(t('setting.status.border_radius_updated'), "success");
-  // TODO: 修改 CSS 变量 --radius
 }
 
 /** 卡片预览行数 */
 function onPreviewLinesChange() {
   saveSettings({ previewLines: current.previewLines });
+  document.documentElement.style.setProperty('--preview-lines', current.previewLines === 0 ? '9999' : String(current.previewLines));
   setStatus(t('setting.status.preview_lines_set', { n: current.previewLines === 0 ? t('setting.status.preview_lines_all') : current.previewLines }), "success");
-  // TODO: 修改 CSS 变量 --preview-lines
 }
 
 // ========================================================
@@ -803,10 +794,43 @@ function onChangelog() {
 
 /** 重置所有设置 */
 function onResetAllSettings() {
-  // TODO: 二次确认
+  if (!confirm(t('setting.about.reset.confirm') || 'Reset all settings to default?')) return;
+
+  // 清除存储
   localStorage.removeItem(STORAGE_KEY);
   localStorage.removeItem("whatIveDone_theme");
   localStorage.removeItem("whatIveDone_locale");
+
+  // 重置 current 到默认值
+  current.language = 'zh-CN' as SupportedLocale;
+  current.pageSize = 10;
+  current.sortOrder = 'newest';
+  current.autoDraft = true;
+  current.draftInterval = 30;
+  current.confirmDelete = true;
+  current.shortcuts = true;
+  current.timezone = '-';
+
+  current.theme = 'light';
+  current.fontSize = 14;
+  current.cardLayout = 'grid';
+  current.animation = true;
+  current.borderRadius = 'large';
+  current.previewLines = 3;
+
+  current.dailyReminder = false;
+  current.reminderTime = '21:00';
+  current.streakReminder = false;
+  current.weeklyReport = 'off';
+
+  // 恢复 DOM 状态
+  document.documentElement.setAttribute('data-theme', 'light');
+  document.documentElement.style.removeProperty('--font-base');
+  document.documentElement.style.removeProperty('--radius');
+  document.documentElement.style.removeProperty('--preview-lines');
+  document.documentElement.removeAttribute('data-no-animation');
+  setLocale('zh-CN' as SupportedLocale);
+
   setStatus(t('setting.status.reset_done'), "success");
 }
 </script>
