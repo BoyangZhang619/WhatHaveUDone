@@ -53,15 +53,15 @@
 
           <div class="list-tools">
             <div class="select">
-              <select v-model.number="pager.limit" @change="resetAndList">
+              <!-- <select v-model.number="pager.limit" @change="resetAndList">
                 <option :value="3">3</option>
                 <option :value="5">5</option>
                 <option :value="8">8</option>
                 <option :value="13">13</option>
                 <option :value="20">20</option>
                 <option :value="30">30</option>
-              </select>
-              <span class="muted">{{ t("main_page.body.list_area.select_page.per_page") }}</span>
+              </select> -->
+              <!-- <span class="muted">{{ t("main_page.body.list_area.select_page.per_page") }}</span> -->
             </div>
             <button class="btn secondary" @click="listPosts()">{{
               t("main_page.body.list_area.select_page.refresh")
@@ -708,8 +708,7 @@ import { useI18n } from "vue-i18n";
 /** =========================
  *  API
  *  ========================= */
-const API_BASE = "https://done.login.page.zbyblq.xin";
-//const API_BASE = ""; // 默认同域，部署时请根据实际情况修改
+const API_BASE = (import.meta as any).env?.VITE_API_BASE ?? "";
 
 const { t } = useI18n();
 const emit = defineEmits(["log-out", "settingOpen"]);

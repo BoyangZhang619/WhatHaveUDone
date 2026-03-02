@@ -3,7 +3,9 @@
         <div class="login-card">
             <div class="login-header">
                 <h2>{{ t('login_card.title') }}</h2>
-                <p class="muted">{{ t('login_card.ip') }}<br />
+                <p class="muted" style="overflow: scroll;">
+                    <span>{{ t('login_card.ip') }}</span>
+                    <br />
                     <span v-if="userIp === 'trying'">{{ t('login_card.ip_trying') }}</span>
                     <span v-else-if="userIp === 'fail'">{{ t('login_card.ip_fail') }}</span>
                     <span v-else>{{ userIp }}</span>
@@ -57,9 +59,7 @@ import { useI18n } from 'vue-i18n';
 const { t, locale } = useI18n();
 
 // --- 配置与核心 API ---
-const API_BASE = "https://done.login.page.zbyblq.xin"; // 生产环境使用正式域名，开发环境通过 Vite 代理转发到后端
-//const API_BASE = ""; // 生产环境使用相对路径，开发环境通过 Vite 代理转发到后端
-// console.log("API_BASE:", API_BASE);
+const API_BASE = (import.meta as any).env?.VITE_API_BASE ?? "";
 
 const userIp = ref('trying');
 
