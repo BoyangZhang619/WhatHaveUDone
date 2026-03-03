@@ -912,8 +912,7 @@ function onCheckUpdate() {
 
 /** 更新日志 */
 function onChangelog() {
-  // TODO: 弹出更新日志弹窗或跳转到 GitHub releases
-  window.open("https://github.com/BoyangZhang619/whatIveDone/releases", "_blank");
+  window.open("https://github.com/BoyangZhang619/whatHaveUDone/commits/main/", "_blank");
 }
 
 /** 重置所有设置 */

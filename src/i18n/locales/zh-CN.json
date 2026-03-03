@@ -371,7 +371,7 @@
       },
       "changelog": {
         "title": "更新日志",
-        "desc": "查看历史版本变更说明,库是 private 的,所以想看更新日志的话直接反馈给我然后让你看吧,而且这里没日志QwQ",
+        "desc": "查看历史版本变更说明",
         "btn": "查看"
       },
       "feedback": {
@@ -381,7 +381,7 @@
       },
       "source": {
         "title": "源代码",
-        "desc": "在 GitHub 上查看本项目的源代码(库是 private 的,想看就反馈给我然后让你看)",
+        "desc": "在 GitHub 上查看本项目的源代码",
         "btn": "GitHub"
       },
       "reset": {

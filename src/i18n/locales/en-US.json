@@ -373,7 +373,7 @@
       },
       "changelog": {
         "title": "Changelog",
-        "desc": "View the history of changes, because I haven't implemented it yet, you can check the commit history on GitHub to see the latest updates, and the repo is private, so contact me if you want to see it",
+        "desc": "View the history of changes",
         "btn": "View"
       },
       "feedback": {
@@ -383,7 +383,7 @@
       },
       "source": {
         "title": "Source code",
-        "desc": "View the project source on GitHub (private; contact me to request access)",
+        "desc": "View the project source on GitHub",
         "btn": "GitHub"
       },
       "reset": {
