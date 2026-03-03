@@ -510,452 +510,52 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * 设置页面 — 逻辑已抽离到 composables，这里只做组装
+ */
 import { useI18n } from "vue-i18n";
-import { reactive, ref } from "vue";
-import { setLocale, SUPPORTED_LOCALES, type SupportedLocale } from "@/i18n";
+import { useSettingState } from "@/composables/useSettingState";
+import { useGeneralSettings } from "@/composables/useGeneralSettings";
+import { useStyleSettings } from "@/composables/useStyleSettings";
+import { useAccountSettings } from "@/composables/useAccountSettings";
+import { useNotificationSettings } from "@/composables/useNotificationSettings";
+import { useAboutSettings } from "@/composables/useAboutSettings";
 
-const { t, locale } = useI18n();
-
-const API_BASE = (import.meta as any).env?.VITE_API_BASE ?? "";
+const { t } = useI18n();
 
 defineEmits<{
   (e: "close"): void;
 }>();
 
-async function api(path: string, options: {
-  method: 'GET' | 'POST' | 'PUT' | 'DELETE';
-  headers?: any;
-  body?: string;
-} = { method: "GET" }) {
-  const headers = options.headers ? { ...options.headers } : {};
-  if (options.body && !headers["Content-Type"]) headers["Content-Type"] = "application/json";
+const {
+  displayState, current, languageOptions,
+  statusMsg, statusKind, setStatus,
+} = useSettingState();
 
-  let res;
-  try {
-    res = await fetch(API_BASE + path, {
-      ...options,
-      headers,
-      credentials: "include",
-    });
-  } catch (err: any) {
-    throw { kind: "network", message: err?.message || String(err), err };
-  }
+const {
+  onLanguageChange, onPageSizeChange, onSortOrderChange,
+  onAutoDraftToggle, onConfirmDeleteToggle, onShortcutsToggle, onTimezoneChange,
+} = useGeneralSettings(current, setStatus);
 
-  const text = await res.text();
-  let data = null;
-  try {
-    data = text ? JSON.parse(text) : null;
-  } catch {
-    data = { raw: text };
-  }
+const {
+  onThemeToggle, onFontSizeChange, onCardLayoutChange,
+  onAnimationToggle, onBorderRadiusChange, onPreviewLinesChange,
+} = useStyleSettings(current, setStatus);
 
-  if (!res.ok) {
-    throw { kind: "http", status: res.status, statusText: res.statusText, data };
-  }
-  return data;
-}
+const {
+  onChangeNickname, onChangePassword, onChangeEmail,
+  onExportData, onImportData, onManageSessions,
+  onDeleteAllData, onDeleteAccount,
+} = useAccountSettings(current, setStatus);
 
-// ============ 本地持久化工具 ============
-const STORAGE_KEY = "whatIveDone_settings";
+const {
+  onDailyReminderToggle, onReminderTimeChange,
+  onStreakReminderToggle, onWeeklyReportChange,
+} = useNotificationSettings(current, setStatus);
 
-function loadSettings(): Record<string, any> {
-  try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
-  } catch { return {}; }
-}
-function saveSettings(patch: Record<string, any>) {
-  const all = { ...loadSettings(), ...patch };
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
-}
-function load<T>(key: string, fallback: T): T {
-  const v = loadSettings()[key];
-  return v !== undefined ? v as T : fallback;
-}
-
-// ============ 折叠状态 ============
-const displayState = ref("" as "general" | "style" | "account" | "notification" | "about" | "");
-
-// ============ 当前设置值（全部从 localStorage 初始化） ============
-const current = reactive({
-  // 通用
-  language: locale.value as SupportedLocale,
-  pageSize: load<number>("pageSize", 10),
-  sortOrder: load<string>("sortOrder", "newest"),
-  autoDraft: load<boolean>("autoDraft", true),
-  draftInterval: load<number>("draftInterval", 30),
-  confirmDelete: load<boolean>("confirmDelete", true),
-  shortcuts: load<boolean>("shortcuts", true),
-  timezone: load<string>("timezone", "-"),
-  // 外观
-  theme: (localStorage.getItem("whatIveDone_theme") || "light") as "light" | "dark",
-  fontSize: load<number>("fontSize", 14),
-  cardLayout: load<string>("cardLayout", "grid"),
-  animation: load<boolean>("animation", true),
-  borderRadius: load<string>("borderRadius", "large"),
-  previewLines: load<number>("previewLines", 3),
-  // 通知
-  dailyReminder: load<boolean>("dailyReminder", false),
-  reminderTime: load<string>("reminderTime", "21:00"),
-  streakReminder: load<boolean>("streakReminder", false),
-  weeklyReport: load<string>("weeklyReport", "off"),
-});
-
-// ============ 语言选项 ============
-const languageOptions = SUPPORTED_LOCALES;
-
-// ============ 状态提示 ============
-const statusMsg = ref("");
-const statusKind = ref<"muted" | "success" | "error">("muted");
-
-function setStatus(msg: string, kind: "muted" | "success" | "error" = "muted") {
-  statusMsg.value = msg;
-  statusKind.value = kind;
-  // 5 秒后自动清除
-  setTimeout(() => { if (statusMsg.value === msg) statusMsg.value = ""; }, 5000);
-}
-
-// ========================================================
-//  通用设置
-// ========================================================
-
-// }
-function onLanguageChange() {
-  setLocale(current.language);
-  setStatus(t('setting.status.lang_switched', { lang: SUPPORTED_LOCALES[current.language] }), "success");
-  // TODO: 如果需要同步到后端，在这里调用 API
-}
-
-/** 每页条数 */
-function onPageSizeChange() {
-  saveSettings({ pageSize: current.pageSize });
-  setStatus(t('setting.status.page_size_set', { n: current.pageSize }), "success");
-  // TODO: 通知列表组件刷新
-}
-
-/** 排序方式 */
-function onSortOrderChange() {
-  saveSettings({ sortOrder: current.sortOrder });
-  setStatus(t('setting.status.sort_updated'), "success");
-  // TODO: 通知列表组件按新排序刷新
-}
-
-/** 草稿自动保存 */
-function onAutoDraftToggle() {
-  current.autoDraft = !current.autoDraft;
-  saveSettings({ autoDraft: current.autoDraft });
-  setStatus(current.autoDraft ? t('setting.status.auto_draft_on') : t('setting.status.auto_draft_off'), "success");
-}
-
-/** 删除前确认 */
-function onConfirmDeleteToggle() {
-  if (!current.confirmDelete || confirm(t("setting.confirm_delete"))) {
-    current.confirmDelete = !current.confirmDelete;
-    saveSettings({ confirmDelete: current.confirmDelete });
-    setStatus(current.confirmDelete ? t('setting.status.confirm_delete_on') : t('setting.status.confirm_delete_off'), "success");
-  }
-}
-
-/** 快捷键 */
-function onShortcutsToggle() {
-  current.shortcuts = !current.shortcuts;
-  saveSettings({ shortcuts: current.shortcuts });
-  setStatus(current.shortcuts ? t('setting.status.shortcuts_on') : t('setting.status.shortcuts_off'), "success");
-  // TODO: 注册 / 注销全局键盘监听
-}
-
-/** 时区 */
-function onTimezoneChange() {
-  saveSettings({ timezone: current.timezone });
-  setStatus(t('setting.status.timezone_set', { tz: current.timezone === "auto" ? t('setting.status.timezone_auto') : current.timezone }), "success");
-  // TODO: 更新所有时间展示
-}
-
-// ========================================================
-//  外观设置
-// ========================================================
-
-/** 主题切换 */
-function onThemeToggle() {
-  current.theme = current.theme === "light" ? "dark" : "light";
-  localStorage.setItem("whatIveDone_theme", current.theme);
-  document.documentElement.setAttribute("data-theme", current.theme);
-  setStatus(current.theme === "dark" ? t('setting.status.theme_dark') : t('setting.status.theme_light'), "success");
-}
-
-/** 字体大小 */
-function onFontSizeChange() {
-  saveSettings({ fontSize: current.fontSize });
-  document.documentElement.style.setProperty('--font-base', current.fontSize + 'px');
-  setStatus(t('setting.status.font_size_set', { n: current.fontSize }), "success");
-}
-
-/** 卡片布局 */
-function onCardLayoutChange() {
-  saveSettings({ cardLayout: current.cardLayout });
-  const labels: Record<string, string> = { grid: t('setting.style.card_layout.grid'), list: t('setting.style.card_layout.list'), compact: t('setting.style.card_layout.compact') };
-  setStatus(t('setting.status.card_layout_set', { layout: labels[current.cardLayout] || current.cardLayout }), "success");
-  // TODO: 通知列表组件切换布局
-}
-
-/** 界面动画 */
-function onAnimationToggle() {
-  current.animation = !current.animation;
-  saveSettings({ animation: current.animation });
-  if (current.animation) {
-    document.documentElement.removeAttribute('data-no-animation');
-  } else {
-    document.documentElement.setAttribute('data-no-animation', '');
-  }
-  setStatus(current.animation ? t('setting.status.animation_on') : t('setting.status.animation_off'), "success");
-}
-
-/** 圆角风格 */
-function onBorderRadiusChange() {
-  const radiusMap: Record<string, string> = { none: '0px', small: '6px', medium: '10px', large: '14px' };
-  saveSettings({ borderRadius: current.borderRadius });
-  document.documentElement.style.setProperty('--radius', radiusMap[current.borderRadius] || '14px');
-  setStatus(t('setting.status.border_radius_updated'), "success");
-}
-
-/** 卡片预览行数 */
-function onPreviewLinesChange() {
-  saveSettings({ previewLines: current.previewLines });
-  document.documentElement.style.setProperty('--preview-lines', current.previewLines === 0 ? '9999' : String(current.previewLines));
-  setStatus(t('setting.status.preview_lines_set', { n: current.previewLines === 0 ? t('setting.status.preview_lines_all') : current.previewLines }), "success");
-}
-
-// ========================================================
-//  账户设置
-// ========================================================
-
-/** 修改昵称 */
-function onChangeNickname() {
-  // TODO: 弹出修改昵称对话框 / 调用后端 API
-  setStatus(t('setting.status.nickname_todo'), "muted");
-}
-
-/** 修改密码 */
-function onChangePassword() {
-  // TODO: 弹出修改密码对话框 / 调用后端 API
-  setStatus(t('setting.status.password_todo'), "muted");
-}
-
-/** 修改邮箱 */
-function onChangeEmail() {
-  // TODO: 弹出修改邮箱对话框 / 调用后端 API
-  setStatus(t('setting.status.email_todo'), "muted");
-}
-
-/** 导出数据 */
-async function onExportData() {
-  // 简单前端限流：导出后 1 小时内不可再次导出
-  const LOCK_KEY = "whatIveDone_export_lock_v1";
-
-  async function sha256Base64(msg: string) {
-    const enc = new TextEncoder();
-    const buf = await crypto.subtle.digest("SHA-256", enc.encode(msg));
-    const bytes = new Uint8Array(buf);
-    let binary = "";
-    for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i]);
-    return btoa(binary);
-  }
-
-  // 检查是否存在有效锁（并验证签名以尽可能防篡改）
-  try {
-    const raw = localStorage.getItem(LOCK_KEY);
-    if (raw) {
-      try {
-        const obj = JSON.parse(raw);
-        if (obj?.ts && obj?.sig) {
-          const expected = await sha256Base64(String(obj.ts) + "|" + location.origin + "|" + navigator.userAgent);
-          if (expected === obj.sig) {
-            const now = Date.now();
-            const elapsed = now - Number(obj.ts);
-            const limit = 60 * 60 * 1000; // 1 小时
-            if (elapsed < limit) {
-              const remainingSec = Math.ceil((limit - elapsed) / 1000);
-              // 显示剩余时间，防止重复下载
-              setStatus(t('setting.account.export.locked', { s: remainingSec }), "error");
-              return;
-            }
-          } else {
-            // 签名不匹配，疑似被篡改，清除锁
-            localStorage.removeItem(LOCK_KEY);
-          }
-        } else {
-          localStorage.removeItem(LOCK_KEY);
-        }
-      } catch {
-        localStorage.removeItem(LOCK_KEY);
-      }
-    }
-  } catch (e) {
-    // 若 localStorage 不可用则继续（无法可靠限制）
-    console.warn("Export lock check failed:", e);
-  }
-
-  // 进行导出
-  try {
-    const data = await api(`/api/posts?all="true"`);
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.style.display = "none";
-    a.href = url;
-    const dateStr = new Date().toISOString().slice(0, 10);
-    a.download = `whatIveDone_export_${dateStr}.json`;
-    document.body.appendChild(a);
-    a.click();
-
-    // 延迟清理，以确保下载已触发
-    setTimeout(() => {
-      try { URL.revokeObjectURL(url); } catch (e) { /* noop */ }
-      try { document.body.removeChild(a); } catch (e) { /* noop */ }
-    }, 1500);
-
-    // 成功后设置锁并签名（防止用户直接修改时间戳绕过）
-    try {
-      const ts = Date.now();
-      const sig = await sha256Base64(String(ts) + "|" + location.origin + "|" + navigator.userAgent);
-      localStorage.setItem(LOCK_KEY, JSON.stringify({ ts, sig }));
-    } catch (e) {
-      console.warn("Failed to persist export lock:", e);
-    }
-    setStatus(t('setting.status.export_success', { timestamp: dateStr }), "success");
-  } catch (err) {
-    console.error("Export failed:", err);
-    setStatus(t('setting.status.export_failed', { error: (err as Error).message }), "error");
-    return;
-  }
-}
-
-/** 导入数据 */
-function onImportData() {
-  // TODO: 打开文件选择器 → 读取 JSON → 调用后端 API 批量导入
-  setStatus(t('setting.status.import_todo'), "muted");
-}
-
-/** 管理会话 */
-function onManageSessions() {
-  // TODO: 调用后端 API 获取活跃会话列表 → 弹出管理面板
-  setStatus(t('setting.status.sessions_todo'), "muted");
-}
-
-/** 清空所有数据 */
-async function onDeleteAllData() {
-  // TODO: 二次确认 + 调用后端 API 删除所有记录
-  if (current.confirmDelete && prompt(t('setting.status.clear_data_confirm')) !== t('setting.status.clear_data_confirm_text')) {
-    alert(t('setting.status.clear_data_cancelled'));
-    return;
-  }
-  try {
-    localStorage.removeItem(STORAGE_KEY);
-    localStorage.removeItem("whatIveDone_theme");
-    localStorage.removeItem("whatIveDone_locale");
-    await api("/api/delete", { method: "DELETE" });
-  } catch (e) {
-    console.warn("Failed to clear local settings:", e);
-  }
-  setStatus(t('setting.status.clear_data_success'), "muted");
-}
-
-/** 注销账户 */
-function onDeleteAccount() {
-  // TODO: 二次确认 + 调用后端 API 注销账户
-  setStatus(t('setting.status.delete_account_todo'), "muted");
-}
-
-// ========================================================
-//  通知与提醒
-// ========================================================
-
-/** 每日学习提醒 */
-function onDailyReminderToggle() {
-  current.dailyReminder = !current.dailyReminder;
-  saveSettings({ dailyReminder: current.dailyReminder });
-  setStatus(current.dailyReminder ? t('setting.status.daily_reminder_on') : t('setting.status.daily_reminder_off'), "success");
-  // TODO: 注册 / 取消 Notification API 或后端推送
-}
-
-/** 提醒时间 */
-function onReminderTimeChange() {
-  saveSettings({ reminderTime: current.reminderTime });
-  setStatus(t('setting.status.reminder_time_set', { time: current.reminderTime }), "success");
-  // TODO: 更新推送计划
-}
-
-/** 连续打卡提醒 */
-function onStreakReminderToggle() {
-  current.streakReminder = !current.streakReminder;
-  saveSettings({ streakReminder: current.streakReminder });
-  setStatus(current.streakReminder ? t('setting.status.streak_reminder_on') : t('setting.status.streak_reminder_off'), "success");
-  // TODO: 注册 / 取消连续性检查逻辑
-}
-
-/** 每周学习周报 */
-function onWeeklyReportChange() {
-  saveSettings({ weeklyReport: current.weeklyReport });
-  const labels: Record<string, string> = { off: t('setting.notification.weekly_report.off'), popup: t('setting.notification.weekly_report.popup'), email: t('setting.notification.weekly_report.email') };
-  setStatus(t('setting.status.weekly_report_set', { mode: labels[current.weeklyReport] || current.weeklyReport }), "success");
-  // TODO: 配置后端周报任务
-}
-
-// ========================================================
-//  关于
-// ========================================================
-
-/** 检查更新 */
-function onCheckUpdate() {
-  // TODO: 请求远程版本号并与本地比较
-  setStatus(t('setting.status.check_update_latest'), "success");
-}
-
-/** 更新日志 */
-function onChangelog() {
-  window.open("https://github.com/BoyangZhang619/whatHaveUDone/commits/main/", "_blank");
-}
-
-/** 重置所有设置 */
-function onResetAllSettings() {
-  if (!confirm(t('setting.about.reset.confirm') || 'Reset all settings to default?')) return;
-
-  // 清除存储
-  localStorage.removeItem(STORAGE_KEY);
-  localStorage.removeItem("whatIveDone_theme");
-  localStorage.removeItem("whatIveDone_locale");
-
-  // 重置 current 到默认值
-  current.language = 'zh-CN' as SupportedLocale;
-  current.pageSize = 10;
-  current.sortOrder = 'newest';
-  current.autoDraft = true;
-  current.draftInterval = 30;
-  current.confirmDelete = true;
-  current.shortcuts = true;
-  current.timezone = '-';
-
-  current.theme = 'light';
-  current.fontSize = 14;
-  current.cardLayout = 'grid';
-  current.animation = true;
-  current.borderRadius = 'large';
-  current.previewLines = 3;
-
-  current.dailyReminder = false;
-  current.reminderTime = '21:00';
-  current.streakReminder = false;
-  current.weeklyReport = 'off';
-
-  // 恢复 DOM 状态
-  document.documentElement.setAttribute('data-theme', 'light');
-  document.documentElement.style.removeProperty('--font-base');
-  document.documentElement.style.removeProperty('--radius');
-  document.documentElement.style.removeProperty('--preview-lines');
-  document.documentElement.removeAttribute('data-no-animation');
-  setLocale('zh-CN' as SupportedLocale);
-
-  setStatus(t('setting.status.reset_done'), "success");
-}
+const {
+  onCheckUpdate, onChangelog, onResetAllSettings,
+} = useAboutSettings(current, setStatus);
 </script>
 
 <style src="@/css/setting.css"></style>
