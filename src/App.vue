@@ -76,6 +76,7 @@ const handleLogout = () => {
       <Setting
           v-else-if="user && settingOpen"
           @close="settingOpen=false"
+          @log-out="handleLogout"
       />
 
     </transition>
@@ -83,7 +84,6 @@ const handleLogout = () => {
 </template>
 
 <style>
-/* 全局基础样式清零，确保黑白风格纯净 */
 body {
   margin: 0;
   padding: 0;
@@ -100,21 +100,16 @@ body {
   align-items: center;
 }
 
-/* --- 柔和切换动画 --- */
-
-/* 进场和出场的时间曲线 */
 .fade-transform-enter-active,
 .fade-transform-leave-active {
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* 进场前的状态：半透明且轻微向下位移 */
 .fade-transform-enter-from {
   opacity: 0;
   transform: translateY(15px) scale(0.98);
 }
 
-/* 离场后的状态：半透明且轻微向上位移 */
 .fade-transform-leave-to {
   opacity: 0;
   transform: translateY(-15px) scale(1.02);

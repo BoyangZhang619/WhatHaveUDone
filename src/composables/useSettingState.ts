@@ -1,7 +1,8 @@
 /**
  * 设置页面的响应式状态 & 状态提示
+ * 通过 provide/inject 在 setting.vue 及其所有子组件间共享同一份实例
  */
-import { reactive, ref } from "vue";
+import { inject, provide, reactive, ref, type InjectionKey } from "vue";
 import { useI18n } from "vue-i18n";
 import { load } from "./useSettingsStorage";
 import type { SupportedLocale } from "@/i18n";
@@ -68,4 +69,28 @@ export function useSettingState() {
     statusKind,
     setStatus,
   };
+}
+
+/** provide/inject 共享 key */
+export type SettingStateReturn = ReturnType<typeof useSettingState>;
+const SETTING_STATE_KEY: InjectionKey<SettingStateReturn> = Symbol("SettingState");
+
+/**
+ * 在 setting.vue（根组件）中调用：创建状态并 provide 给所有子组件
+ */
+export function provideSettingState() {
+  const state = useSettingState();
+  provide(SETTING_STATE_KEY, state);
+  return state;
+}
+
+/**
+ * 在子组件（general.vue、account.vue 等）中调用：inject 父级 provide 的同一份状态
+ */
+export function injectSettingState(): SettingStateReturn {
+  const state = inject(SETTING_STATE_KEY);
+  if (!state) {
+    throw new Error("injectSettingState() 必须在 provideSettingState() 的子组件树中调用");
+  }
+  return state;
 }
