@@ -87,8 +87,11 @@
 
 /* ====== Topbar ====== */
 .topbar {
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
   z-index: 20;
   display: flex;
   gap: 12px;
@@ -98,6 +101,7 @@
   background: var(--topbar-bg);
   backdrop-filter: blur(12px);
   border-bottom: none;
+  box-sizing: border-box;
 }
 
 .brand {
@@ -1166,12 +1170,12 @@ body {
   --status-error-border: #4a2a2a;
 }
 
-/* ===== 3) 璁╁唴瀹瑰鍣ㄥ湪鎵嬫満鐪熉锋弧瀹斤紝涓嶈琚?max-width/缂╂斁鎼炴€?===== */
+/* ===== 3) 璁╁唴瀹瑰鍣ㄥ湪鎵嬫満鐪熉锋弧瀹斤紝涓嶈琚?max-width/缂╂斁鎼炴€?===== */
 .content {
   width: 100%;
   max-width: calc(100dvw - 26px);
   margin: 0 auto;
-  padding: 18px 16px 32px;
+  padding: 80px 16px 32px;
 }
 
 /* 鍒涘缓鍗＄墖銆佸垪琛ㄥ鍣ㄥ己鍒朵笉婧㈠嚭 */
