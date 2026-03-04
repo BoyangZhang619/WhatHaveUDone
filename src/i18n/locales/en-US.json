@@ -95,6 +95,7 @@
       },
       "composer_overlay": {
         "overlay_title": "Add Record",
+        "overlay_edit": "Edit Record",
         "overlay_sub_title": {
           "draft": "Draft:",
           "wordCount": "Word Count:",
@@ -191,7 +192,8 @@
             "delete": "Delete Record",
             "delete_confirm": "Are you sure you want to delete this record? This action cannot be undone. Please type 'I am sure I want to delete' to confirm.",
             "delete_confirm_text": "I am sure I want to delete",
-            "text_wrong": "The confirmation text is incorrect, deletion cancelled\nXIXI I knew you wouldn't want to delete me (>w<)"
+            "text_wrong": "The confirmation text is incorrect, deletion cancelled\nXIXI I knew you wouldn't want to delete me (>w<)",
+            "edit": "Edit"
           }
         }
       }

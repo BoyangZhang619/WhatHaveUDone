@@ -95,6 +95,7 @@
       },
       "composer_overlay": {
         "overlay_title": "新增記錄",
+        "overlay_edit": "編輯記錄",
         "overlay_sub_title": {
           "draft": "草稿:",
           "wordCount": "字數:",
@@ -189,7 +190,8 @@
             "delete": "刪除該記錄",
             "delete_confirm": "確定要刪除這條記錄嗎？此操作不可撤銷，請輸入'我確定要刪除'以確認",
             "delete_confirm_text": "我確定要刪除",
-            "text_wrong": "確認文本錯誤，已取消刪除\n 嘻嘻我就知道你不肯刪我(>w<)"
+            "text_wrong": "確認文本錯誤，已取消刪除\n 嘻嘻我就知道你不肯刪我(>w<)",
+            "edit": "編輯"
           }
         }
       }

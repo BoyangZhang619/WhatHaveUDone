@@ -2,7 +2,7 @@
         <div v-if="composerOpen" class="overlay" @keydown.esc.prevent="closeComposer" tabindex="-1" ref="overlayEl">
             <div class="overlay-top">
                 <div class="overlay-title">
-                    <div class="overlay-title-main">{{ $t("main_page.body.composer_overlay.overlay_title") }}</div>
+                    <div class="overlay-title-main">{{mode === "edit" ? $t("main_page.body.composer_overlay.overlay_edit") : $t("main_page.body.composer_overlay.overlay_title") }}</div>
                     <div class="muted overlay-title-sub">
                         {{ $t("main_page.body.composer_overlay.overlay_sub_title.draft") }}：{{ draftStatus }}
                         <span class="dot">·</span>
@@ -193,7 +193,7 @@ import { injectComposer } from "@/composables/useComposer";
 const { t } = useI18n();
 const {
   composerOpen, overlayEl, ui, createLoading, createStatus, draftStatus,
-  draft, tagInput, todoInput,
+  draft, tagInput, todoInput, mode,
   openComposer, closeComposer, setCreateStatus,
   addTag, removeTag, addTodo, removeTodo,
   resetDraft, applyTemplate, composedPreview, wordCount,

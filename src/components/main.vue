@@ -31,7 +31,7 @@
 
     <!-- Detail modal -->
     <transition name="neo-pop">
-      <Detail v-if="detail.open" @delete-post="deletePost" />
+      <Detail v-if="detail.open" @delete-post="deletePost" @edit-post="editPost"/>
     </transition>
   </div>
 </template>
@@ -61,6 +61,12 @@ const { composerOpen, loadDraft } = provideComposer(resetAndList);
 async function deletePost() {
   const success = await _deletePost();
   if (success) await resetAndList();
+}
+
+async function editPost() {
+  detail.open = false;
+  composerOpen.value = true;
+  loadDraft(detail.id);
 }
 
 onMounted(async () => {

@@ -6,6 +6,8 @@ import { useI18n } from "vue-i18n";
 import { api } from "./useApi";
 import { toDatetimeLocal, clampInt, safeErr } from "./useHelpers";
 
+const mode = ref<"create" | "edit">("create");
+
 const COMPOSER_KEY: InjectionKey<ReturnType<typeof useComposer>> = Symbol("Composer");
 
 export function provideComposer(resetAndList: () => Promise<void>) {
@@ -25,6 +27,7 @@ interface UIState {
 }
 
 interface Draft {
+  id: string;
   template: string;
   title: string;
   content: string;
@@ -68,6 +71,7 @@ export function useComposer(resetAndList: () => Promise<void>) {
   );
 
   const draft = reactive<Draft>({
+    id: "",
     template: "",
     title: "",
     content: "",
@@ -98,6 +102,8 @@ export function useComposer(resetAndList: () => Promise<void>) {
 
   function closeComposer() {
     composerOpen.value = false;
+    mode.value = "create";
+    resetDraft();
     createStatus.msg = "";
   }
 
@@ -249,20 +255,19 @@ export function useComposer(resetAndList: () => Promise<void>) {
       todos: draft.todos.map((td) => ({ ...td })),
     }),
     () => {
-      if (
-        JSON.parse(
-          localStorage.getItem("whatIveDone_settings") || "{}"
-        ).autoDraft !== true
-      ) {
+      const settings = localStorage.getItem("whatIveDone_settings");
+      if (settings && JSON.parse(settings).autoDraft == false) {
         return;
       }
+      if (mode.value === "edit") return; // 编辑模式不保存草稿
       draftStatus.value = t(
         "main_page.body.composer_overlay.overlay_sub_title.draft_status.unsaved"
       );
       if (draftTimer) clearTimeout(draftTimer);
       draftTimer = setTimeout(() => {
         try {
-          localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+          console.log("Saving draft...", draft);
+          localStorage.setItem(DRAFT_KEY, JSON.stringify(draft.valueOf()));
           draftStatus.value = t(
             "main_page.body.composer_overlay.overlay_sub_title.draft_status.saved"
           );
@@ -276,12 +281,14 @@ export function useComposer(resetAndList: () => Promise<void>) {
     { deep: true }
   );
 
-  function loadDraft() {
+  async function loadDraft(cardId?: number | null) {
     try {
-      const raw = localStorage.getItem(DRAFT_KEY);
+      const raw = cardId ? await api(`/api/posts/${cardId}`) : localStorage.getItem(DRAFT_KEY);
       if (!raw) return;
-      const obj = JSON.parse(raw);
-
+      mode.value = cardId ? "edit" : "create";
+      console.log("mode:", mode.value);
+      const obj = cardId?raw?.post:JSON.parse(raw);
+      draft.id = obj.id || "";
       draft.template = obj.template || "";
       draft.title = obj.title || "";
       draft.content = obj.content || "";
@@ -303,9 +310,7 @@ export function useComposer(resetAndList: () => Promise<void>) {
         : [];
       draft.pinToTop = !!obj.pinToTop;
 
-      draftStatus.value = t(
-        "main_page.body.composer_overlay.overlay_sub_title.draft_status.loaded"
-      );
+      draftStatus.value = t("main_page.body.composer_overlay.overlay_sub_title.draft_status.loaded");
     } catch {
       // ignore
     }
@@ -343,11 +348,12 @@ export function useComposer(resetAndList: () => Promise<void>) {
     };
 
     try {
-      const data = await api("/api/posts", {
+      const data = await api("/api/posts"+ (mode.value === "edit" ? `/${draft.id}` : ""), {
         method: "POST",
         body: JSON.stringify(payloadRich),
       });
-
+      draft.id = "";
+      mode.value = "create";
       setCreateStatus(
         t("post_dealing.create.success.total", {
           id: data?.id ?? "?",
@@ -401,6 +407,7 @@ export function useComposer(resetAndList: () => Promise<void>) {
 
   return {
     composerOpen,
+    mode,
     overlayEl,
     ui,
     createLoading,

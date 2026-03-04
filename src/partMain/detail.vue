@@ -276,10 +276,8 @@
                 </div>
             </main>
             <footer class="neoFooter">
-                <button @click="$emit('delete-post')" class="neoFooter_button">{{
-                    t("main_page.body.detail.body.footer.delete")
-                }}
-                </button>
+                <button @click="$emit('edit-post')" class="neoFooter_button">{{ t("main_page.body.detail.body.footer.edit") }}</button>
+                <button @click="$emit('delete-post')" class="neoFooter_button">{{ t("main_page.body.detail.body.footer.delete") }}</button>
             </footer>
         </section>
     </div>
@@ -296,3 +294,4 @@ const {
     deletePost: _deletePost,
 } = injectPostDetail();
 </script>
+<style src="@/partMain/css/detail.css"></style>
