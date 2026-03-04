@@ -1,7 +1,7 @@
 /**
  * 帖子列表 & 分页
  */
-import { computed, reactive, ref } from "vue";
+import { computed, reactive, ref, provide, inject, InjectionKey } from "vue";
 import { useI18n } from "vue-i18n";
 import { api } from "./useApi";
 import { safeErr, normalizeInt } from "./useHelpers";
@@ -30,6 +30,21 @@ interface Pager {
   page: number;
   total: number | null;
   hasNext: boolean;
+}
+
+export type PostsReturn = ReturnType<typeof usePosts>;
+const postsKey: InjectionKey<PostsReturn> = Symbol("posts");
+
+export function providePosts() {
+  const posts = usePosts();
+  provide(postsKey, posts);
+  return posts;
+}
+
+export function injectPosts() {
+  const posts = inject(postsKey);
+  if (!posts) throw new Error("injectPosts() 必须在 providePosts() 的子组件中使用");
+  return posts;
 }
 
 export function usePosts() {

@@ -391,6 +391,11 @@
         "desc": "Restore all settings to their default values",
         "btn": "Reset",
         "confirm": "Are you sure you want to reset all settings? This will restore all preferences to their default values. You can change them again after resetting."
+      },
+      "mainPage": {
+        "title": "Go to Main Page",
+        "desc": "Return to the main page to see more features",
+        "btn": "Go"
       }
     },
     "status": {

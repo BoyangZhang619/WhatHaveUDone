@@ -1,10 +1,27 @@
 /**
  * 帖子详情查看
  */
-import { computed, reactive, ref } from "vue";
+import { computed, inject, provide, reactive, ref, type InjectionKey } from "vue";
 import { useI18n } from "vue-i18n";
 import { api } from "./useApi";
 import { formatDate, safeErr } from "./useHelpers";
+
+export type PostDetailReturn = ReturnType<typeof usePostDetail>;
+const POST_DETAIL_KEY: InjectionKey<PostDetailReturn> = Symbol("PostDetail");
+
+/** 父组件调用：创建状态并 provide 给子组件 */
+export function providePostDetail() {
+  const state = usePostDetail();
+  provide(POST_DETAIL_KEY, state);
+  return state;
+}
+
+/** 子组件调用：inject 父组件提供的状态 */
+export function injectPostDetail(): PostDetailReturn {
+  const state = inject(POST_DETAIL_KEY);
+  if (!state) throw new Error("injectPostDetail() 必须在 providePostDetail() 的子组件中使用");
+  return state;
+}
 
 interface DetailState {
   open: boolean;

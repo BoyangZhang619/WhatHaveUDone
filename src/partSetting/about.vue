@@ -26,7 +26,7 @@
                     </div>
                     <div class="setting-item-ctrl">
                         <button class="btn secondary-sm" @click="onCheckUpdate">{{ t('setting.about.check_update.btn')
-                            }}</button>
+                        }}</button>
                     </div>
                 </div>
 
@@ -38,7 +38,7 @@
                     </div>
                     <div class="setting-item-ctrl">
                         <button class="btn secondary-sm" @click="onChangelog">{{ t('setting.about.changelog.btn')
-                            }}</button>
+                        }}</button>
                     </div>
                 </div>
 
@@ -68,6 +68,18 @@
                     </div>
                 </div>
 
+                <!-- 主页 -->
+                <div class="setting-item">
+                    <div class="setting-item-info">
+                        <div class="setting-item-title">{{ t('setting.about.mainPage.title') }}</div>
+                        <div class="setting-item-desc muted">{{ t('setting.about.mainPage.desc') }}</div>
+                    </div>
+                    <div class="setting-item-ctrl">
+                        <a href="https://zbyblq.xin" target="_blank" rel="noopener"
+                            class="btn secondary-sm" style="text-decoration:none;">{{ t('setting.about.mainPage.btn') }}</a>
+                    </div>
+                </div>
+
                 <!-- 重置所有设置 -->
                 <div class="setting-divider"></div>
                 <div class="setting-item">
@@ -77,7 +89,7 @@
                     </div>
                     <div class="setting-item-ctrl">
                         <button class="btn danger-sm" @click="onResetAllSettings">{{ t('setting.about.reset.btn')
-                            }}</button>
+                        }}</button>
                     </div>
                 </div>
             </div>
@@ -92,11 +104,11 @@ import { useAboutSettings } from "@/composables/useAboutSettings";
 const { t } = useI18n();
 
 const {
-  displayState, current, languageOptions,
-  statusMsg, statusKind, setStatus,
+    displayState, current, languageOptions,
+    statusMsg, statusKind, setStatus,
 } = injectSettingState();
 
 const {
-  onCheckUpdate, onChangelog, onResetAllSettings,
+    onCheckUpdate, onChangelog, onResetAllSettings
 } = useAboutSettings(current, setStatus);
 </script>

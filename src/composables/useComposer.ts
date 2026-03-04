@@ -1,10 +1,24 @@
 /**
  * 全屏编辑器（Composer）
  */
-import { computed, nextTick, reactive, ref, watch, type Ref } from "vue";
+import { computed, inject, provide, nextTick, reactive, ref, watch, type Ref, InjectionKey } from "vue";
 import { useI18n } from "vue-i18n";
 import { api } from "./useApi";
 import { toDatetimeLocal, clampInt, safeErr } from "./useHelpers";
+
+const COMPOSER_KEY: InjectionKey<ReturnType<typeof useComposer>> = Symbol("Composer");
+
+export function provideComposer(resetAndList: () => Promise<void>) {
+  const state = useComposer(resetAndList);
+  provide(COMPOSER_KEY, state);
+  return state;
+}
+
+export function injectComposer() {
+  const state = inject(COMPOSER_KEY);
+  if (!state) throw new Error("Composer not provided");
+  return state;
+}
 
 interface UIState {
   previewMode: boolean;

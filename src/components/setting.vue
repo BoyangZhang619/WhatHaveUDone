@@ -43,11 +43,11 @@
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
 import { provideSettingState } from "@/composables/useSettingState";
-import General from "@/settingPart/general.vue";
-import Appearance from "@/settingPart/appearance.vue";
-import Account from "@/settingPart/account.vue";
-import Notification from "@/settingPart/notification.vue";
-import About from "@/settingPart/about.vue";
+import General from "@/partSetting/general.vue";
+import Appearance from "@/partSetting/appearance.vue";
+import Account from "@/partSetting/account.vue";
+import Notification from "@/partSetting/notification.vue";
+import About from "@/partSetting/about.vue";
 
 const emit = defineEmits<{
   (e: "close"): void;
