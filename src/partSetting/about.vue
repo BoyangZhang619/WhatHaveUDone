@@ -10,11 +10,11 @@
                 <!-- 版本 -->
                 <div class="setting-item">
                     <div class="setting-item-info">
-                        <div class="setting-item-title">{{ t('setting.about.version.title') }}&nbsp;|&nbsp;2026-3-5</div>
+                        <div class="setting-item-title">{{ t('setting.about.version.title') }}&nbsp;|&nbsp;2026-3-6</div>
                         <div class="setting-item-desc muted">{{ t('setting.about.version.desc') }}</div>
                     </div>
                     <div class="setting-item-ctrl">
-                        <span class="setting-badge">v1.1.0</span>
+                        <span class="setting-badge">v1.1.1</span>
                     </div>
                 </div>
 
