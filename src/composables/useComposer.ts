@@ -85,6 +85,21 @@ export function useComposer(resetAndList: () => Promise<void>) {
     pinToTop: false,
   });
 
+  const editDraft = reactive<Draft>({
+    id: "",
+    template: "",
+    title: "",
+    content: "",
+    happenedAt: toDatetimeLocal(new Date()),
+    durationMin: 45,
+    focus: 3,
+    difficulty: 3,
+    tags: [],
+    goal: "",
+    todos: [],
+    pinToTop: false,
+  });
+
   const tagInput = ref("");
   const todoInput = ref("");
 
@@ -103,7 +118,6 @@ export function useComposer(resetAndList: () => Promise<void>) {
   function closeComposer() {
     composerOpen.value = false;
     mode.value = "create";
-    resetDraft();
     createStatus.msg = "";
   }
 
@@ -113,50 +127,56 @@ export function useComposer(resetAndList: () => Promise<void>) {
   }
 
   function addTag(raw: string) {
+    const _draft = mode.value === "edit" ? editDraft : draft;
     const tag = String(raw || "").trim();
     if (!tag) return;
     const safe = tag.slice(0, 24);
-    if (!draft.tags.includes(safe)) draft.tags.push(safe);
+    if (!_draft.tags.includes(safe)) _draft.tags.push(safe);
     tagInput.value = "";
   }
 
   function removeTag(tag: string) {
-    draft.tags = draft.tags.filter((x) => x !== tag);
+    const _draft = mode.value === "edit" ? editDraft : draft;
+    _draft.tags = _draft.tags.filter((x) => x !== tag);
   }
 
   function addTodo(raw: string) {
+    const _draft = mode.value === "edit" ? editDraft : draft;
     const text = String(raw || "").trim();
     if (!text) return;
-    draft.todos.push({ text: text.slice(0, 120), done: false });
+    _draft.todos.push({ text: text.slice(0, 120), done: false });
     todoInput.value = "";
   }
 
   function removeTodo(i: number) {
-    draft.todos.splice(i, 1);
+    const _draft = mode.value === "edit" ? editDraft : draft;
+    _draft.todos.splice(i, 1);
   }
 
   function resetDraft(keepTime = true) {
-    const keep = keepTime ? draft.happenedAt : toDatetimeLocal(new Date());
-    draft.template = "";
-    draft.title = "";
-    draft.content = "";
-    draft.happenedAt = keep;
-    draft.durationMin = 45;
-    draft.focus = 3;
-    draft.difficulty = 3;
-    draft.tags = [];
-    draft.goal = "";
-    draft.todos = [];
-    draft.pinToTop = false;
+    const _draft = mode.value === "edit" ? editDraft : draft;
+    const keep = keepTime ? _draft.happenedAt : toDatetimeLocal(new Date());
+    _draft.template = "";
+    _draft.title = "";
+    _draft.content = "";
+    _draft.happenedAt = keep;
+    _draft.durationMin = 45;
+    _draft.focus = 3;
+    _draft.difficulty = 3;
+    _draft.tags = [];
+    _draft.goal = "";
+    _draft.todos = [];
+    _draft.pinToTop = false;
     ui.previewMode = false;
     setCreateStatus(t("other.draft_clean"), "muted");
   }
 
   function applyTemplate() {
-    const template = draft.template;
+    const _draft = mode.value === "edit" ? editDraft : draft;
+    const template = _draft.template;
     if (!template) return;
 
-    if (!draft.title) {
+    if (!_draft.title) {
       const map: Record<string, string> = {
         reciting: t("apply_template.type.reciting"),
         reading: t("apply_template.type.reading"),
@@ -166,10 +186,10 @@ export function useComposer(resetAndList: () => Promise<void>) {
         course: t("apply_template.type.course"),
         review: t("apply_template.type.review"),
       };
-      draft.title = map[template] || "";
+      _draft.title = map[template] || "";
     }
 
-    if (!draft.goal) {
+    if (!_draft.goal) {
       const map: Record<string, string> = {
         reciting: t("apply_template.goal.reciting"),
         reading: t("apply_template.goal.reading"),
@@ -179,10 +199,10 @@ export function useComposer(resetAndList: () => Promise<void>) {
         course: t("apply_template.goal.course"),
         review: t("apply_template.goal.review"),
       };
-      draft.goal = map[template] || "";
+      _draft.goal = map[template] || "";
     }
 
-    if (!draft.content) {
+    if (!_draft.content) {
       const map: Record<string, string> = {
         reciting: t("apply_template.content.reciting"),
         reading: t("apply_template.content.reading"),
@@ -192,7 +212,7 @@ export function useComposer(resetAndList: () => Promise<void>) {
         course: t("apply_template.content.course"),
         review: t("apply_template.content.review"),
       };
-      draft.content = map[template] || "";
+      _draft.content = map[template] || "";
     }
 
     addTag(template);
@@ -200,36 +220,37 @@ export function useComposer(resetAndList: () => Promise<void>) {
 
   const composedPreview = computed(() => {
     const lines = [];
-    if (draft.title) lines.push(draft.title);
+    const _draft = mode.value === "edit" ? editDraft : draft;
+    if (_draft.title) lines.push(_draft.title);
     lines.push("");
 
     lines.push(
-      t("composed_preview.time", { time: draft.happenedAt || "-" })
+      t("composed_preview.time", { time: _draft.happenedAt || "-" })
     );
     lines.push(
       t("composed_preview.duration", {
-        duration: draft.durationMin ?? "-",
+        duration: _draft.durationMin ?? "-",
       })
     );
     lines.push(
       t("composed_preview.focus_diff", {
-        focus: draft.focus,
-        diff: draft.difficulty,
+        focus: _draft.focus,
+        diff: _draft.difficulty,
       })
     );
-    if (draft.tags.length)
+    if (_draft.tags.length)
       lines.push(
-        t("composed_preview.tags", { tags: draft.tags.join(", ") })
+        t("composed_preview.tags", { tags: _draft.tags.join(", ") })
       );
-    if (draft.goal)
-      lines.push(t("composed_preview.target", { goal: draft.goal }));
+    if (_draft.goal)
+      lines.push(t("composed_preview.target", { goal: _draft.goal }));
     lines.push("");
-    lines.push(draft.content || "");
-    if (draft.todos.length) {
+    lines.push(_draft.content || "");
+    if (_draft.todos.length) {
       lines.push("");
       lines.push(
         t("composed_preview.next_step", {
-          next_step: draft.todos
+          next_step: _draft.todos
             .map((td) => `- [${td.done ? "x" : " "}] ${td.text}`)
             .join("\n"),
         })
@@ -239,7 +260,8 @@ export function useComposer(resetAndList: () => Promise<void>) {
   });
 
   const wordCount = computed(() => {
-    const s = `${draft.title}\n${draft.goal}\n${draft.content}`.trim();
+    const _draft = mode.value === "edit" ? editDraft : draft;
+    const s = `${_draft.title}\n${_draft.goal}\n${_draft.content}`.trim();
     if (!s) return 0;
     const cn = (s.match(/[\u4e00-\u9fff]/g) || []).length;
     const en = (s.match(/[A-Za-z0-9_]+/g) || []).length;
@@ -249,6 +271,7 @@ export function useComposer(resetAndList: () => Promise<void>) {
   // 草稿自动保存
   let draftTimer: ReturnType<typeof setTimeout> | null = null;
   watch(
+    // 仅有draft执行保存行为，editDraft不执行（编辑模式不保存草稿），也因此这里不使用_draft
     () => ({
       ...draft,
       tags: [...draft.tags],
@@ -282,25 +305,29 @@ export function useComposer(resetAndList: () => Promise<void>) {
   );
 
   async function loadDraft(cardId?: number | null) {
+    console.log("Loading draft...", { cardId });
     try {
       const raw = cardId ? await api(`/api/posts/${cardId}`) : localStorage.getItem(DRAFT_KEY);
       if (!raw) return;
       mode.value = cardId ? "edit" : "create";
       console.log("mode:", mode.value);
-      const obj = cardId?raw?.post:JSON.parse(raw);
-      draft.id = obj.id || "";
-      draft.template = obj.template || "";
-      draft.title = obj.title || "";
-      draft.content = obj.content || "";
-      draft.happenedAt = obj.happenedAt || toDatetimeLocal(new Date());
-      draft.durationMin = clampInt(obj.durationMin, 0, 1440, 45);
-      draft.focus = clampInt(obj.focus, 1, 5, 3);
-      draft.difficulty = clampInt(obj.difficulty, 1, 5, 3);
-      draft.tags = Array.isArray(obj.tags)
+      console.log("Raw draft data:", raw.post);
+      const obj = cardId?raw.post:JSON.parse(raw);
+      const _draft = cardId?editDraft:draft;
+      console.log(obj.id)
+      _draft.id = obj.id || "";
+      _draft.template = obj.template || "";
+      _draft.title = obj.title || "";
+      _draft.content = obj.content || "";
+      _draft.happenedAt = obj.happenedAt || toDatetimeLocal(new Date());
+      _draft.durationMin = clampInt(obj.durationMin, 0, 1440, 45);
+      _draft.focus = clampInt(obj.focus, 1, 5, 3);
+      _draft.difficulty = clampInt(obj.difficulty, 1, 5, 3);
+      _draft.tags = Array.isArray(obj.tags)
         ? obj.tags.slice(0, 20).map((x: any) => String(x).slice(0, 24))
         : [];
-      draft.goal = obj.goal || "";
-      draft.todos = Array.isArray(obj.todos)
+      _draft.goal = obj.goal || "";
+      _draft.todos = Array.isArray(obj.todos)
         ? obj.todos
             .slice(0, 30)
             .map((td: any) => ({
@@ -308,7 +335,7 @@ export function useComposer(resetAndList: () => Promise<void>) {
               done: !!td.done,
             }))
         : [];
-      draft.pinToTop = !!obj.pinToTop;
+      _draft.pinToTop = !!obj.pinToTop;
 
       draftStatus.value = t("main_page.body.composer_overlay.overlay_sub_title.draft_status.loaded");
     } catch {
@@ -318,11 +345,11 @@ export function useComposer(resetAndList: () => Promise<void>) {
 
   async function createPost() {
     if (createLoading.value) return;
-
-    const title = String(draft.title || "")
+    const _draft = mode.value === "edit" ? editDraft : draft;
+    const title = String(_draft.title || "")
       .trim()
       .slice(0, 120);
-    const content = String(draft.content || "")
+    const content = String(_draft.content || "")
       .trim()
       .slice(0, 20000);
 
@@ -337,30 +364,30 @@ export function useComposer(resetAndList: () => Promise<void>) {
     const payloadRich = {
       title,
       content,
-      happenedAt: draft.happenedAt || null,
-      durationMin: draft.durationMin ?? null,
-      focus: draft.focus ?? null,
-      difficulty: draft.difficulty ?? null,
-      tags: draft.tags,
-      goal: draft.goal || null,
-      todos: draft.todos,
-      pinToTop: draft.pinToTop,
+      happenedAt: _draft.happenedAt || null,
+      durationMin: _draft.durationMin ?? null,
+      focus: _draft.focus ?? null,
+      difficulty: _draft.difficulty ?? null,
+      tags: _draft.tags,
+      goal: _draft.goal || null,
+      todos: _draft.todos,
+      pinToTop: _draft.pinToTop,
     };
 
     try {
-      const data = await api("/api/posts"+ (mode.value === "edit" ? `/${draft.id}` : ""), {
+      const data = await api("/api/posts"+ (mode.value === "edit" ? `/${_draft.id}` : ""), {
         method: "POST",
         body: JSON.stringify(payloadRich),
       });
-      draft.id = "";
-      mode.value = "create";
+      _draft.id = "";
       setCreateStatus(
         t("post_dealing.create.success.total", {
           id: data?.id ?? "?",
         }),
         "success"
       );
-      resetDraft(false);
+      resetDraft();
+      mode.value = "create";
       await resetAndList();
       closeComposer();
     } catch (e: any) {
@@ -414,6 +441,7 @@ export function useComposer(resetAndList: () => Promise<void>) {
     createStatus,
     draftStatus,
     draft,
+    editDraft,
     tagInput,
     todoInput,
     openComposer,
