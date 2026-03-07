@@ -857,7 +857,7 @@ html {
   background: var(--card);
   color: var(--text);
   width: 100%;
-  max-width: calc(100dvw - 84px);
+  max-width: calc(100dvw - 52px);
   transition: box-shadow 0.15s ease;
 }
 
@@ -876,7 +876,7 @@ html {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  max-width: calc(100dvw - 115px);
+  max-width: calc(100dvw - 85px);
 }
 
 .post-title {
@@ -1058,7 +1058,8 @@ body {
 
 /* 鍒嗛〉鎸夐挳鐨?.page 蹇呴』闄愬畾鍦?.pager 閲岋紝閬垮厤姹℃煋鏍瑰鍣?.page */
 .pager {
-  padding: 9px 12px;
+  /* padding: 9px 12px; */
+  justify-content: space-between;
   border-radius: 5px !important;
 }
 
@@ -1068,6 +1069,7 @@ body {
   background: var(--bg-subtle);
   color: var(--text);
   border-color: var(--text);
+  justify-content: space-between;
 }
 
 .pager>button:not(:disabled):hover {
@@ -1175,7 +1177,7 @@ body {
   width: 100%;
   max-width: calc(100dvw - 26px);
   margin: 0 auto;
-  padding: 80px 16px 32px;
+  padding: 80px 0px 32px;
 }
 
 /* 鍒涘缓鍗＄墖銆佸垪琛ㄥ鍣ㄥ己鍒朵笉婧㈠嚭 */

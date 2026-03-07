@@ -20,7 +20,7 @@ export function useSettingState() {
   const current = reactive({
     // 通用
     language: locale.value as SupportedLocale,
-    pageSize: load<number>("pageSize", 10),
+    pageSize: load<number>("pageSize", 5),
     sortOrder: load<string>("sortOrder", "newest"),
     autoDraft: load<boolean>("autoDraft", true),
     draftInterval: load<number>("draftInterval", 30),

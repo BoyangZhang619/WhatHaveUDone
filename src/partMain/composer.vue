@@ -80,12 +80,12 @@
                         <div class="row">
                             <div class="field">
                                 <label>{{ $t("overlay_rest.left.focus") }}</label>
-                                <input v-model.number="_draft.focus" type="range" min="1" max="5" step="0.05" />
+                                <input v-model.number="_draft.focus" type="range" min="0" max="5" step="0.05" />
                                 <div class="muted tiny">{{ $t("overlay_rest.left.current") }}{{ _draft.focus }}</div>
                             </div>
                             <div class="field">
                                 <label>{{ $t("overlay_rest.left.diff") }}</label>
-                                <input v-model.number="_draft.difficulty" type="range" min="1" max="5" step="0.05" />
+                                <input v-model.number="_draft.difficulty" type="range" min="0" max="5" step="0.05" />
                                 <div class="muted tiny">{{ $t("overlay_rest.left.current") }}{{ _draft.difficulty }}
                                 </div>
                             </div>
