@@ -1058,8 +1058,8 @@ body {
 
 /* 鍒嗛〉鎸夐挳鐨?.page 蹇呴』闄愬畾鍦?.pager 閲岋紝閬垮厤姹℃煋鏍瑰鍣?.page */
 .pager {
-  /* padding: 9px 12px; */
-  justify-content: space-between;
+  padding: 9px 0px;
+  justify-content: center;
   border-radius: 5px !important;
 }
 
@@ -1069,7 +1069,6 @@ body {
   background: var(--bg-subtle);
   color: var(--text);
   border-color: var(--text);
-  justify-content: space-between;
 }
 
 .pager>button:not(:disabled):hover {

@@ -5,7 +5,7 @@ import { ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { setLocale } from "@/i18n";
 
-const LANGUAGES: string[] = ["zh-CN", "en-US", "zh-TW"];
+const LANGUAGES: string[] = ["zh-CN", "zh-TW", "en-ITALIC"];
 
 export function useLoginUtils() {
   const { t, locale } = useI18n();
@@ -30,7 +30,7 @@ export function useLoginUtils() {
   function switchLanguage() {
     const i = LANGUAGES.indexOf(locale.value as string);
     const next = LANGUAGES[(i + 1) % LANGUAGES.length];
-    if (next !== "zh-CN" && next !== "en-US" && next !== "zh-TW") return;
+    if (next !== "zh-CN" && next !== "en-ITALIC" && next !== "zh-TW") return;
     setLocale(next);
   }
 

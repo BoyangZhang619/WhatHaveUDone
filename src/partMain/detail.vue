@@ -19,7 +19,7 @@
 
                     <div class="neoTitleRow">
                         <div class="neoTitle">
-                            {{ detail.post?.title || t("main_page.body.detail.header.non_title") }}
+                            {{ detail.post?.title || t("main_page.body.detail.header.no_title") }}
                         </div>
 
                         <div class="neoBadges">
