@@ -14,7 +14,7 @@
 
             <div class="form-body">
                 <div class="input-item">
-                    <label for="email">{{ t('login_card.email_label') }}</label>
+                    <label for="email" @click="enterFullscreen">{{ t('login_card.email_label') }}</label>
                     <input id="email" v-model="form.email" type="email" placeholder="test@test.com" />
                 </div>
 
@@ -72,6 +72,10 @@ const { userIp, getMyIp, switchLanguage, question } = useLoginUtils();
 onMounted(() => {
   getMyIp();
 });
+
+function enterFullscreen() {
+  document.documentElement.requestFullscreen()
+}
 </script>
 
 <style src="@/css/login.css"></style>
