@@ -711,7 +711,7 @@ textarea {
   .pager-right {
     width: 100%;
     margin-left: 0;
-    justify-content: space-between;
+    justify-content: center;
   }
 
   .jump input {
@@ -845,7 +845,27 @@ html {
 .cards {
   display: grid;
   gap: 12px;
+}
+
+.is-grid {
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+
+.is-list {
+  grid-template-columns: 1fr;
+}
+
+.is-List>* {
+  flex: 3;
+}
+
+.is-List>*:first-child {
+  flex: 1.5;
+}
+
+.is-List>*:last-child {
+  flex: 1;
+  justify-content: right;
 }
 
 /* Card */

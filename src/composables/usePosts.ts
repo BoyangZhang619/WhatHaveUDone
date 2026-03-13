@@ -62,7 +62,7 @@ export function usePosts() {
   } catch {
     _savedSettings = {};
   }
-
+  const cardLayout = (_savedSettings.cardLayout as string) || "Grid";
   const pager = reactive<Pager>({
     limit:
       _savedSettings?.pageSize != null
@@ -233,5 +233,6 @@ export function usePosts() {
     showPager,
     totalPages,
     pageItems,
+    cardLayout,
   };
 }

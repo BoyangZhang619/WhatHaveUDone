@@ -31,7 +31,7 @@
 
     <!-- Detail modal -->
     <transition name="neo-pop">
-      <Detail v-if="detail.open" @delete-post="deletePost" @edit-post="editPost"/>
+      <Detail v-if="detail.open" @delete-post="deletePost" @edit-post="editPost" style="user-select: text;"/>
     </transition>
   </div>
 </template>

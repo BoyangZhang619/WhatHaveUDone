@@ -755,14 +755,6 @@
   }
 }
 
-@media (max-width: 420px) {
-  .neoGauges {
-    grid-template-columns: 1fr;
-  }
-
-  /* 瓒呭皬灞忔敼鍗曞垪 */
-}
-
 /* ===== Small height devices ===== */
 @media (max-height: 560px) {
   .neoTop {

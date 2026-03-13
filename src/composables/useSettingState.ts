@@ -36,6 +36,7 @@ export function useSettingState() {
     animation: load<boolean>("animation", true),
     borderRadius: load<string>("borderRadius", "large"),
     previewLines: load<number>("previewLines", 3),
+    pageShowMode: load<string>("pageShowMode", "Grid"),
     // 通知
     dailyReminder: load<boolean>("dailyReminder", false),
     reminderTime: load<string>("reminderTime", "21:00"),

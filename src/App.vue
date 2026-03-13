@@ -89,6 +89,7 @@ body {
   padding: 0;
   background-color: var(--bg);
   color: var(--text);
+  user-select: none;
   -webkit-font-smoothing: antialiased;
   transition: background-color 0.3s ease, color 0.3s ease;
 }

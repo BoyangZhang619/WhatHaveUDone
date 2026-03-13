@@ -39,16 +39,16 @@
                 </div>
 
                 <!-- 卡片布局 -->
-                <div class="setting-item locked">
+                <div class="setting-item">
                     <div class="setting-item-info">
                         <div class="setting-item-title">{{ t('setting.style.card_layout.title') }}</div>
                         <div class="setting-item-desc muted">{{ t('setting.style.card_layout.desc') }}</div>
                     </div>
                     <div class="setting-item-ctrl">
                         <select v-model="current.cardLayout" class="setting-select" @change="onCardLayoutChange">
-                            <option value="grid">{{ t('setting.style.card_layout.grid') }}</option>
-                            <option value="list">{{ t('setting.style.card_layout.list') }}</option>
-                            <option value="compact">{{ t('setting.style.card_layout.compact') }}</option>
+                            <option value="Grid">{{ t('setting.style.card_layout.grid') }}</option>
+                            <option value="List">{{ t('setting.style.card_layout.list') }}</option>
+                            <option value="Compact" disabled>{{ t('setting.style.card_layout.compact') }}</option>
                         </select>
                     </div>
                 </div>

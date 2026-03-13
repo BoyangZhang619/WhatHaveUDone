@@ -16,9 +16,9 @@
         </button>
     </div>
 
-    <div v-else class="cards">
+    <div v-else class="cards" :class="{ 'is-grid': cardLayout === 'Grid', 'is-list': cardLayout === 'List' }">
         <article class="post-card" :class="{ 'is-pinned': !!p.pinToTop }" v-for="p in posts" :key="p.id">
-            <header class="post-head">
+            <header class="post-head" :class="{ 'is-List': cardLayout === 'List' }">
                 <div class="post-title">
                     <span class="post-id muted">#{{ p.id }}</span>
                     <span class="post-title-text">{{
@@ -30,6 +30,13 @@
                         }}</span>
                 </div>
 
+                <p class="post-preview" v-if="cardLayout === 'List' && isMobile">
+                    {{
+                        (p.preview?.slice(0, 30) || p.contentPreview?.slice(0, 30) || p.content?.slice(0, 30) ||
+                        t("main_page.body.list_area.cards.non-content")) + "..."
+                    }}
+                </p>
+
                 <div class="post-actions">
                     <button class="btn ghost" @click="openDetail(p.id)">{{
                         t("main_page.body.list_area.cards.detail")
@@ -38,7 +45,7 @@
                 </div>
             </header>
 
-            <div class="post-meta">
+            <div class="post-meta" v-if="cardLayout === 'Grid'">
                 <span v-if="p.happenedAt">{{ formatDate(p.happenedAt) }}</span>
 
                 <span v-if="p.durationMin" class="sep">·</span>
@@ -62,7 +69,7 @@
                     }}</span>
             </div>
 
-            <section class="post-body">
+            <section class="post-body" v-if="cardLayout === 'Grid'">
                 <p class="post-preview">
                     {{
                         p.preview || p.contentPreview || p.content ||
@@ -83,7 +90,7 @@
                     </div>
 
                     <ul class="todo-list" style="justify-content: left !important;">
-                        <li v-for="(t, i) in todoList(p).slice(0, 3)" :key="i" class="todo-item">
+                        <li v-for="(t, i) in todoList(p).slice(0, 1)" :key="i" class="todo-item">
                             <span class="checkbox" aria-hidden="true"></span>
                             <span class="todo-text">{{ t?.text ?? t }}</span>
                         </li>
@@ -94,13 +101,13 @@
                     </ul>
                 </div>
             </section>
-            <footer class="post-foot">
+            <footer class="post-foot" v-if="cardLayout === 'Grid'">
                 <div class="tag-row" v-if="tagList(p).length">
-                    <span class="tag" v-for="(t, i) in tagList(p).slice(0, 6)" :key="i">
+                    <span class="tag" v-for="(t, i) in tagList(p).slice(0, 3)" :key="i">
                         {{ t }}
                     </span>
-                    <span v-if="tagList(p).length > 6" class="tag muted">
-                        +{{ tagList(p).length - 6 }}
+                    <span v-if="tagList(p).length > 3" class="tag muted">
+                        +{{ tagList(p).length - 3 }}
                     </span>
                 </div>
 
@@ -115,6 +122,7 @@
 </template>
 
 <script lang="ts" setup>
+import { ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { formatDate, tagList, todoList } from "@/composables/useHelpers";
 import { injectPosts } from "@/composables/usePosts";
@@ -122,7 +130,10 @@ import { injectComposer } from "@/composables/useComposer";
 import { injectPostDetail } from "@/composables/usePostDetail";
 
 const { t } = useI18n();
-const { posts, listLoading, listError } = injectPosts();
+const { posts, listLoading, listError, cardLayout } = injectPosts();
 const { openComposer } = injectComposer();
 const { openDetail } = injectPostDetail();
+
+// evaluate navigator in script scope so template type-checking doesn't try to treat it as a component property
+const isMobile = ref(!/Android|iPhone|iPad|Phone/.test(navigator.userAgent));
 </script>
