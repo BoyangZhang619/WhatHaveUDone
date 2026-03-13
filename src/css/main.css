@@ -57,7 +57,6 @@
 .secondary {
   background: var(--surface);
   color: var(--text);
-  border: 1px solid var(--line);
 }
 
 .secondary:hover {
@@ -165,6 +164,7 @@
   display: flex;
   gap: 14px;
   align-items: center;
+  justify-content: center;
   min-width: 0;
 }
 
@@ -965,7 +965,6 @@ html {
   line-height: 1.6;
   color: var(--muted);
   margin: 0;
-
   display: -webkit-box;
   -webkit-line-clamp: var(--preview-lines, 3);
   line-clamp: var(--preview-lines, 3);

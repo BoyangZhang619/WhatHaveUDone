@@ -62,11 +62,10 @@ import { useLoginActions } from '@/composables/useLoginActions';
 import { useLoginUtils } from '@/composables/useLoginUtils';
 
 const { t } = useI18n();
-const emit = defineEmits(['login-success']);
 
 const { form, status, setStatus, validateEmail, validatePassword } = useLoginForm();
 const { handleRegister, handleLogin, handleLogout } = useLoginActions(
-  form, setStatus, validateEmail, validatePassword, emit
+  form, setStatus, validateEmail, validatePassword
 );
 const { userIp, getMyIp, switchLanguage, question } = useLoginUtils();
 

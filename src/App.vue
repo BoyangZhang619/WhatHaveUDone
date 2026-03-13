@@ -1,85 +1,72 @@
 <script setup>
-import {ref, onMounted} from 'vue'
-import Login from './components/login.vue'
-import Main from './components/main.vue'
-import Setting from './components/setting.vue'
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 
-// 全局用户状态
-// false 表示未登录，存储对象（如 { email: '...' }）表示已登录
-const user = ref(false); // 这里先模拟一个已登录状态，实际开发中应初始化为 false
-const settingOpen = ref(false);
+const router = useRouter()
+const transitionName = ref('fade-up')
 
-/**
- * 初始化主题
- */
-onMounted(() => {
-  const saved = localStorage.getItem('whatIveDone_theme') || 'light';
-  document.documentElement.setAttribute('data-theme', saved);
+router.afterEach((to, from) => {
+  if (to.path === '/settings' && from.path === '/') {
+    transitionName.value = 'slide-left'
+    return
+  }
 
-  // 恢复外观设置
-  try {
-    const s = JSON.parse(localStorage.getItem('whatIveDone_settings') || '{}');
-    if (s.fontSize) document.documentElement.style.setProperty('--font-base', s.fontSize + 'px');
-    if (s.borderRadius) {
-      const radiusMap = { none: '0px', small: '6px', medium: '10px', large: '14px' };
-      document.documentElement.style.setProperty('--radius', radiusMap[s.borderRadius] || '14px');
-    }
-    if (s.previewLines !== undefined) {
-      document.documentElement.style.setProperty('--preview-lines', s.previewLines === 0 ? '9999' : String(s.previewLines));
-    }
-    if (s.animation === false) {
-      document.documentElement.setAttribute('data-no-animation', '');
-    }
-  } catch { /* ignore */ }
+  if (to.path === '/' && from.path === '/settings') {
+    transitionName.value = 'slide-right'
+    return
+  }
+
+  transitionName.value = 'fade-up'
 })
 
-/**
- * 处理登录成功
- * @param {Object} user_success 子组件传回的用户信息
- */
-const handleLoginSuccess = () => {
-  // 可以在这里做一些持久化处理，比如存入 localStorage
-  user.value = true;
-}
+onMounted(() => {
+  const saved = localStorage.getItem('whatIveDone_theme') || 'light'
+  document.documentElement.setAttribute('data-theme', saved)
 
-/**
- * 处理登出逻辑
- * 供后续 Main 组件触发
- */
-const handleLogout = () => {
-  user.value = false
-}
+  try {
+    const s = JSON.parse(localStorage.getItem('whatIveDone_settings') || '{}')
 
-// setInterval(() => {
-//   console.log(user.value);
-// }, 1000)
+    if (s.fontSize) {
+      document.documentElement.style.setProperty('--font-base', s.fontSize + 'px')
+    }
+
+    if (s.borderRadius) {
+      const radiusMap = {
+        none: '0px',
+        small: '6px',
+        medium: '10px',
+        large: '14px'
+      }
+      document.documentElement.style.setProperty('--radius', radiusMap[s.borderRadius] || '14px')
+    }
+
+    if (s.previewLines !== undefined) {
+      document.documentElement.style.setProperty(
+        '--preview-lines',
+        s.previewLines === 0 ? '9999' : String(s.previewLines)
+      )
+    }
+
+    if (s.animation === false) {
+      document.documentElement.setAttribute('data-no-animation', '')
+    } else {
+      document.documentElement.removeAttribute('data-no-animation')
+    }
+  } catch {
+    // ignore
+  }
+})
 </script>
 
 <template>
   <div class="app-container">
-    <transition name="fade-transform" mode="out-in">
-
-      <Login
-          v-if="!user && !settingOpen"
-          key="login-page"
-          @login-success="handleLoginSuccess"
-      />
-
-      <Main
-          v-else-if="user && !settingOpen"
-          key="main-page"
-          :user-info="user"
-          @log-out="handleLogout"
-          @settingOpen="settingOpen=true"
-      />
-
-      <Setting
-          v-else-if="user && settingOpen"
-          @close="settingOpen=false"
-          @log-out="handleLogout"
-      />
-
-    </transition>
+    <router-view v-slot="{ Component, route }">
+      <transition :name="transitionName" mode="out-in">
+        <div :key="route.fullPath" class="route-page">
+          <component :is="Component" />
+        </div>
+      </transition>
+    </router-view>
   </div>
 </template>
 
@@ -95,24 +82,89 @@ body {
 }
 
 .app-container {
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  position: relative;
+  min-height: 100dvh;
+  overflow: hidden;
 }
 
-.fade-transform-enter-active,
-.fade-transform-leave-active {
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+.route-page {
+  min-height: 100dvh;
+  width: 100%;
 }
 
-.fade-transform-enter-from {
+/* 淡入上浮 */
+.fade-up-enter-active,
+.fade-up-leave-active {
+  transition:
+    opacity 0.24s ease,
+    transform 0.28s ease;
+  will-change: opacity, transform;
+}
+
+.fade-up-enter-from {
   opacity: 0;
-  transform: translateY(15px) scale(0.98);
+  transform: translateY(14px) scale(0.995);
 }
 
-.fade-transform-leave-to {
+.fade-up-leave-to {
   opacity: 0;
-  transform: translateY(-15px) scale(1.02);
+  transform: translateY(-8px) scale(0.995);
+}
+
+/* 向左推进：主页 -> 设置 */
+.slide-left-enter-active,
+.slide-left-leave-active {
+  transition:
+    transform 0.28s ease,
+    opacity 0.22s ease;
+  will-change: transform, opacity;
+}
+
+.slide-left-enter-from {
+  transform: translateX(32px);
+  opacity: 0.98;
+}
+
+.slide-left-leave-to {
+  transform: translateX(-14px);
+  opacity: 0.98;
+}
+
+/* 向右返回：设置 -> 主页 */
+.slide-right-enter-active,
+.slide-right-leave-active {
+  transition:
+    transform 0.28s ease,
+    opacity 0.22s ease;
+  will-change: transform, opacity;
+}
+
+.slide-right-enter-from {
+  transform: translateX(-24px);
+  opacity: 0.98;
+}
+
+.slide-right-leave-to {
+  transform: translateX(24px);
+  opacity: 0.98;
+}
+
+[data-no-animation] .fade-up-enter-active,
+[data-no-animation] .fade-up-leave-active,
+[data-no-animation] .slide-left-enter-active,
+[data-no-animation] .slide-left-leave-active,
+[data-no-animation] .slide-right-enter-active,
+[data-no-animation] .slide-right-leave-active {
+  transition: none !important;
+}
+
+[data-no-animation] .fade-up-enter-from,
+[data-no-animation] .fade-up-leave-to,
+[data-no-animation] .slide-left-enter-from,
+[data-no-animation] .slide-left-leave-to,
+[data-no-animation] .slide-right-enter-from,
+[data-no-animation] .slide-right-leave-to {
+  transform: none !important;
+  opacity: 1 !important;
 }
 </style>

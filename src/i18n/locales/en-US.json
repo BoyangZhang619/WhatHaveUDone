@@ -97,8 +97,8 @@
         "overlay_title": "Add Record",
         "overlay_edit": "Edit Record",
         "overlay_sub_title": {
-          "draft": "Draft:",
-          "wordCount": "Word Count:",
+          "draft": "Draft",
+          "wordCount": "Word Count",
           "draft_status": {
             "saved": "Saved",
             "unsaved": "Unsaved",

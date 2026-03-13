@@ -4,6 +4,8 @@
 import { useI18n } from "vue-i18n";
 import { api } from "./useApi";
 import type { useLoginForm } from "./useLoginForm";
+import { setUser } from "@/utils/auth";
+import { useRouter } from 'vue-router';
 
 type LoginForm = ReturnType<typeof useLoginForm>;
 
@@ -11,10 +13,10 @@ export function useLoginActions(
   form: LoginForm["form"],
   setStatus: LoginForm["setStatus"],
   validateEmail: LoginForm["validateEmail"],
-  validatePassword: LoginForm["validatePassword"],
-  emit: (event: "login-success", payload?: any) => void
+  validatePassword: LoginForm["validatePassword"]
 ) {
   const { t } = useI18n();
+  const router = useRouter();
 
   async function handleRegister() {
     const e = validateEmail(form.email);
@@ -51,10 +53,13 @@ export function useLoginActions(
       });
       setStatus(t("login_card.status.login_success", { email: form.email }), "success");
       try {
-        if (data) emit("login-success", data.success);
-      } catch (emitError) {
-        console.error("login_card.emit_error", {
-          error: emitError instanceof Error ? emitError.message : String(emitError),
+        if (data) {
+          setUser({ loggedIn: true });
+          router.replace('/');
+        }
+      } catch (error) {
+        console.error("login_card_error", {
+          error: error instanceof Error ? error.message : String(error),
         });
       }
     } catch (e: any) {
@@ -71,7 +76,10 @@ export function useLoginActions(
       setStatus(t("login_card.status.logout_success"), "muted");
       form.email = "";
       form.password = "";
-      emit("login-success", null);
+      setUser({
+        loggedIn: false
+      });
+      router.replace('/login');
     } catch (e: any) {
       setStatus(
         t("login_card.status.logout_fail") + (e.data?.message || t("login_card.status.internal_error")),

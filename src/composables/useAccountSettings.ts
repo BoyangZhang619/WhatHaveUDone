@@ -5,14 +5,20 @@ import { useI18n } from "vue-i18n";
 import { api } from "./useApi";
 import { STORAGE_KEY } from "./useSettingsStorage";
 import type { useSettingState } from "./useSettingState";
+import { useAuth } from "@/composables/useAuth";
+import { useRouter } from "vue-router";
+
+
+
 
 type SettingState = ReturnType<typeof useSettingState>;
 
 export function useAccountSettings(
     current: SettingState["current"],
-    setStatus: SettingState["setStatus"],
-    emit: { (event: "log-out"): void, (event: "close"): void }
+    setStatus: SettingState["setStatus"]
 ) {
+    const { onLogout } = useAuth();
+    const router = useRouter();
     const { t } = useI18n();
 
     function onChangeNickname() {
@@ -170,8 +176,8 @@ export function useAccountSettings(
             await api("/api/delete-account", { method: "POST" });
             await api("/api/logout", { method: "POST" });
             setStatus(t("setting.status.delete_account_success"), "success");
-            emit("log-out");
-            emit("close");
+            onLogout();
+            router.replace('/login');
         } catch (e) {
             console.warn("Failed to delete account:", e);
         } finally {

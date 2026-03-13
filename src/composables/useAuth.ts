@@ -4,13 +4,17 @@
 import { reactive, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { api } from "./useApi";
+import { useRouter } from 'vue-router';
+import { clearUser } from "@/utils/auth";
+
 
 interface User {
   value: number | null;
   email?: string | null;
 }
 
-export function useAuth(emit: (event: "log-out" | "settingOpen") => void) {
+export function useAuth() {
+  const router = useRouter();
   const { t } = useI18n();
 
   const meUser = reactive<User>({ value: null, email: null });
@@ -32,13 +36,14 @@ export function useAuth(emit: (event: "log-out" | "settingOpen") => void) {
   }
 
   function onOpenSettings() {
-    emit("settingOpen");
+    router.push('/settings');
   }
 
   async function onLogout() {
     try {
       await api("/api/logout", { method: "POST" });
-      emit("log-out");
+      clearUser();
+      router.replace('/login');
     } catch {
       alert(t("other.logout_error"));
     }

@@ -15,8 +15,8 @@
             </div>
         </div>
         <div class="topbar-actions">
-            <button class="btn ghost" @click="$emit('settingOpen')">{{ t("main_page.header.settings") }}</button>
-            <button class="btn ghost" @click="$emit('log-out')">{{ t("main_page.header.logout") }}</button>
+            <button class="btn ghost" @click="onOpenSettings">{{ t("main_page.header.settings") }}</button>
+            <button class="btn ghost" @click="onLogout">{{ t("main_page.header.logout") }}</button>
         </div>
 
     </header>
@@ -28,6 +28,5 @@ import { useI18n } from "vue-i18n";
 import { useAuth } from "@/composables/useAuth";
 
 const { t } = useI18n();
-const emit = defineEmits(["log-out", "settingOpen"]);
-const { meUser, meLoading, refreshMe, onOpenSettings, onLogout } = useAuth(emit);
+const { meUser, meLoading, refreshMe, onOpenSettings, onLogout } = useAuth();
 </script>

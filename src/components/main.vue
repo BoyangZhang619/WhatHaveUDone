@@ -52,8 +52,7 @@ import { providePostDetail } from "@/composables/usePostDetail";
 import { provideComposer } from "@/composables/useComposer";
 
 const { t } = useI18n();
-const emit = defineEmits(["log-out", "settingOpen"]);
-const { refreshMe, onOpenSettings, onLogout } = useAuth(emit);
+const { refreshMe, onOpenSettings, onLogout } = useAuth();
 const { listPosts, resetAndList } = providePosts();
 const { detail, deletePost: _deletePost } = providePostDetail();
 const { composerOpen, loadDraft } = provideComposer(resetAndList);

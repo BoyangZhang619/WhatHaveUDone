@@ -32,11 +32,10 @@ export function useSettingState() {
       | "light"
       | "dark",
     fontSize: load<number>("fontSize", 14),
-    cardLayout: load<string>("cardLayout", "grid"),
+    cardLayout: load<string>("cardLayout", "List"),
     animation: load<boolean>("animation", true),
     borderRadius: load<string>("borderRadius", "large"),
     previewLines: load<number>("previewLines", 3),
-    pageShowMode: load<string>("pageShowMode", "Grid"),
     // 通知
     dailyReminder: load<boolean>("dailyReminder", false),
     reminderTime: load<string>("reminderTime", "21:00"),

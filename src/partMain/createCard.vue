@@ -6,12 +6,12 @@
                 <div class="create-badge">+</div>
                 <div>
                     <div class="create-title">{{ t("main_page.body.create_block.title") }}</div>
-                    <div class="muted create-sub">
+                    <div class="muted create-sub" v-if="isMobile">
                         {{ t("main_page.body.create_block.create_sub") }}
                     </div>
                 </div>
             </div>
-            <div class="create-card-right">
+            <div class="create-card-right" v-if="isMobile">
                 <span class="pill">{{ t("main_page.body.create_block.pills.a") }}</span>
                 <span class="pill">{{ t("main_page.body.create_block.pills.b") }}</span>
                 <span class="pill">{{ t("main_page.body.create_block.pills.c") }}</span>
@@ -24,8 +24,11 @@
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
 import { injectComposer } from "@/composables/useComposer";
+import { ref } from "vue";
 
 const { t } = useI18n();
 
 const { composerOpen, openComposer } = injectComposer();
+
+const isMobile = ref(!/Android|iPhone|iPad|Phone/.test(navigator.userAgent));
 </script>

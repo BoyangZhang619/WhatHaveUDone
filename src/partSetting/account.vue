@@ -122,11 +122,6 @@ import { useAccountSettings } from "@/composables/useAccountSettings";
 
 const { t } = useI18n();
 
-const emit = defineEmits<{
-    (e: "close"): void;
-    (e: "log-out"): void;
-}>();
-
 const {
     displayState, current, languageOptions,
     statusMsg, statusKind, setStatus,
@@ -136,5 +131,5 @@ const {
     onChangeNickname, onChangePassword, onChangeEmail,
     onExportData, onImportData, onManageSessions,
     onDeleteAllData, onDeleteAccount,
-} = useAccountSettings(current, setStatus, emit);
+} = useAccountSettings(current, setStatus);
 </script>

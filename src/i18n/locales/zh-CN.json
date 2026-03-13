@@ -97,8 +97,8 @@
         "overlay_title": "新增记录",
         "overlay_edit": "编辑记录",
         "overlay_sub_title": {
-          "draft": "草稿:",
-          "wordCount": "字数:",
+          "draft": "草稿",
+          "wordCount": "字数",
           "draft_status": {
             "saved": "已保存",
             "unsaved": "未保存",

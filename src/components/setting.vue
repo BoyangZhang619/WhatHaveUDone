@@ -6,7 +6,7 @@
       </div>
       <h1 class="setting-title">{{ t('setting.header.title') }}</h1>
       <div class="setting-header-right">
-        <button class="btn ghost" @click="$emit('close')">{{ t('setting.header.back') }}</button>
+        <button class="btn ghost" @click="closeSetting()">{{ t('setting.header.back') }}</button>
       </div>
     </header>
     <div class="setting-header-desc">{{ t('setting.header.desc') }}</div>
@@ -20,8 +20,8 @@
 
       <!-- 账户设置 -->
       <Account 
-      @close="$emit('close')"
-      @log-out="$emit('log-out')"
+      @close="closeSetting()"
+      @log-out="onLogout"
       />
 
       <!-- 通知与提醒 -->
@@ -48,18 +48,19 @@ import Appearance from "@/partSetting/appearance.vue";
 import Account from "@/partSetting/account.vue";
 import Notification from "@/partSetting/notification.vue";
 import About from "@/partSetting/about.vue";
+import { useAuth } from "@/composables/useAuth";
+import { useRouter } from "vue-router";
 
-const emit = defineEmits<{
-  (e: "close"): void;
-  (e: "log-out"): void;
-}>();
-
+const router = useRouter();
+const { onLogout } = useAuth();
 const { t } = useI18n();
-
 const {
-  displayState, current, languageOptions,
   statusMsg, statusKind, setStatus,
 } = provideSettingState();
+
+const closeSetting = () => {
+  router.push('/');
+};
 
 </script>
 
