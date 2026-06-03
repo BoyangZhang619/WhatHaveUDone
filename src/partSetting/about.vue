@@ -14,7 +14,7 @@
                         <div class="setting-item-desc muted">{{ t('setting.about.version.desc') }}</div>
                     </div>
                     <div class="setting-item-ctrl">
-                        <span class="setting-badge">v1.1.1</span>
+                        <span class="setting-badge">v1.1.2</span>
                     </div>
                 </div>
 

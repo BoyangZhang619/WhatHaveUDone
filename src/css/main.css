@@ -87,7 +87,7 @@
 /* ====== Topbar ====== */
 .topbar {
   position: fixed;
-  top: 0;
+  top: max(0px, env(safe-area-inset-top));
   left: 0;
   right: 0;
   width: 100%;
@@ -96,7 +96,7 @@
   gap: 12px;
   align-items: center;
   justify-content: space-between;
-  padding: calc(14px + env(safe-area-inset-top)) calc(16px + env(safe-area-inset-right)) 14px calc(16px + env(safe-area-inset-left));
+  padding: 14px calc(16px + env(safe-area-inset-right)) 14px calc(16px + env(safe-area-inset-left));
   background: var(--topbar-bg);
   backdrop-filter: blur(12px);
   border-bottom: none;
@@ -352,7 +352,8 @@ select {
 /* ====== Overlay (composer & detail) ====== */
 .overlay {
   position: fixed;
-  inset: 0;
+  position: fixed;
+  inset: max(0px, env(safe-area-inset-top)) 0 0 0;
   z-index: 60;
   background: var(--overlay-bg);
   backdrop-filter: blur(16px);
@@ -366,7 +367,7 @@ select {
   align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
-  padding: calc(14px + env(safe-area-inset-top)) calc(16px + env(safe-area-inset-right)) 14px calc(16px + env(safe-area-inset-left));
+  padding: 14px calc(16px + env(safe-area-inset-right)) 14px calc(16px + env(safe-area-inset-left));
   border-bottom: none;
 }
 
@@ -1195,7 +1196,15 @@ body {
   width: 100%;
   max-width: calc(100dvw - 26px);
   margin: 0 auto;
-  padding: 80px 0px 32px;
+  /* 
+    topbar 固定高度：env(safe-area-inset-top) + 28px（padding 14+14）+ ~24px（内容）
+    = env(safe-area-inset-top) + 52px
+    + 28px 视觉间距
+  */
+  padding-top: calc(env(safe-area-inset-top) + 52px + 28px);
+  padding-bottom: 32px;
+  padding-left: 0px;
+  padding-right: 0px;
 }
 
 /* 鍒涘缓鍗＄墖銆佸垪琛ㄥ鍣ㄥ己鍒朵笉婧㈠嚭 */

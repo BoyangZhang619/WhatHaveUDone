@@ -11,16 +11,20 @@
 
 /* ====== Header ====== */
 .setting-header {
-  position: sticky;
-  top: 0;
+  position: fixed;
+  top: max(0px, env(safe-area-inset-top));
+  left: 0;
+  right: 0;
   z-index: 20;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 18px 24px;
+  padding: 18px calc(24px + env(safe-area-inset-right)) 18px calc(24px + env(safe-area-inset-left));
   background: var(--topbar-bg);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--line);
+  box-sizing: border-box;
+  width: 100%;
 }
 
 .setting-title {
@@ -41,8 +45,10 @@
 .setting-header-desc {
   font-size: 14px;
   color: var(--text-secondary);
-  padding: 0 24px;
-  margin-top: 12px;
+  padding: 0 24px 12px;
+  margin-top: 0;
+  /* fixed header 高度：env(safe-area-inset-top) + 36px（padding 18+18），+ desc 自身 ~18px，再加 12px margin */
+  padding-top: calc(env(safe-area-inset-top) + 36px + 18px + 12px);
 }
 /* ====== Body ====== */
 .setting-body {

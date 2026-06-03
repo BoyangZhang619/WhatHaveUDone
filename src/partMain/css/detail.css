@@ -20,15 +20,14 @@
   min-height: 100vh;
 
   position: fixed;
-  inset: 0;
+  inset: max(0px, env(safe-area-inset-top)) max(0px, env(safe-area-inset-right)) max(0px, env(safe-area-inset-bottom)) max(0px, env(safe-area-inset-left));
   z-index: 999;
 
   display: flex;
   align-items: stretch;
   justify-content: center;
 
-  padding:
-    max(14px, env(safe-area-inset-top)) max(14px, env(safe-area-inset-right)) max(14px, env(safe-area-inset-bottom)) max(14px, env(safe-area-inset-left));
+  padding: 14px;
 
   /* 绠€绾﹀崐閫忔槑閬僵 */
   background: rgba(0, 0, 0, 0.3);

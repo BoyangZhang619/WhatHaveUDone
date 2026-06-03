@@ -1,0 +1,8 @@
+{
+  "appId": "xin.zbyblq.done",
+  "appName": "whativedone",
+  "webDir": "dist",
+  "electron": {
+    "backgroundColor": "#000000"
+  }
+}
