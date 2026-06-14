@@ -24,11 +24,18 @@
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
 import { injectComposer } from "@/composables/useComposer";
-import { ref } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 
 const { t } = useI18n();
 
 const { composerOpen, openComposer } = injectComposer();
 
-const isMobile = ref(!/Android|iPhone|iPad|Phone/.test(navigator.userAgent));
+// mobile detection: navigator UA OR viewport width < 768px (dynamic)
+function checkMobile() {
+  return /Android|iPhone|iPad|Phone/.test(navigator.userAgent) || window.innerWidth < 768;
+}
+const isMobile = ref(checkMobile());
+function onResize() { isMobile.value = checkMobile(); }
+onMounted(() => window.addEventListener('resize', onResize));
+onUnmounted(() => window.removeEventListener('resize', onResize));
 </script>

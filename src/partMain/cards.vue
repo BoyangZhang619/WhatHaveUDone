@@ -122,7 +122,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 import { useI18n } from "vue-i18n";
 import { formatDate, tagList, todoList } from "@/composables/useHelpers";
 import { injectPosts } from "@/composables/usePosts";
@@ -134,6 +134,12 @@ const { posts, listLoading, listError, cardLayout } = injectPosts();
 const { openComposer } = injectComposer();
 const { openDetail } = injectPostDetail();
 
-// evaluate navigator in script scope so template type-checking doesn't try to treat it as a component property
-const isMobile = ref(!/Android|iPhone|iPad|Phone/.test(navigator.userAgent));
+// mobile detection: navigator UA OR viewport width < 768px (dynamic)
+function checkMobile() {
+  return /Android|iPhone|iPad|Phone/.test(navigator.userAgent) || window.innerWidth < 768;
+}
+const isMobile = ref(checkMobile());
+function onResize() { isMobile.value = checkMobile(); }
+onMounted(() => window.addEventListener('resize', onResize));
+onUnmounted(() => window.removeEventListener('resize', onResize));
 </script>
